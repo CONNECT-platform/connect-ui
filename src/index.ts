@@ -2,9 +2,11 @@ import $ from 'jquery';
 import hellow from './hellow';
 
 $(document).ready(() => {
-
-  let x = hellow();
-  x.subscribe((v: string) => {
+  let s = hellow().subscribe((v: string) => {
     console.log(v);
-  })
+  });
+  setTimeout(() => {
+    console.log('UNSUB');
+    s.unsubscribe()
+  }, 2000);
 });
