@@ -1,0 +1,31 @@
+{
+  "name": "connect-interface",
+  "version": "0.0.1",
+  "description": "easily (and quickly) build super-complex interfaces for web applications.",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CONNECT-platform/connect-interface.git"
+  },
+  "author": "Eugene Ghanizadeh Khoub <ghanizadeh.eugene@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CONNECT-platform/connect-interface/issues"
+  },
+  "homepage": "https://github.com/CONNECT-platform/connect-interface#readme",
+  "devDependencies": {
+    "@types/jquery": "^3.3.29",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "rxjs": "^5.5.12"
+  }
+}
