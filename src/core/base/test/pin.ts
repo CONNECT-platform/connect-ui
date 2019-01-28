@@ -51,6 +51,12 @@ describe('Pin', () => {
       a.connections.should.include(b);
     });
 
+    it('should throw an error when .compatible() returns false', () => {
+      class P extends Pin { compatible() { return false; } }
+      let a = new P(); let b = new P();
+      expect(() => a.connect(b)).to.throw;
+    });
+
     it('should connect symmetrically.', () => {
       class P extends Pin { compatible() { return true; } }
       let a = new P(); let b = new P();
