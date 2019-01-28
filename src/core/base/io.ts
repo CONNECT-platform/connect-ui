@@ -34,6 +34,11 @@ export class InputPin<_Type> extends Pin {
     return pin instanceof OutputPin;
   }
 
+  public reset(): InputPin<_Type> {
+    this._last = undefined;
+    return super.reset() as InputPin<_Type>;
+  }
+
   public get last(): _Type { return this._last; }
   public get onReceived(): Observable<_Type> { return this.on('received'); }
 }
@@ -58,4 +63,28 @@ export class OutputPin<_Type> extends Pin {
 
   public get last(): _Type { return this._last; }
   public get onSent(): Observable<_Type> { return this.on('sent'); }
+}
+
+export class PersistentOutput<_Type> extends OutputPin<_Type> {
+  constructor() {
+    super();
+
+    let cs = this.onConnected.subscribe((pin: InputPin<_Type>) => {
+      if (this.activated)
+        pin.receive(this.last);
+
+      let rs = pin.onReset.subscribe(() => {
+        if (this.activated)
+          pin.receive(this.last);
+      });
+
+      let ds = pin.onDisconnected.subscribe(pin => {
+        if (pin == this) {
+          cs.unsubscribe();
+          rs.unsubscribe();
+          ds.unsubscribe();
+        }
+      });
+    });
+  }
 }

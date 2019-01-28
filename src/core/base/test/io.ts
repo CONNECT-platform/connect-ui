@@ -1,6 +1,6 @@
 import { should, expect } from 'chai'; should();
 
-import { InputPin, OutputPin } from '../io';
+import { InputPin, OutputPin, PersistentOutput } from '../io';
 
 
 describe('InputPin', () => {
@@ -80,6 +80,16 @@ describe('InputPin', () => {
     });
   });
 
+  describe('.reset()', () => {
+    it('should also reset the value of .last', () => {
+      let i = new InputPin<string>();
+      i.receive('hellow');
+      i.last.should.equal('hellow');
+      i.reset();
+      expect(i.last).to.be.undefined;
+    });
+  });
+
   describe('.onReceived', () => {
     it('should be equal to `on("received")`', () => {
       let p = new InputPin<string>();
@@ -130,6 +140,57 @@ describe('OutputPin', () => {
     it('should be equal to `on("sent")`', () => {
       let p = new OutputPin();
       p.onSent.should.equal(p.on('sent'));
+    });
+  });
+});
+
+describe('PersistentOutput', () => {
+  describe('.connect()', () => {
+    it('should instantly send the last sent data to newly connected pins.', () => {
+      let o = new OutputPin<string>();
+      let i1 = new InputPin<string>();
+
+      o.send('hellow');
+      i1.connect(o);
+      expect(i1.last).to.be.undefined;
+
+      let po = new PersistentOutput<string>();
+      let i2 = new InputPin<string>();
+
+      po.send('hellow');
+      i2.connect(po);
+      i2.last.should.equal('hellow');
+    });
+
+    it('should resend the last sent data to connected pins when they `reset()`', () => {
+      let o = new OutputPin<number>();
+      let i1 = new InputPin<number>();
+      i1.connect(o);
+      o.send(2);
+      i1.last.should.equal(2);
+      i1.reset();
+      expect(i1.last).to.be.undefined;
+
+      let po = new PersistentOutput<number>();
+      let i2 = new InputPin<number>();
+      i2.connect(po);
+      po.send(2);
+      i2.last.should.equal(2);
+      i2.reset();
+      i2.last.should.equal(2);
+    });
+
+    it('should not send the data to disconnected pins after they reset.', () => {
+      let po = new PersistentOutput<string>();
+      let i = new InputPin<string>();
+      i.connect(po);
+      po.send('world');
+      i.last.should.equal('world');
+      i.reset();
+      i.last.should.equal('world');
+      i.disconnect(po);
+      i.reset();
+      expect(i.last).to.be.undefined;
     });
   });
 });

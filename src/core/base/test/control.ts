@@ -1,7 +1,7 @@
 import { should, expect } from 'chai'; should();
 
 import { SignalPin, ControlPin,
-        AllGate, PersistentGate } from '../control';
+        AllGate, PersistentSignal } from '../control';
 
 
 describe('SignalPin', () => {
@@ -81,11 +81,11 @@ describe('AllGate', () => {
   });
 });
 
-describe('PersistentGate', () => {
+describe('PersistentSignal', () => {
   describe('.connect()', () => {
     it('should instantly activate newly connected pins if already activated.', () => {
       let cr = new SignalPin().activate();
-      let pg = new PersistentGate().activate();
+      let pg = new PersistentSignal().activate();
       let c = new ControlPin();
       c.connect(cr).activated.should.be.false;
       c.connect(pg).activated.should.be.true;
@@ -99,7 +99,7 @@ describe('PersistentGate', () => {
       c1.reset();
       c1.activated.should.be.false;
 
-      let pg = new PersistentGate();
+      let pg = new PersistentSignal();
       let c2 = new ControlPin().connect(pg);
       pg.activate();
       c2.activated.should.be.true;
@@ -108,7 +108,7 @@ describe('PersistentGate', () => {
     });
 
     it('should no longer reactivate pins that get disconnected.', () => {
-      let pg = new PersistentGate();
+      let pg = new PersistentSignal();
       let c = new ControlPin().connect(pg);
       pg.activate();
       c.activated.should.be.true;

@@ -33,7 +33,7 @@ export class AllGate extends ControlPin {
   }
 }
 
-export class PersistentGate extends SignalPin {
+export class PersistentSignal extends SignalPin {
   constructor() {
     super();
 
