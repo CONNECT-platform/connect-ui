@@ -1,5 +1,6 @@
 import { Observable, Subject } from 'rxjs';
 
+
 export class Topic {
   private _subjects: {[key: string]: Subject<any>};
 

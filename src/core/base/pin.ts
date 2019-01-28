@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 
 import { Topic } from './topic';
 
+
 export class IncompatiblePin extends Error {
   constructor(a: Pin, b: Pin) {
     super(`cannot connect ${a} to ${b}`);
