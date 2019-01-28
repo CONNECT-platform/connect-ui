@@ -90,23 +90,31 @@ describe('PersistentGate', () => {
       c.connect(cr).activated.should.be.false;
       c.connect(pg).activated.should.be.true;
     });
-  });
 
-  describe('.reset()', () => {
-    it('should not reset the state of the pin.', () => {
+    it('should reactivate connected pins when they `reset()`.', () => {
+      let s = new SignalPin();
+      let c1 = new ControlPin().connect(s);
+      s.activate();
+      c1.activated.should.be.true;
+      c1.reset();
+      c1.activated.should.be.false;
+
       let pg = new PersistentGate();
-      pg.activated.should.be.false;
-      pg.activate().activated.should.be.true;
-      pg.reset().activated.should.be.true;
+      let c2 = new ControlPin().connect(pg);
+      pg.activate();
+      c2.activated.should.be.true;
+      c2.reset();
+      c2.activated.should.be.true;
     });
-  });
 
-  describe('.deactivate()', () => {
-    it('should trigger a deactivation instead of `reset()`.', () => {
+    it('should no longer reactivate pins that get disconnected.', () => {
       let pg = new PersistentGate();
-      pg.activated.should.be.false;
-      pg.activate().activated.should.be.true;
-      pg.deactivate().activated.should.be.false;
+      let c = new ControlPin().connect(pg);
+      pg.activate();
+      c.activated.should.be.true;
+      pg.disconnect(c);
+      c.reset();
+      c.activated.should.be.false;
     });
   });
 });

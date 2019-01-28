@@ -37,17 +37,20 @@ export class PersistentGate extends SignalPin {
   constructor() {
     super();
 
-    this.onConnected.subscribe(pin => {
+    let cs = this.onConnected.subscribe(pin => {
       if (this.activated) pin.activate();
+
+      let rs = pin.onReset.subscribe(() => {
+        if (this.activated) pin.activate();
+      });
+
+      let ds = pin.onDisconnected.subscribe(pin => {
+        if (pin == this) {
+          cs.unsubscribe();
+          rs.unsubscribe();
+          ds.unsubscribe();
+        }
+      });
     });
-  }
-
-  reset(): Pin {
-    return this;
-  }
-
-  deactivate(): PersistentGate {
-    super.reset();
-    return this;
   }
 }
