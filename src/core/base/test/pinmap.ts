@@ -160,4 +160,25 @@ describe('PinMap', () => {
       pm.locked.should.be.true;
     });
   });
+
+  describe('.onLocked', () => {
+    it('should be equal to `on("locked")`', () => {
+      let pm = new PinMap();
+      pm.onLocked.should.equal(pm.on('locked'));
+    });
+  });
+
+  describe('.onAttached', () => {
+    it('should be equal to `on("attached")`', () => {
+      let pm = new PinMap();
+      pm.onAttached.should.equal(pm.on('attached'));
+    });
+  });
+
+  describe('.onDetached', () => {
+    it('should be equal to `on("detached")`', () => {
+      let pm = new PinMap();
+      pm.onDetached.should.equal(pm.on('detached'));
+    });
+  });
 });

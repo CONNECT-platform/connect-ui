@@ -79,6 +79,13 @@ describe('InputPin', () => {
       i.last.should.equal(2);
     });
   });
+
+  describe('.onReceived', () => {
+    it('should be equal to `on("received")`', () => {
+      let p = new InputPin<string>();
+      p.onReceived.should.equal(p.on('received'));
+    });
+  });
 });
 
 describe('OutputPin', () => {
@@ -116,6 +123,13 @@ describe('OutputPin', () => {
 
     it('should not be true for other pin types.', () => {
       new OutputPin().compatible(new OutputPin()).should.be.false;
+    });
+  });
+
+  describe('.onSent()', () => {
+    it('should be equal to `on("sent")`', () => {
+      let p = new OutputPin();
+      p.onSent.should.equal(p.on('sent'));
     });
   });
 });

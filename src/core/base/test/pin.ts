@@ -114,4 +114,46 @@ describe('Pin', () => {
       a.connect(b).connected(b).should.be.true;
     });
   });
+
+  describe('.activated', () => {
+    it('should return true if the pin is activated.', () => {
+      class P extends Pin { compatible() { return true; } }
+      let p = new P();
+      p.activated.should.be.false;
+      p.activate();
+      p.activated.should.be.true;
+    });
+  });
+
+  describe('.onConnected', () => {
+    it('should be equal to `on("connected")`', () => {
+      class P extends Pin { compatible() { return true; } }
+      let p = new P();
+      p.onConnected.should.equal(p.on('connected'));
+    });
+  });
+
+  describe('.onDisconnected', () => {
+    it('should be equal to `on("disconnected")`', () => {
+      class P extends Pin { compatible() { return true; } }
+      let p = new P();
+      p.onDisconnected.should.equal(p.on('disconnected'));
+    });
+  });
+
+  describe('.onActivated', () => {
+    it('should be equal to `on("activated")`', () => {
+      class P extends Pin { compatible() { return true; } }
+      let p = new P();
+      p.onActivated.should.equal(p.on('activated'));
+    });
+  });
+
+  describe('.onReset', () => {
+    it('should be equal to `on("reset")`', () => {
+      class P extends Pin { compatible() { return true; } }
+      let p = new P();
+      p.onReset.should.equal(p.on('reset'));
+    });
+  });
 });
