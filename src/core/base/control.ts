@@ -1,7 +1,7 @@
 import { Pin } from './pin';
 
 
-export class ControllerPin extends Pin {
+export class SignalPin extends Pin {
   compatible(pin: Pin) { return pin instanceof ControlPin; }
 }
 
@@ -22,7 +22,7 @@ export class ControlPin extends Pin {
     });
   }
 
-  compatible(pin: Pin) { return pin instanceof ControllerPin; }
+  compatible(pin: Pin) { return pin instanceof SignalPin; }
 }
 
 export class AllGate extends ControlPin {
@@ -33,7 +33,7 @@ export class AllGate extends ControlPin {
   }
 }
 
-export class PersistentGate extends ControllerPin {
+export class PersistentGate extends SignalPin {
   constructor() {
     super();
 

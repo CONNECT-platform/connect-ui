@@ -1,25 +1,25 @@
 import { should, expect } from 'chai'; should();
 
-import { ControllerPin, ControlPin,
+import { SignalPin, ControlPin,
         AllGate, PersistentGate } from '../control';
 
 
-describe('ControllerPin', () => {
+describe('SignalPin', () => {
   describe('.compatible()', () => {
     it('should be return true for `ControlPin`s', () => {
-      new ControllerPin().compatible(new ControlPin()).should.be.true;
+      new SignalPin().compatible(new ControlPin()).should.be.true;
     });
 
     it('should return false for other pins', () => {
-      new ControllerPin().compatible(new ControllerPin()).should.be.false;
+      new SignalPin().compatible(new SignalPin()).should.be.false;
     });
   });
 });
 
 describe('ControlPin', () => {
   describe('.compatible()', () => {
-    it('should be return true for `ControlerlPin`s', () => {
-      new ControlPin().compatible(new ControllerPin()).should.be.true;
+    it('should be return true for `SignalPin`s', () => {
+      new ControlPin().compatible(new SignalPin()).should.be.true;
     });
 
     it('should return false for other pins', () => {
@@ -29,7 +29,7 @@ describe('ControlPin', () => {
 
   describe('.connect()', () => {
     it('should activate on activation of connected pin.', done => {
-      let cr = new ControllerPin();
+      let cr = new SignalPin();
       let c = new ControlPin();
       cr.connect(c);
       c.onActivated.subscribe(() => done());
@@ -37,8 +37,8 @@ describe('ControlPin', () => {
     });
 
     it('should activate on activation of any of the connected pins.', done => {
-      let cr1 = new ControllerPin();
-      let cr2 = new ControllerPin();
+      let cr1 = new SignalPin();
+      let cr2 = new SignalPin();
       let c = new ControlPin();
       cr1.connect(c);
       cr2.connect(c)
@@ -49,7 +49,7 @@ describe('ControlPin', () => {
 
   describe('.disconnect()', () => {
     it('should no longer active on activation of a disconnect pin.', () => {
-      let cr = new ControllerPin();
+      let cr = new SignalPin();
       let c = new ControlPin();
       cr.connect(c).activate();
       c.activated.should.be.true;
@@ -69,8 +69,8 @@ describe('AllGate', () => {
   describe('.activate()', () => {
     it('should only activate when all connected pins are activated.', () => {
       let ag = new AllGate();
-      let cr1 = new ControllerPin().connect(ag);
-      let cr2 = new ControllerPin().connect(ag);
+      let cr1 = new SignalPin().connect(ag);
+      let cr2 = new SignalPin().connect(ag);
 
       ag.activated.should.be.false;
       cr1.activate();
@@ -84,7 +84,7 @@ describe('AllGate', () => {
 describe('PersistentGate', () => {
   describe('.connect()', () => {
     it('should instantly activate newly connected pins if already activated.', () => {
-      let cr = new ControllerPin().activate();
+      let cr = new SignalPin().activate();
       let pg = new PersistentGate().activate();
       let c = new ControlPin();
       c.connect(cr).activated.should.be.false;

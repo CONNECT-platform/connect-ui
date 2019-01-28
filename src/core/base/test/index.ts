@@ -3,4 +3,6 @@ describe('core/base', () => {
   require('./pin');
   require('./io');
   require('./control');
+  require('./pinmap');
+  require('./agent');
 });
