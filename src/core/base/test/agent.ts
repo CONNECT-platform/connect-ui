@@ -117,10 +117,64 @@ describe('Agent', () => {
     });
   });
 
+  describe('error', () => {
+    it('should allow subclasses to emit an "error" event.', done => {
+      class Sub extends Agent {
+        constructor(sig: Signature) {
+          super(sig);
+          this.onReset.subscribe(() => this.error('RESET NOT TOLERATED!'));
+        }
+      }
+
+      let a = new Sub({});
+      a.on('error').subscribe(() => done());
+      a.reset();
+    });
+
+    it('should always emit an `Error` object.', done => {
+      class Sub extends Agent {
+        constructor(sig: Signature) {
+          super(sig);
+          this.onReset.subscribe(() => this.error('RESET NOT TOLERATED!'));
+        }
+      }
+
+      let a = new Sub({});
+      a.on('error').subscribe(error => {
+        expect(error).to.be.instanceof(Error);
+        done();
+      });
+      a.reset();
+    });
+
+    it('should emit error object with given message.', done => {
+      class Sub extends Agent {
+        constructor(sig: Signature) {
+          super(sig);
+          this.onReset.subscribe(() => this.error('RESET NOT TOLERATED!'));
+        }
+      }
+
+      let a = new Sub({});
+      a.on('error').subscribe(error => {
+        error.message.should.equal('RESET NOT TOLERATED!');
+        done();
+      });
+      a.reset();
+    });
+  });
+
   describe('.onReset', () => {
-    it('should be equal to `on("reset").`', () => {
+    it('should be equal to `on("reset")`', () => {
       let a = new Agent({});
       a.onReset.should.equal(a.on('reset'));
+    });
+  });
+
+  describe('.onError', () => {
+    it('should be equal to `on("error")`', () => {
+      let a = new Agent({});
+      a.onError.should.equal(a.on('error'));      
     });
   });
 });

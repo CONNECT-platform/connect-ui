@@ -17,6 +17,7 @@ export class Agent extends Topic {
     super();
 
     this._def<void>('reset');
+    this._def<Error>('error');
 
     if (signature.inputs) signature.inputs.map(input => this.inputs.attach(input, this.createInput(input)));
     if (signature.outputs) signature.outputs.map(output => this.outputs.attach(output, this.createOutput(output)));
@@ -42,5 +43,11 @@ export class Agent extends Topic {
   protected createSignal(signal: string): SignalPin { return new SignalPin(); }
   protected createControl(): ControlPin { return new ControlPin(); }
 
+  protected error(error: string | Error): Agent {
+    if (typeof error === 'string') error = new Error(error);
+    return this._emit('error', error) as Agent;
+  }
+
   public get onReset(): Observable<void> { return this.on('reset'); }
+  public get onError(): Observable<Error> { return this.on('error'); }
 }
