@@ -61,6 +61,11 @@ export class OutputPin<_Type> extends Pin {
     return pin instanceof InputPin;
   }
 
+  public reset(): OutputPin<_Type> {
+    this._last = undefined;
+    return super.reset() as OutputPin<_Type>;
+  }
+
   public get last(): _Type { return this._last; }
   public get onSent(): Observable<_Type> { return this.on('sent'); }
 }

@@ -136,6 +136,16 @@ describe('OutputPin', () => {
     });
   });
 
+  describe('.reset()', () => {
+    it('should also reset the value of .last', () => {
+      let o = new OutputPin<string>();
+      o.send('hellow');
+      o.last.should.equal('hellow');
+      o.reset();
+      expect(o.last).to.be.undefined;
+    });
+  });
+
   describe('.onSent()', () => {
     it('should be equal to `on("sent")`', () => {
       let p = new OutputPin();

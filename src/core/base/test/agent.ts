@@ -84,4 +84,43 @@ describe('Agent', () => {
       (new Sub({})).control.should.equal(p);
     });
   });
+
+  describe('.reset()', () => {
+    it('should reset all pins.', () => {
+      let a = new Agent({inputs: ['x'], outputs: ['y'], signals: ['z']});
+      a.inputs.get('x').receive('hellow');
+      a.outputs.get('y').send('world');
+      a.signals.get('z').activate();
+      a.control.activate();
+
+      a.inputs.get('x').activated.should.be.true;
+      a.inputs.get('x').last.should.equal('hellow');
+      a.outputs.get('y').activated.should.be.true;
+      a.outputs.get('y').last.should.equal('world');
+      a.signals.get('z').activated.should.be.true;
+      a.control.activated.should.be.true;
+
+      a.reset();
+
+      a.inputs.get('x').activated.should.be.false;
+      expect(a.inputs.get('x').last).to.be.undefined;
+      a.outputs.get('y').activated.should.be.false;
+      expect(a.outputs.get('y').last).to.be.undefined;
+      a.signals.get('z').activated.should.be.false;
+      a.control.activated.should.be.false;
+    });
+
+    it('should emit an "reset" event.', done => {
+      let a = new Agent({});
+      a.on('reset').subscribe(() => done());
+      a.reset();
+    });
+  });
+
+  describe('.onReset', () => {
+    it('should be equal to `on("reset").`', () => {
+      let a = new Agent({});
+      a.onReset.should.equal(a.on('reset'));
+    });
+  });
 });
