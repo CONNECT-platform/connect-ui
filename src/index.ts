@@ -1,12 +1,11 @@
-import $ from 'jquery';
-import hellow from './hellow';
+import { InputPin, OutputPin } from './core/base/io';
 
-$(document).ready(() => {
-  let s = hellow().subscribe((v: string) => {
-    console.log(v);
-  });
-  setTimeout(() => {
-    console.log('UNSUB');
-    s.unsubscribe()
-  }, 2000);
+
+window.addEventListener('load', () => {
+  let o = new OutputPin();
+  let i = new InputPin();
+  i.connect(o);
+
+  i.onReceived.subscribe(data => console.log(data));
+  document.querySelector('h1').addEventListener('click', event => o.send(event));
 });

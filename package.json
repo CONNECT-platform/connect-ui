@@ -4,8 +4,9 @@
   "description": "easily (and quickly) build super-complex interfaces for web applications.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack --config webpack.config.js",
-    "test": "ts-node -O '{ \"module\": \"commonjs\" }' src/test/index.ts"
+    "start": "webpack --config webpack.dev.js --watch",
+    "test": "ts-node -O '{ \"module\": \"commonjs\" }' src/test/index.ts",
+    "build": "webpack --config webpack.prod.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,8 @@
     "ts-node": "^8.0.2",
     "typescript": "^3.2.4",
     "webpack": "^4.29.0",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.2.1",
+    "webpack-merge": "^4.2.1"
   },
   "dependencies": {
     "jquery": "^3.3.1",
