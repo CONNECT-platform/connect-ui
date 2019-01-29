@@ -1,0 +1,3 @@
+describe('core', () => {
+  require('./state');
+});
