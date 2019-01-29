@@ -61,9 +61,9 @@ export abstract class Node extends Agent {
       else this.error(`unrecognized signal: ${signal}`);
     };
 
+    this.control.reset();
     this._emit('run', profile);
     this.run(profile.inputs, output, signal);
-    this.control.reset();
   }
 
   protected abstract run(

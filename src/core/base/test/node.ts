@@ -59,6 +59,20 @@ describe('Node', () => {
       n.inputs.get('a').receive('AA');
     });
 
+    it('should reset the control pin after invokation.', done => {
+      class N extends Node {
+        constructor() { super({}) }
+        run(_: NodeInputs, __: NodeOutputCallback) {}
+      }
+
+      let n = new N();
+      n.onRun.subscribe(() => {
+        n.control.activated.should.be.false;
+        done();
+      });
+      n.control.activate();
+    });
+
     describe('@param output: NodeOutputCallback', () => {
       it('should be able to send data through the proper output pin via output callback.', done => {
         class N extends Node {
