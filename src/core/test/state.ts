@@ -24,17 +24,6 @@ describe('State', () => {
       });
       s.in.receive(2);
     });
-
-    it('should resend data when the state\'s control is activated.', done => {
-      let s = new State();
-      s.in.receive(2);
-      s.out.onSent.subscribe(value => {
-        value.should.equal(2);
-        done();
-      });
-
-      s.control.activate();
-    });
   });
 
   describe('.value', () => {

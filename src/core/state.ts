@@ -1,28 +1,18 @@
-import { Agent } from './base/agent';
-import { InputPin, PersistentOutput } from './base/io';
+import { Resource, ResourceLoadCallback } from './resource';
 
 
-export class State<_Type> extends Agent {
+export class State<_Type> extends Resource<_Type> {
   constructor(value?: _Type) {
-    super({inputs: ['in'], outputs: ['out']});
-
-    this.in.onReceived.subscribe((value: _Type) => {
-      this.out.send(value);
-    });
-
-    this.control.onActivated.subscribe(() => {
-      if (this.out.activated)
-        this.out.send(this.out.last);
-    });
+    super();
 
     if (value) this.value = value;
   }
 
-  public get in(): InputPin<_Type> { return this.inputs.get('in'); }
-  public get out(): PersistentOutput<_Type> { return this.outputs.get('out'); }
+  load(callback: ResourceLoadCallback<_Type>) { callback(this.value); }
+  update(data: _Type) {}
+
+  protected shouldReload(): boolean { return false; }
 
   public get value(): _Type { return this.out.last; }
   public set value(value: _Type) { this.in.receive(value); }
-
-  protected createOutput(output: string): PersistentOutput<_Type> { return new PersistentOutput<_Type>(); }
 }
