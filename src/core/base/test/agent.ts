@@ -117,7 +117,7 @@ describe('Agent', () => {
     });
   });
 
-  describe('error', () => {
+  describe('.error()', () => {
     it('should allow subclasses to emit an "error" event.', done => {
       class Sub extends Agent {
         constructor(sig: Signature) {
@@ -174,7 +174,7 @@ describe('Agent', () => {
   describe('.onError', () => {
     it('should be equal to `on("error")`', () => {
       let a = new Agent({});
-      a.onError.should.equal(a.on('error'));      
+      a.onError.should.equal(a.on('error'));
     });
   });
 });

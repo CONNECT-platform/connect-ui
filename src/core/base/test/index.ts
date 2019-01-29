@@ -5,4 +5,5 @@ describe('core/base', () => {
   require('./control');
   require('./pinmap');
   require('./agent');
+  require('./node');
 });
