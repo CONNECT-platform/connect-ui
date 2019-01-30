@@ -18,7 +18,7 @@ export class Switch extends Node {
 
   readonly default: SignalPin;
 
-  constructor(cases: any[], private persistent: boolean = false) {
+  constructor(cases: any[]) {
     super({inputs: ['target'], signals: cases.map(Switch.transform)});
     this.default = this.case('...');
   }
@@ -33,9 +33,4 @@ export class Switch extends Node {
   public get target(): InputPin<any> { return this.inputs.get('target'); }
   public case(value: any): SignalPin { return this.signals.get(Switch.transform(value)); }
   public get cases(): PinMap<SignalPin> { return this.signals; }
-
-  protected createSignal(signal: string): SignalPin {
-    if (this.persistent) return new PersistentSignal();
-    else return super.createSignal(signal);
-  }
 }
