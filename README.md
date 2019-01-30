@@ -1,4 +1,4 @@
-![logo](logo.svg)
+![logo](logo.svg?sanitize=true)
 
-# connect-interface
+# CONNECT interface
 visually, easily and quickly build super-complex interfaces for web application.
