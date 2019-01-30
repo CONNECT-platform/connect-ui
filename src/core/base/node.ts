@@ -63,7 +63,13 @@ export abstract class Node extends Agent {
 
     this.control.reset();
     this._emit('run', profile);
-    this.run(profile.inputs, output, signal);
+    (async() => {
+      try {
+        await this.run(profile.inputs, output, signal);
+      } catch(error) {
+        this.error(error);
+      }
+    })();
   }
 
   protected abstract run(

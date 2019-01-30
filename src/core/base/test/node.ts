@@ -73,6 +73,20 @@ describe('Node', () => {
       n.control.activate();
     });
 
+    it('should emit "error" when the function errors.', done => {
+      class N extends Node {
+        constructor() { super({}) }
+        run(_: NodeInputs, __: NodeOutputCallback) {
+          let x: any;
+          x.a.b;
+        }
+      }
+
+      let n = new N();
+      n.onError.subscribe(() => done());
+      n.control.activate();
+    });
+
     describe('@param output: NodeOutputCallback', () => {
       it('should be able to send data through the proper output pin via output callback.', done => {
         class N extends Node {
