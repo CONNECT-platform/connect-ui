@@ -1,5 +1,5 @@
 import { Node, NodeInputs, NodeOutputCallback, NodeSignalCallback } from './base/node';
-import { SignalPin, PersistentSignal } from './base/control';
+import { SignalPin } from './base/control';
 import { InputPin } from './base/io';
 import { PinMap } from './base/pinmap';
 
