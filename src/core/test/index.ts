@@ -4,4 +4,5 @@ describe('core', () => {
   require('./state');
   require('./value');
   require('./expr');
+  require('./switch');
 });
