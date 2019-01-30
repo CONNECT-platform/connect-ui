@@ -1,7 +1,6 @@
 import { should, expect } from 'chai'; should();
 
 import { Switch } from '../switch';
-import { PersistentSignal } from '../base/control';
 
 
 describe('Switch', () => {
