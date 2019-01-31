@@ -29,6 +29,8 @@ export class Agent extends Topic {
     this.inputs.lock();
     this.outputs.lock();
     this.signals.lock();
+
+    this.bind();
   }
 
   public reset(): Agent {
@@ -40,6 +42,7 @@ export class Agent extends Topic {
     return this._emit('reset') as Agent;
   }
 
+  protected bind(): void {}
   protected preBuild(): void {}
 
   protected createInput(input: string): InputPin<any> { return new InputPin(); }

@@ -98,6 +98,19 @@ describe('Agent', () => {
     });
   });
 
+  describe('.bind()', () => {
+    it('should allow subclasses to bind the pins after they are populated.', done => {
+      class Sub extends Agent {
+        protected bind() {
+          this.outputs.has('a').should.be.true;
+          done();
+        }
+      }
+
+      new Sub({outputs: ['a']});
+    });
+  });
+
   describe('.reset()', () => {
     it('should reset all pins.', () => {
       let a = new Agent({inputs: ['x'], outputs: ['y'], signals: ['z']});
