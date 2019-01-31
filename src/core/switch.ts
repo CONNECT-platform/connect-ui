@@ -4,9 +4,10 @@ import { InputPin } from './base/io';
 import { PinMap } from './base/pinmap';
 
 
+export type SwitchCaseType = string | number | boolean | null | undefined;
 
 export class Switch extends Node {
-  private static transform(value: any): string {
+  private static transform(value: SwitchCaseType): string {
     if (value === '...') return value;
     else if (typeof value === 'string') return '"' + value;
     else if (typeof value === 'number') return value.toString();
@@ -18,7 +19,7 @@ export class Switch extends Node {
 
   readonly default: SignalPin;
 
-  constructor(cases: any[]) {
+  constructor(cases: SwitchCaseType[]) {
     super({inputs: ['target'], signals: cases.map(Switch.transform)});
     this.default = this.case('...');
   }
