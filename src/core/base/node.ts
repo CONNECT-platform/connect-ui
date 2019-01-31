@@ -21,11 +21,15 @@ export interface NodeExecutionProfile {
 export abstract class Node extends Agent {
   constructor(signature: Signature) {
     super(signature);
+  }
 
+  protected preBuild() {
     this._def<NodeExecutionProfile>('run');
     this._def<NodeExecutionProfile>('output');
     this._def<NodeExecutionProfile>('signal');
+  }
 
+  protected bind() {
     this.inputs.entries.map(entry => entry.pin.onActivated.subscribe(() => this._checkRun()));
     this.control.onActivated.subscribe(() => this._checkRun());
   }

@@ -9,11 +9,15 @@ export type ResourceLoadCallback<_Type> = (data: _Type) => void;
 export abstract class Resource<_Type> extends Agent {
   constructor() {
     super({inputs: ['in'], outputs: ['out']});
+  }
 
+  protected preBuild() {
     this._def<void>('load');
     this._def<_Type>('loaded');
     this._def<_Type>('update');
+  }
 
+  protected bind() {
     this.control.onActivated.subscribe(() => {
       if (!this.out.activated || this.shouldReload()) {
         this._emit('load');
