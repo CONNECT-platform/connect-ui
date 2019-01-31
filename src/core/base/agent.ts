@@ -19,6 +19,8 @@ export class Agent extends Topic {
     this._def<void>('reset');
     this._def<Error>('error');
 
+    this.preBuild();
+
     if (signature.inputs) signature.inputs.map(input => this.inputs.attach(input, this.createInput(input)));
     if (signature.outputs) signature.outputs.map(output => this.outputs.attach(output, this.createOutput(output)));
     if (signature.signals) signature.signals.map(signal => this.signals.attach(signal, this.createSignal(signal)));
@@ -37,6 +39,8 @@ export class Agent extends Topic {
 
     return this._emit('reset') as Agent;
   }
+
+  protected preBuild(): void {}
 
   protected createInput(input: string): InputPin<any> { return new InputPin(); }
   protected createOutput(output: string): OutputPin<any> { return new OutputPin(); }

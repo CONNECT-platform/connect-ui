@@ -6,7 +6,7 @@ import { InputPin, OutputPin } from '../io';
 import { SignalPin, ControlPin } from '../control';
 
 
-describe('Agent', () => {
+describe.only('Agent', () => {
   it('should have input pins according to given signature.', () => {
     let sig: Signature = { inputs: ['a', 'b'] };
     let agent = new Agent(sig);
@@ -39,6 +39,19 @@ describe('Agent', () => {
     agent.inputs.locked.should.be.true;
     agent.outputs.locked.should.be.true;
     agent.signals.locked.should.be.true;
+  });
+
+  describe('.preBuild()', () => {
+    it('should allow subclasses to do some initialization before pinmaps are populated.', done => {
+      class Sub extends Agent {
+        protected preBuild() {
+          this.inputs.entries.length.should.equal(0);
+          done();
+        }
+      }
+
+      new Sub({inputs: ['a', 'b', 'c']});
+    });
   });
 
   describe('.createInput()', () => {
