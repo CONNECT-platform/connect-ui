@@ -6,4 +6,5 @@ describe('core', () => {
   require('./value');
   require('./expr');
   require('./switch');
+  require('./node-registry');
 });
