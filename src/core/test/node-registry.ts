@@ -1,7 +1,7 @@
 import { should, expect } from 'chai'; should();
 
 import registry from '../node-registry';
-import { NodeRegistry } from '../node-registry';
+import { NodeRegistry, register } from '../node-registry';
 import { Node, NodeInputs, NodeOutputCallback } from '../base/node';
 
 
@@ -158,5 +158,42 @@ describe('NodeRegistry', () => {
 describe('node-registry', () => {
   it('should be instanceof `NodeRegistry`', () => {
     registry.should.be.instanceof(NodeRegistry);
+  });
+});
+
+describe('@register', () => {
+  it('should allow creating a node with given signature.', () => {
+    @register('/test/n', {
+      inputs: ['a', 'b'],
+      outputs: ['c', 'd', 'e'],
+      signals: ['f', 'g']
+    })
+    class N extends Node {}
+
+    let n = new N();
+    n.inputs.has('a').should.be.true;
+    n.outputs.has('d').should.be.true;
+    n.signals.has('f').should.be.true;
+  });
+
+  it('should register the node class with proper factory in the standard registry.', () => {
+    @register('/test/m', {
+      inputs: ['a'],
+      outputs: ['b']
+    }) class M extends Node {}
+
+    registry.instantiate('/test/m').should.be.instanceof(M);
+  });
+
+  describe('.on()', () => {
+    it('should register the node class on given registry.', () => {
+      let r = new NodeRegistry();
+      @register('/test/o', {
+        inputs: ['a'],
+        outputs: ['b']
+      }).on(r) class O extends Node {}
+
+      r.instantiate('/test/o').should.be.instanceof(O);
+    });
   });
 });

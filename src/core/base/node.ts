@@ -18,8 +18,8 @@ export interface NodeExecutionProfile {
   error?: string | Error;
 }
 
-export abstract class Node extends Agent {
-  constructor(signature: Signature) {
+export class Node extends Agent {
+  constructor(signature: Signature = {}) {
     super(signature);
   }
 
@@ -76,11 +76,11 @@ export abstract class Node extends Agent {
     })();
   }
 
-  protected abstract run(
+  protected run(
     inputs: NodeInputs,
     output: NodeOutputCallback,
     signal?: NodeSignalCallback
-  ): any;
+  ): any {}
 
   protected createControl() { return new AllGate(); }
 

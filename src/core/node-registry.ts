@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Topic } from './base/topic';
 import { Signature } from './base/signature';
-import { Node } from './base/node';
+import { Node, NodeInputs, NodeOutputCallback, NodeSignalCallback } from './base/node';
 
 
 export type NodeRegistryFactory = () => Node;
@@ -40,6 +40,13 @@ export class NodeRegistry extends Topic {
     throw new Error('could not resolve path: ' + path);
   }
 
+  public registered(path: string): boolean {
+    try {
+      this.resolve(path);
+      return true;
+    } catch(err) { return false; }
+  }
+
   public signature(path: string): Signature {
     return this.resolve(path).signature;
   }
@@ -65,4 +72,38 @@ export class NodeRegistry extends Topic {
   public get onInstantiated(): Observable<{ path: string, node: Node }> { return this.on('instantiated'); }
 }
 
-export default new NodeRegistry();
+const _registry = new NodeRegistry();
+export default _registry;
+
+export function register(path: string, signature: Signature, registry: NodeRegistry = _registry) {
+  const _createClass = function<_ClassType extends {new(...args:any[]):Node}>(_Class: _ClassType) {
+    return class extends _Class {
+      protected preBuild() {
+        this.signature.inputs = signature.inputs;
+        this.signature.outputs = signature.outputs;
+        this.signature.signals = signature.signals;
+
+        return super.preBuild();
+      }
+    }
+  }
+
+  const _registerClass = function(registry: NodeRegistry) {
+    return function<_ClassType extends {new(...args:any[]):Node}>(_Class: _ClassType) {
+      registry.register(path, signature, () => new _Class());
+      return _Class;
+    }
+  }
+
+  const decorator = function<_ClassType extends {new(...args:any[]):Node}>(_Class: _ClassType) {
+    return _registerClass(_registry)(_createClass(_Class));
+  }
+
+  decorator.on = function(registry: NodeRegistry) {
+    return function<_ClassType extends {new(...args:any[]):Node}>(_Class: _ClassType) {
+      return _registerClass(registry)(_createClass(_Class));
+    }
+  }
+
+  return decorator;
+}
