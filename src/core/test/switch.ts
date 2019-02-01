@@ -5,7 +5,7 @@ import { Switch } from '../switch';
 
 describe('Switch', () => {
   it('should accept only cases of type string | number | boolean | undefined | null', () => {
-    expect(() => new Switch([{}])).to.throw;
+    expect(() => new Switch([{} as any])).to.throw;
   });
 
   describe('.run()', () => {
