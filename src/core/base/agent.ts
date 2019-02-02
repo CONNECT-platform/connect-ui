@@ -13,7 +13,7 @@ export class Agent extends Topic {
   readonly signals: PinMap<SignalPin> = new PinMap<SignalPin>();
   readonly control: ControlPin;
 
-  constructor(readonly signature: Signature) {
+  constructor(readonly signature: Signature = {}) {
     super();
 
     this._def<void>('reset');

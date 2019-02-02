@@ -4,6 +4,7 @@ describe('core/base', () => {
   require('./io');
   require('./control');
   require('./pinmap');
+  require('./signature');
   require('./agent');
   require('./node');
 });

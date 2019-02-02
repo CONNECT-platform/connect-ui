@@ -1,5 +1,5 @@
 import { Agent } from './base/agent';
-import { Signature } from './base/signature';
+import { Signature, extend } from './base/signature';
 import { InputPin, OutputPin, PersistentOutput } from './base/io';
 import { State } from './state';
 
@@ -13,10 +13,12 @@ export class Stateful extends Agent {
   private states: {[name: string]: State<any>};
 
   constructor(readonly signature: StatefulSignature) {
-    super(Object.assign(signature, {
-      inputs: (signature.inputs || []).concat(signature.states || []),
-      outputs: (signature.outputs || []).concat(signature.states || []).concat(signature.properties || []),
-    }));
+    super(extend(signature, {
+        inputs: signature.states,
+        outputs: signature.states,
+      }, {
+        outputs: signature.properties
+      }));
   }
 
   public state(state: string): State<any> { return this.states[state]; }

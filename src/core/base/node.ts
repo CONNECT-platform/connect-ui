@@ -19,10 +19,6 @@ export interface NodeExecutionProfile {
 }
 
 export class Node extends Agent {
-  constructor(signature: Signature = {}) {
-    super(signature);
-  }
-
   protected preBuild() {
     this._def<NodeExecutionProfile>('run');
     this._def<NodeExecutionProfile>('output');
