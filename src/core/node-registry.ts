@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Topic } from './base/topic';
 import { Signature } from './base/signature';
-import { Node, NodeInputs, NodeOutputCallback, NodeSignalCallback } from './base/node';
+import { Node } from './base/node';
 
 
 export type NodeRegistryFactory = () => Node;
@@ -72,38 +72,4 @@ export class NodeRegistry extends Topic {
   public get onInstantiated(): Observable<{ path: string, node: Node }> { return this.on('instantiated'); }
 }
 
-const _registry = new NodeRegistry();
-export default _registry;
-
-export function register(path: string, signature: Signature, registry: NodeRegistry = _registry) {
-  const _createClass = function<_ClassType extends {new(...args:any[]):Node}>(_Class: _ClassType) {
-    return class extends _Class {
-      protected preBuild() {
-        this.signature.inputs = signature.inputs;
-        this.signature.outputs = signature.outputs;
-        this.signature.signals = signature.signals;
-
-        return super.preBuild();
-      }
-    }
-  }
-
-  const _registerClass = function(registry: NodeRegistry) {
-    return function<_ClassType extends {new(...args:any[]):Node}>(_Class: _ClassType) {
-      registry.register(path, signature, () => new _Class());
-      return _Class;
-    }
-  }
-
-  const decorator = function<_ClassType extends {new(...args:any[]):Node}>(_Class: _ClassType) {
-    return _registerClass(_registry)(_createClass(_Class));
-  }
-
-  decorator.on = function(registry: NodeRegistry) {
-    return function<_ClassType extends {new(...args:any[]):Node}>(_Class: _ClassType) {
-      return _registerClass(registry)(_createClass(_Class));
-    }
-  }
-
-  return decorator;
-}
+export default new NodeRegistry();
