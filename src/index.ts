@@ -1,4 +1,5 @@
 import { InputPin, OutputPin } from './core/base/io';
+import './core/composite';
 
 
 window.addEventListener('load', () => {
