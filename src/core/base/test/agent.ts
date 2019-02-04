@@ -6,7 +6,7 @@ import { InputPin, OutputPin } from '../io';
 import { SignalPin, ControlPin } from '../control';
 
 
-describe.only('Agent', () => {
+describe('Agent', () => {
   it('should have input pins according to given signature.', () => {
     let sig: Signature = { inputs: ['a', 'b'] };
     let agent = new Agent(sig);
