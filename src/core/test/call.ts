@@ -1,9 +1,11 @@
 import { should, expect } from 'chai'; should();
 
+import call from '../call';
 import { Call } from '../call';
 import { NodeRegistry } from '../node-registry';
 
-import { Node, NodeInputs, NodeOutputCallback, NodeSignalCallback } from '../base/node';
+import { Node, NodeInputs, NodeOutput, NodeSignal,
+        NodeOutputCallback, NodeSignalCallback } from '../base/node';
 import register from '../decorators/register';
 import signature from '../decorators/signature';
 
@@ -118,5 +120,67 @@ describe('Call', () => {
       c.inputs.get('x').receive(2);
       c.inputs.get('y').receive(3);
     });
+  });
+});
+
+describe('call()', () => {
+  it('should call a node with a given path.', done => {
+    @register('/test/N', {})
+    class N extends Node { run() { done(); } }
+
+    call('/test/N');
+  });
+
+  it('should pass the proper inputs.', done => {
+    @register('/test/N', { inputs: ['a'] })
+    class N extends Node {
+      run(inputs: NodeInputs) {
+        inputs.a.should.equal('hellow');
+        done();
+      }
+    }
+
+    call('/test/N', { a: 'hellow' });
+  });
+
+  it('should return a promise that rejects if not all inputs are provided.', done => {
+    @register('/test/N', { inputs: ['a', 'b'] })
+    class N extends Node {}
+
+    call('/test/N', { a: 'hellow' }).catch(() => done());
+  });
+
+  it('should return a promise that resolves the output of the called node.', done => {
+    @register('/test/N', { inputs: ['a', 'b'], outputs: ['o'] })
+    class N extends Node {
+      run(inputs: NodeInputs, output: NodeOutputCallback) { output('o', inputs.a * inputs.b); }
+    }
+
+    call('/test/N', { a: 2, b: 3 }).then((result: NodeOutput) => {
+      result.output.should.equal('o');
+      result.data.should.equal(6);
+      done();
+    });
+  });
+
+  it('should return a promise that resolves the signal of the called node.', done => {
+    @register('/test/N', { signals: ['s'] })
+    class N extends Node {
+      run(_:any, __:any, signal: NodeSignalCallback) { signal('s'); }
+    }
+
+    call('/test/N').then((result: NodeSignal) => {
+      result.should.equal('s');
+      done();
+    });
+  });
+
+  it('should return a promise that rejects when the called node errors.', done => {
+    @register('/test/N', {})
+    class N extends Node {
+      run() { this.error('FUCK DA POLICE!'); }
+    }
+
+    call('/test/N').catch(() => done());
   });
 });
