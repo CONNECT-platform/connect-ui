@@ -6,7 +6,7 @@ import { InputPin, OutputPin } from '../io';
 import { SignalPin, ControlPin } from '../control';
 
 
-describe('Agent', () => {
+describe.only('Agent', () => {
   it('should have input pins according to given signature.', () => {
     let sig: Signature = { inputs: ['a', 'b'] };
     let agent = new Agent(sig);
@@ -39,6 +39,10 @@ describe('Agent', () => {
     agent.inputs.locked.should.be.true;
     agent.outputs.locked.should.be.true;
     agent.signals.locked.should.be.true;
+  });
+
+  it('should invoke the `preBuildCallback` parameter if passed to the constructor before building.', done => {
+    new Agent({}, () => done());
   });
 
   describe('.preBuild()', () => {

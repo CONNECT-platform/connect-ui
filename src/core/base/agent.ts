@@ -13,12 +13,13 @@ export class Agent extends Topic {
   readonly signals: PinMap<SignalPin> = new PinMap<SignalPin>();
   readonly control: ControlPin;
 
-  constructor(readonly signature: Signature = {}) {
+  constructor(readonly signature: Signature = {}, preBuildCallback?: (_: any) => void) {
     super();
 
     this._def<void>('reset');
     this._def<Error>('error');
 
+    if (preBuildCallback) preBuildCallback(this);
     this.preBuild();
 
     if (signature.inputs) signature.inputs.map(input => this.inputs.attach(input, this.createInput(input)));
