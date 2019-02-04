@@ -2,8 +2,10 @@ import { OutputPin } from './base/io';
 import { Node, NodeInputs, NodeOutputCallback } from './base/node';
 
 
+export type ExprFunction = (...inputs: any[]) => any;
+
 export class Expr extends Node {
-  constructor(inputs: string[], private expr: any, private context?: any) {
+  constructor(inputs: string[], private expr: ExprFunction, private context?: any) {
     super({inputs: inputs, outputs: ['result']});
   }
 
