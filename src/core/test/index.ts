@@ -7,4 +7,5 @@ describe('core', () => {
   require('./expr');
   require('./switch');
   require('./node-registry');
+  require('./call');
 });
