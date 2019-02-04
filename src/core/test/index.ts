@@ -8,4 +8,5 @@ describe('core', () => {
   require('./switch');
   require('./node-registry');
   require('./call');
+  require('./composite');
 });
