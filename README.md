@@ -3,4 +3,4 @@
 </p>
 <br><br>
 
-visually, easily and quickly build super-complex UIs for web applications.
+**CONNECT [UI]** is a component-based frontend web application framework based on direct DOM manipulation instead of change-detection mechanisms or rerendering the DOM (or the shadow-DOM).
