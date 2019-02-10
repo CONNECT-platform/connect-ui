@@ -7,7 +7,7 @@ import { RenderingComponent } from '../types';
 
 
 class _NotAComponent implements RenderingComponent<any> {
-  clone(node: any) { return new _NotAComponent(); }
+  clone() { return new _NotAComponent(); }
 }
 
 describe('ComponentRegistry', () => {
@@ -24,6 +24,18 @@ describe('ComponentRegistry', () => {
       r.create('comp', undefined, undefined);
       r.register('comp', () => done() as any);
       r.create('comp', undefined, undefined);
+    });
+
+    it('should emit an "registered" event.', done => {
+      let r = new ComponentRegistry();
+      let f = ():any => undefined;
+
+      r.on('registered').subscribe(event => {
+        event.tag.should.equal('comp');
+        event.factory.should.equal(f);
+        done();
+      });
+      r.register('comp', f);
     });
   });
 
@@ -52,6 +64,31 @@ describe('ComponentRegistry', () => {
 
     it('should return `undefined` if the given tag is not registered.', () => {
       expect(new ComponentRegistry().create('X', undefined, undefined)).to.be.undefined;
+    });
+
+    it('should emit a "created" event.', done => {
+      let r = new ComponentRegistry();
+      r.register('comp', () => 'hellow' as any);
+      r.on('created').subscribe(event => {
+        event.tag.should.equal('comp');
+        event.created.should.equal('hellow');
+        done();
+      });
+      r.create('comp', undefined, undefined);
+    });
+  });
+
+  describe('.onRegistered', () => {
+    it('should be equal to `on("registered")`', () => {
+      let r = new ComponentRegistry();
+      r.onRegistered.should.equal(r.on('registered'));
+    });
+  });
+
+  describe('.onCreated', () => {
+    it('should be equal to `on("created")`', () => {
+      let r = new ComponentRegistry();
+      r.onCreated.should.equal(r.on('created'));
     });
   });
 });
