@@ -3,12 +3,11 @@ import { should, expect } from 'chai'; should();
 import registry from '../component-registry';
 import { ComponentRegistry } from '../component-registry';
 
-import { RenderingComponent, RendererType } from '../types';
+import { RenderingComponent } from '../types';
 
 
 class _NotAComponent implements RenderingComponent<any> {
-  mount(_: any){ return this; }
-  render(_: RendererType<any>) { return this; }
+  clone(node: any) { return new _NotAComponent(); }
 }
 
 describe('ComponentRegistry', () => {
@@ -16,15 +15,15 @@ describe('ComponentRegistry', () => {
     it('should register a component factory with a given tag, which is then invoked via `.create()`', done => {
       let r = new ComponentRegistry();
       r.register('comp', () => done() as any);
-      r.create('comp');
+      r.create('comp', undefined, undefined);
     });
 
     it('should override the factory object if it is already registered.', done => {
       let r = new ComponentRegistry();
       r.register('comp', () => undefined);
-      r.create('comp');
+      r.create('comp', undefined, undefined);
       r.register('comp', () => done() as any);
-      r.create('comp');
+      r.create('comp', undefined, undefined);
     });
   });
 
@@ -37,11 +36,22 @@ describe('ComponentRegistry', () => {
 
   describe('.create()', () => {
     it('should invoke the registered factory and return the result.', () => {
-      new ComponentRegistry().register('X', () => new _NotAComponent).create('X').should.be.instanceOf(_NotAComponent);
+      new ComponentRegistry().register('X', () => new _NotAComponent).create('X', undefined, undefined).should.be.instanceOf(_NotAComponent);
+    });
+
+    it('should invoke the registered factory with proper parameters.', done => {
+      let r = new ComponentRegistry().register('X', (a, b) => {
+        a.should.equal('hellow');
+        b.should.equal('world');
+        done();
+        return new _NotAComponent();
+      });
+
+      r.create('X', 'hellow' as any, 'world' as any);
     });
 
     it('should return `undefined` if the given tag is not registered.', () => {
-      expect(new ComponentRegistry().create('X')).to.be.undefined;
+      expect(new ComponentRegistry().create('X', undefined, undefined)).to.be.undefined;
     });
   });
 });

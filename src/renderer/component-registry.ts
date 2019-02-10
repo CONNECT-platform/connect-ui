@@ -1,7 +1,8 @@
-import { RenderingNode, RenderingComponent } from './types';
+import { RenderingNode, RenderingComponent, RendererType } from './types';
 
 
-export type ComponentFactory<_Node extends RenderingNode<_Node>> = () => RenderingComponent<_Node>;
+export type ComponentFactory<_Node extends RenderingNode<_Node>> =
+  (renderer: RendererType<_Node>, node: RenderingNode<_Node>) => RenderingComponent<_Node>;
 
 export class ComponentRegistry {
   private _map: {[tag: string]: ComponentFactory<any>} = {};
@@ -16,9 +17,13 @@ export class ComponentRegistry {
     return tag in this._map;
   }
 
-  public create(tag: string): RenderingComponent<any> {
+  public create<_Node extends RenderingNode<_Node>>(
+      tag: string,
+      renderer: RendererType<_Node>,
+      node: RenderingNode<_Node>,
+    ): RenderingComponent<_Node> {
     if (this.registered(tag)) {
-      return this._map[tag]();
+      return this._map[tag](renderer, node);
     }
   }
 }
