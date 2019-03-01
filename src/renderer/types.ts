@@ -6,6 +6,7 @@ export interface RenderingNode<_Node extends RenderingNode<_Node>> {
   clone(): _Node;
 
   component?: RenderingComponent<_Node>;
+  children: _Node[];
 }
 
 export interface RenderingRequestType<_Node extends RenderingNode<_Node>> {

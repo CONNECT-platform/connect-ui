@@ -25,7 +25,6 @@ export class DummyNode implements RenderingNode<DummyNode> {
     let n = new DummyNode(this.name);
     n.textContent = this.textContent;
     n.attrs = Object.assign({}, this.attrs);
-    n.children = this.children.map(child => child.clone());
     return n;
   }
 }

@@ -87,6 +87,9 @@ describe('Renderer', () => {
         host.children[0].name.should.equal('child');
       });
 
+      //
+      // TODO: break this into smaller tests.
+      //
       it('should properly render transcluded stuff.', () => {
         let host = new DummyNode('host');
         let renderer = new DummyRenderer(new ComponentRegistry());

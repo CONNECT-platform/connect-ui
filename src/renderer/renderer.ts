@@ -73,14 +73,24 @@ export abstract class Renderer<_Node extends RenderingNode<_Node>> extends Topic
   }
 
   private _renderTrans(node: _Node, hook: _Node) {
-    let transnode = node.clone();
+    this.attachNode(this.clone(node), hook);
+  }
 
-    if (node.component) {
-      let transcomp = node.component.clone(transnode);
-      transnode.component = transcomp;
-    }
+  //
+  // TODO: write test for this.
+  //
+  public clone(node: _Node): _Node {
+    let clone = node.clone();
 
-    this.attachNode(transnode, hook);
+    if (node.component)
+      clone.component = node.component.clone(clone);
+
+    if (node.children)
+      node.children.forEach(child => {
+        this.attachNode(clone, this.clone(child));
+      });
+
+    return clone;
   }
 
   public get registry(): ComponentRegistry { return this._registry; }
