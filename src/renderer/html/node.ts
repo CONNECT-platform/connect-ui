@@ -1,15 +1,29 @@
-import { Agent } from '../../core/base/agent';
+import { State } from '../../core/state';
+import { Stateful } from '../../core/stateful';
 
 import { RenderingNode, RenderingComponent } from '../types';
 import _DomEvents from './utils/events';
 
 
-export class HTMLNode extends Agent implements RenderingNode<HTMLNode> {
+export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
   private _listeners:{[event: string]: any} = {};
 
   constructor(public native: Node | HTMLElement) {
     super({
-      outputs: _DomEvents
+      outputs: _DomEvents,
+      states: ['text', 'attributes']
+    });
+
+    this.state('text').value = '';
+    this.state('attributes').value = {};
+
+    this.state('text').onUpdate.subscribe(value => this.native.textContent = value);
+    this.state('attributes').onUpdate.subscribe(attrs => {
+      if (this.native instanceof HTMLElement) {
+        Object.entries(attrs).forEach(attr => {
+          (this.native as HTMLElement).setAttribute(attr[0], (attr[1] as string) || "");
+        });
+      }
     });
 
     _DomEvents.forEach(event => {
@@ -28,7 +42,7 @@ export class HTMLNode extends Agent implements RenderingNode<HTMLNode> {
   }
 
   public text(text: string): HTMLNode {
-    this.native.textContent = text;
+    this.state('text').value = text;
     return this;
   }
 
@@ -37,9 +51,10 @@ export class HTMLNode extends Agent implements RenderingNode<HTMLNode> {
   }
 
   public attr(attr: string, content?: string): HTMLNode {
-    if (this.native instanceof HTMLElement) {
-      this.native.setAttribute(attr, content || "");
-    }
+    this.state('attributes').value = Object.assign(this.state('attributes').value,
+      {
+        [attr]: content || ""
+      });
 
     return this;
   }
@@ -54,6 +69,9 @@ export class HTMLNode extends Agent implements RenderingNode<HTMLNode> {
   public clone(): HTMLNode {
     return new HTMLNode(this.native.cloneNode(false));
   }
+
+  public get textState(): State<string> { return this.state('text'); }
+  public get attrsState(): State<string> { return this.state('attributes'); }
 
   public component: RenderingComponent<HTMLNode>;
   public children: HTMLNode[] = [];
