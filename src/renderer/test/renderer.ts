@@ -87,50 +87,138 @@ describe('Renderer', () => {
         host.children[0].name.should.equal('child');
       });
 
-      //
-      // TODO: break this into smaller tests.
-      //
-      it('should properly render transcluded stuff.', () => {
+      it('should properly render a transculded node on a transculsion hook.', () => {
         let host = new DummyNode('host');
         let renderer = new DummyRenderer(new ComponentRegistry());
         renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(host);
+        let cr = renderer.within(d.component);
 
-        let d = renderer.render('dummy').on(host)
-        let c = d.component;
-        let cr = renderer.within(c);
         let A = cr.render('A').on(d);
         cr.render('@x').on(A);
-        let B = cr.render('B').on(d);
-        cr.render('@x').on(B);
-        cr.render('@y').on(B);
 
-        renderer.render('a').attr('@x').attr('attr', 'hellow').on(d);
-        renderer.render('b').attr('@y').text('oh my ...').on(d);
-        renderer.render('c').attr('@y').on(d);
+        renderer.render('a').attr('@x').on(d);
 
-        d.children.length.should.equal(2);
-        d.children[0].name.should.equal('A');
-        d.children[1].name.should.equal('B');
+        d.children[0].children[0].children[0].name.should.equal('a');
+      });
+
+      it('should properly handle multiple transclusion hooks.', () => {
+        let host = new DummyNode('host');
+        let renderer = new DummyRenderer(new ComponentRegistry());
+        renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(host);
+        let cr = renderer.within(d.component);
+
+        let A = cr.render('A').on(d);
+        cr.render('@x').on(A);
+        cr.render('@y').on(d);
+
+        renderer.render('a').attr('@x').on(d);
+        renderer.render('b').attr('@y').on(d);
+
+        d.children[0].children[0].children[0].name.should.equal('a');
+        d.children[1].children[0].name.should.equal('b');
+      });
+
+      it('should render multiple copies of a given transcluded node on each hook.', () => {
+        let host = new DummyNode('host');
+        let renderer = new DummyRenderer(new ComponentRegistry());
+        renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(host);
+        let cr = renderer.within(d.component);
+
+        cr.render('@x').on(d);
+        cr.render('@x').on(cr.render('A').on(d));
+
+        renderer.render('a').attr('@x').on(d);
+
+        d.children[0].children[0].name.should.equal('a');
+        d.children[1].children[0].children[0].name.should.equal('a');
+        d.children[0].children[0].should.not.equal(d.children[1].children[0].children[0]);
+      });
+
+      it('should properly transfer the attributes and text content of all transcluded nodes.', () => {
+        let host = new DummyNode('host');
+        let renderer = new DummyRenderer(new ComponentRegistry());
+        renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(host);
+        let cr = renderer.within(d.component);
+
+        cr.render('@x').on(d);
+        cr.render('@x').on(cr.render('A').on(d));
+
+        renderer.render('a').attr('@x').attr('hellow', 'world').text('some text').on(d);
+
+        d.children[0].children[0].attrs['hellow'].should.equal('world');
+        d.children[0].children[0].textContent.should.equal('some text');
+        d.children[1].children[0].children[0].textContent.should.equal('some text');
+      });
+
+      it('should render multiple nodes with a given transclusion tag on the hook(s) properly.', () => {
+        let host = new DummyNode('host');
+        let renderer = new DummyRenderer(new ComponentRegistry());
+        renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(host);
+        let cr = renderer.within(d.component);
+
+        cr.render('@x').on(d);
+        cr.render('@x').on(cr.render('A').on(d));
+
+        renderer.render('a').attr('@x').on(d);
+        renderer.render('b').attr('@x').on(d);
+
+        d.children[0].children.length.should.equal(2);
+        d.children[1].children[0].children[1].name.should.equal('b');
+      });
+
+      it('should render nodes with no transclusion tag on the `@` hook.', () => {
+        let host = new DummyNode('host');
+        let renderer = new DummyRenderer(new ComponentRegistry());
+        renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(host);
+        let cr = renderer.within(d.component);
+
+        cr.render('@x').on(d);
+        cr.render('@').on(cr.render('A').on(d));
+
+        renderer.render('a').attr('@x').on(d);
+        renderer.render('b').on(d);
+
+        d.children[0].children[0].name.should.equal('a');
+        d.children[1].children[0].children[0].name.should.equal('b');
+      });
+
+      it('should ignore nodes with mis-matching transclusion tag.', () => {
+        let host = new DummyNode('host');
+        let renderer = new DummyRenderer(new ComponentRegistry());
+        renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(host);
+        let cr = renderer.within(d.component);
+
+        cr.render('@x').on(d);
+        cr.render('@').on(d);
+
+        renderer.render('a').attr('@y').on(d);
+
+        d.children[0].children.length.should.equal(0);
+        d.children[0].children.length.should.equal(0);
+      });
+
+      it('should ignore nodes with-out a transclusion tag when `@` hook doesn\'t exist.', () => {
+        let host = new DummyNode('host');
+        let renderer = new DummyRenderer(new ComponentRegistry());
+        renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(host);
+        let cr = renderer.within(d.component);
+
+        cr.render('@x').on(d);
+
+        renderer.render('a').attr('@x').on(d);
+        renderer.render('b').on(d);
 
         d.children[0].children.length.should.equal(1);
-        d.children[0].children[0].name.should.equal('@x');
-
-        d.children[0].children[0].children.length.should.equal(1);
-        d.children[0].children[0].children[0].name.should.equal('a');
-        d.children[0].children[0].children[0].attrs['attr'].should.equal('hellow');
-
-        d.children[1].children.length.should.equal(2);
-        d.children[1].children[0].name.should.equal('@x');
-        d.children[1].children[1].name.should.equal('@y');
-
-        d.children[1].children[0].children.length.should.equal(1);
-        d.children[1].children[0].children[0].name.should.equal('a');
-        d.children[1].children[0].children[0].attrs['attr'].should.equal('hellow');
-
-        d.children[1].children[1].children.length.should.equal(2);
-        d.children[1].children[1].children[0].name.should.equal('b');
-        d.children[1].children[1].children[0].textContent.should.equal('oh my ...');
-        d.children[1].children[1].children[1].name.should.equal('c');
+        d.children[0].children[0].name.should.equal('a');
+        d.children[0].children[0].children.length.should.equal(0);
       });
     });
   });
@@ -172,6 +260,56 @@ describe('Renderer', () => {
           return this;
         }
       }).render('@a').attr('x', '2').on(new DummyNode('x'));
+    });
+  });
+
+  describe('.clone()', () => {
+    it('should clone a given node.', () => {
+      let r = new DummyRenderer();
+      let n = new DummyNode('n');
+      let c = r.clone(n);
+
+      c.name.should.equal('n');
+    });
+
+    it('should clone the component attached to the node as well and attach it to the cloned node.', () => {
+      let r = new DummyRenderer(new ComponentRegistry());
+      r.registry.register('n', () => new DummyComponent());
+      let n = r.render('n').on(new DummyNode('host'));
+      let c = r.clone(n);
+
+      c.component.should.be.instanceof(DummyComponent);
+      c.component.should.not.be.equal(n.component);
+    });
+
+    it('should clone a node\'s children.', () => {
+      let r = new DummyRenderer();
+      let n = new DummyNode('n');
+      let nn = r.render('nn').on(n);
+      r.render('nm').on(n);
+      r.render('nnn').on(nn);
+
+      let c = r.clone(n);
+      c.children.length.should.equal(2);
+      c.children[0].name.should.equal('nn');
+      c.children[1].name.should.equal('nm');
+      c.children[0].children.length.should.equal(1);
+      c.children[0].children[0].name.should.equal('nnn');
+
+      c.children[0].should.not.equal(n.children[0]);
+      c.children[0].children[0].should.not.equal(n.children[0].children[0]);
+    });
+
+    it('should clone children components as well.', () => {
+      let r = new DummyRenderer(new ComponentRegistry());
+      r.registry.register('nnn', () => new DummyComponent());
+
+      let n = new DummyNode('n');
+      r.render('nnn').on(r.render('nn').on(n));
+
+      let c = r.clone(n);
+      c.children[0].children[0].component.should.be.instanceof(DummyComponent);
+      c.children[0].children[0].component.should.not.equal(n.children[0].children[0].component);
     });
   });
 });

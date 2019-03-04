@@ -5,15 +5,37 @@ import { RenderingNode, RenderingComponent } from '../types';
 import _DomEvents from './utils/events';
 
 
+//
+// TODO: write tests for this.
+//
 export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
   private _listeners:{[event: string]: any} = {};
 
   constructor(public native: Node | HTMLElement) {
     super({
-      outputs: _DomEvents,
+      inputs: ['attr', 'append'],
+      outputs: _DomEvents.concat(['appended']),
       states: ['text', 'attributes']
     });
 
+    this._bindStates();
+    this._bindDOMEvents();
+    this._bindInputs();
+  }
+
+  private _bindInputs() {
+    this.inputs.get('attr').onReceived.subscribe(event => {
+      if (event.attr)
+        this.attr(event.attr, event.value || "");
+    });
+
+    this.inputs.get('append').onReceived.subscribe(event => {
+      if (event instanceof HTMLNode)
+        this.append(event);
+    });
+  }
+
+  private _bindStates() {
     this.state('text').value = '';
     this.state('attributes').value = {};
 
@@ -25,7 +47,9 @@ export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
         });
       }
     });
+  }
 
+  private _bindDOMEvents() {
     _DomEvents.forEach(event => {
       let out = this.outputs.get(event);
 
@@ -51,10 +75,11 @@ export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
   }
 
   public attr(attr: string, content?: string): HTMLNode {
-    this.state('attributes').value = Object.assign(this.state('attributes').value,
-      {
-        [attr]: content || ""
-      });
+    this.state('attributes').value = Object.assign(
+      {},
+      this.state('attributes').value,
+      { [attr]: content || "" }
+    );
 
     return this;
   }
@@ -68,6 +93,17 @@ export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
 
   public clone(): HTMLNode {
     return new HTMLNode(this.native.cloneNode(false));
+  }
+
+  public append(node: HTMLNode): HTMLNode {
+    if (!this.children.includes(node)) {
+      this.children.push(node);
+      this.native.appendChild(node.native);
+
+      this.outputs.get('appended').send(node);
+    }
+
+    return this;
   }
 
   public get textState(): State<string> { return this.state('text'); }

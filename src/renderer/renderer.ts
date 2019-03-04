@@ -76,9 +76,6 @@ export abstract class Renderer<_Node extends RenderingNode<_Node>> extends Topic
     this.attachNode(this.clone(node), hook);
   }
 
-  //
-  // TODO: write test for this.
-  //
   public clone(node: _Node): _Node {
     let clone = node.clone();
 
@@ -87,7 +84,7 @@ export abstract class Renderer<_Node extends RenderingNode<_Node>> extends Topic
 
     if (node.children)
       node.children.forEach(child => {
-        this.attachNode(clone, this.clone(child));
+        this.attachNode(this.clone(child), clone);
       });
 
     return clone;
