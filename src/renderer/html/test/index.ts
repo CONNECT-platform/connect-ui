@@ -1,0 +1,3 @@
+describe('html', () => {
+  require('./renderer');
+});
