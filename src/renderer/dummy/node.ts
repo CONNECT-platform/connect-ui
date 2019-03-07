@@ -19,7 +19,7 @@ export class DummyNode implements RenderingNode<DummyNode> {
     return this;
   }
 
-  public attributes() { return Object.keys(this.attrs); }
+  public get attributes() { return Object.keys(this.attrs); }
 
   public clone() {
     let n = new DummyNode(this.name);

@@ -74,7 +74,7 @@ describe('Renderer', () => {
         let host = new DummyNode('host');
         new DummyRenderer().render('child').attr('key').on(host);
 
-        host.children[0].attributes().should.include('key');
+        host.children[0].attributes.should.include('key');
       });
     });
 

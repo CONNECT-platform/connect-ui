@@ -1,12 +1,13 @@
 export interface RenderingNode<_Node extends RenderingNode<_Node>> {
   text(text: string): _Node;
   attr(attr: string, content?: string): _Node;
-  attributes(): string[];
+
 
   clone(): _Node;
 
   component?: RenderingComponent<_Node>;
   children: _Node[];
+  attributes: string[];
 }
 
 export interface RenderingRequestType<_Node extends RenderingNode<_Node>> {

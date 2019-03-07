@@ -5,7 +5,7 @@ import { HTMLRenderer } from '../renderer';
 import { HTMLNode } from '../node';
 
 
-describe.only('HTMLRenderer', () => {
+describe('HTMLRenderer', () => {
   describe('.createNode()', () => {
     it('should create an `HTMLNode`', () => {
       new HTMLRenderer().createNode().should.be.instanceOf(HTMLNode);

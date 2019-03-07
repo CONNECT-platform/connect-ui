@@ -5,9 +5,6 @@ import { RenderingNode, RenderingComponent } from '../types';
 import _DomEvents from './utils/events';
 
 
-//
-// TODO: write tests for this.
-//
 export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
   private _listeners:{[event: string]: any} = {};
 
@@ -36,8 +33,14 @@ export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
   }
 
   private _bindStates() {
-    this.state('text').value = '';
+    this.state('text').value = this.native.textContent;
     this.state('attributes').value = {};
+
+    if (this.native instanceof HTMLElement)
+      this.state('attributes').value = this.native.getAttributeNames().reduce((map: any, val: string) => {
+        map[val] = (this.native as HTMLElement).getAttribute(val);
+        return map;
+      }, {});
 
     this.state('text').onUpdate.subscribe(value => this.native.textContent = value);
     this.state('attributes').onUpdate.subscribe(attrs => {
@@ -84,7 +87,7 @@ export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
     return this;
   }
 
-  public attributes(): string[] {
+  public get attributes(): string[] {
     if (this.native instanceof HTMLElement)
       return this.native.getAttributeNames();
 
@@ -95,6 +98,9 @@ export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
     return new HTMLNode(this.native.cloneNode(false));
   }
 
+  //
+  // TODO: add support for adding before or after a specific child.
+  //
   public append(node: HTMLNode): HTMLNode {
     if (!this.children.includes(node)) {
       this.children.push(node);

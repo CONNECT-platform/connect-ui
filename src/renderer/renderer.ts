@@ -58,7 +58,7 @@ export abstract class Renderer<_Node extends RenderingNode<_Node>> extends Topic
 
   private _render(tag: string, node: _Node, host: _Node) {
     if (host.component && host.component.hooks && host.component != this.issuer) {
-      let transtag = node.attributes().find(attr => attr.startsWith('@')) || '@';
+      let transtag = node.attributes.find(attr => attr.startsWith('@')) || '@';
       host.component.hooks(transtag).forEach(hook => {
         this._renderTrans(node, hook);
       });
