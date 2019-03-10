@@ -34,7 +34,7 @@ export class RenderingRequest<_Node extends RenderingNode<_Node>>
   }
 }
 
-export abstract class Renderer<_Node extends RenderingNode<_Node>> extends Topic
+export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> extends Topic
     implements RendererType<_Node> {
 
   protected issuer: RenderingComponent<_Node>;
@@ -44,7 +44,7 @@ export abstract class Renderer<_Node extends RenderingNode<_Node>> extends Topic
   }
 
   public abstract createNode(tag: string): _Node;
-  public abstract attachNode(child: _Node, parent: _Node): Renderer<_Node>;
+  public abstract attachNode(child: _Node, parent: _Node): AbstractRenderer<_Node>;
 
   public render(tag: string): RenderingRequest<_Node> {
     let node = this.createNode(tag);
@@ -92,14 +92,14 @@ export abstract class Renderer<_Node extends RenderingNode<_Node>> extends Topic
 
   public get registry(): ComponentRegistry { return this._registry; }
 
-  public within(component: RenderingComponent<_Node>): Renderer<_Node> {
+  public within(component: RenderingComponent<_Node>): AbstractRenderer<_Node> {
     return new ProxyRenderer<_Node>(this, component);
   }
 }
 
-class ProxyRenderer<_Node extends RenderingNode<_Node>> extends Renderer<_Node> {
+class ProxyRenderer<_Node extends RenderingNode<_Node>> extends AbstractRenderer<_Node> {
   constructor(
-    private renderer: Renderer<_Node>,
+    private renderer: AbstractRenderer<_Node>,
     protected issuer: RenderingComponent<_Node>) {
     super();
     this._registry = renderer.registry;

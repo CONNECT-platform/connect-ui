@@ -1,8 +1,8 @@
-import { Renderer } from '../renderer';
+import { AbstractRenderer } from '../renderer';
 import { HTMLNode } from './node';
 
 
-export class HTMLRenderer extends Renderer<HTMLNode> {
+export class HTMLRenderer extends AbstractRenderer<HTMLNode> {
   public attachNode(child: HTMLNode, parent: HTMLNode) {
     parent.append(child);
     return this;

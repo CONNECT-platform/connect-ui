@@ -3,13 +3,13 @@ import { should, expect } from 'chai'; should();
 import { RenderingComponent } from '../types';
 import { ComponentRegistry } from '../component-registry';
 import _registry from '../component-registry';
-import { Renderer, RenderingRequest } from '../renderer';
+import { AbstractRenderer, RenderingRequest } from '../renderer';
 import { DummyRenderer } from '../dummy/renderer';
 import { DummyNode } from '../dummy/node';
 import { DummyComponent } from '../dummy/component';
 
 
-describe('Renderer', () => {
+describe('AbstractRenderer', () => {
   describe('.render()', () => {
     it('should return a rendering request.', () => {
       new DummyRenderer().render('A').should.be.instanceOf(RenderingRequest);
@@ -236,7 +236,7 @@ describe('Renderer', () => {
 
   describe('.within()', () => {
     it('should return a renderer object.', () => {
-      new DummyRenderer().within(undefined).should.be.instanceOf(Renderer);
+      new DummyRenderer().within(undefined).should.be.instanceOf(AbstractRenderer);
     });
 
     it('should return a renderer that calls the `hook()` function on parameter passed to it if it exists and when it is rendering a tag startign with `"@"`.', done => {
