@@ -147,6 +147,60 @@ describe('Agent', () => {
     });
   });
 
+  describe('.proxy()', () => {
+    it('should send received inputs to proxied agent.', done => {
+      let core = new Agent({inputs: ['a']});
+      let proxy = new Agent({inputs: ['a']}).proxy(core);
+
+      core.inputs.get('a').onReceived.subscribe(data => {
+        data.should.equal('hellow');
+        done();
+      });
+
+      proxy.inputs.get('a').receive('hellow');
+    });
+
+    it('should activate the control of the proxied agent when its control is activated.', done => {
+      let core = new Agent();
+      let proxy = new Agent().proxy(core);
+
+      core.control.onActivated.subscribe(() => done());
+      proxy.control.activate();
+    });
+
+    it('should send the corresponding outputs when the proxied agent sends an output.', done => {
+      let core = new Agent({outputs: ['a']});
+      let proxy = new Agent({outputs: ['a']}).proxy(core);
+
+      proxy.outputs.get('a').onSent.subscribe(data => {
+        data.should.equal('hellow');
+        done();
+      });
+
+      core.outputs.get('a').send('hellow');
+    });
+
+    it('should activate corresponding singals when the proxied agent activates a signal.', done => {
+      let core = new Agent({signals: ['a']});
+      let proxy = new Agent({signals: ['a']}).proxy(core);
+
+      proxy.signals.get('a').onActivated.subscribe(() => done());
+      core.signals.get('a').activate();
+    });
+
+    it('should emit a "proxied" event.', done => {
+      let core = new Agent();
+      let proxy = new Agent();
+
+      proxy.on('proxied').subscribe(agent => {
+        agent.should.equal(core);
+        done();
+      });
+
+      proxy.proxy(core);
+    });
+  });
+
   describe('.error()', () => {
     it('should allow subclasses to emit an "error" event.', done => {
       class Sub extends Agent {
@@ -205,6 +259,13 @@ describe('Agent', () => {
     it('should be equal to `on("error")`', () => {
       let a = new Agent({});
       a.onError.should.equal(a.on('error'));
+    });
+  });
+
+  describe('.onProxied', () => {
+    it('should be equal to `on("proxied")`', () => {
+      let a = new Agent();
+      a.onProxied.should.equal(a.on('proxied'));
     });
   });
 });

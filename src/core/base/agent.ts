@@ -18,6 +18,7 @@ export class Agent extends Topic {
 
     this._def<void>('reset');
     this._def<Error>('error');
+    this._def<Agent>('proxied');
 
     if (preBuildCallback) preBuildCallback(this);
     this.preBuild();
@@ -43,6 +44,31 @@ export class Agent extends Topic {
     return this._emit('reset') as Agent;
   }
 
+  public proxy(core: Agent): Agent {
+    this.control.onActivated.subscribe(() => core.control.activate());
+
+    core.inputs.entries.forEach(entry => {
+      if (this.inputs.has(entry.tag))
+        this.inputs.get(entry.tag).onReceived.subscribe(data => entry.pin.receive(data));
+    });
+
+    core.outputs.entries.forEach(entry => {
+      if (this.outputs.has(entry.tag)) {
+        let _out = this.outputs.get(entry.tag);
+        entry.pin.onSent.subscribe(data => _out.send(data));
+      }
+    });
+
+    core.signals.entries.forEach(entry => {
+      if (this.signals.has(entry.tag)) {
+        let _signal = this.signals.get(entry.tag);
+        entry.pin.onActivated.subscribe(() => _signal.activate());
+      }
+    });
+
+    return this._emit('proxied', core) as Agent;
+  }
+
   protected bind(): void {}
   protected preBuild(): void {}
 
@@ -58,4 +84,5 @@ export class Agent extends Topic {
 
   public get onReset(): Observable<void> { return this.on('reset'); }
   public get onError(): Observable<Error> { return this.on('error'); }
+  public get onProxied(): Observable<Agent> { return this.on('proxied'); }
 }
