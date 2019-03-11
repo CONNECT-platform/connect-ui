@@ -157,4 +157,23 @@ describe('Resource', () => {
       r.onLoaded.should.equal(r.on('loaded'));
     });
   });
+
+  it('should properly handle two-way binding to another resource.', () => {
+    class R extends Resource<string> {
+      load(_: ResourceLoadCallback<string>){}
+      update(){}
+    }
+
+    let a = new R();
+    let b = new R();
+
+    a.out.connect(b.in);
+    b.out.connect(a.in);
+
+    a.in.receive('hellow');
+    b.out.last.should.equal('hellow');
+
+    b.in.receive('world');
+    a.out.last.should.equal('world');
+  });
 });
