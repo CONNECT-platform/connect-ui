@@ -1,55 +1,15 @@
-import { State } from '../../core/state';
-import { Stateful } from '../../core/stateful';
-
-import { RenderingNode, RenderingComponent } from '../types';
+import { AbstractNode } from '../node';
 import _DomEvents from './utils/events';
 
 
-export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
+export class HTMLNode extends AbstractNode<HTMLNode> {
   private _listeners:{[event: string]: any} = {};
 
   constructor(public native: Node | HTMLElement) {
-    super({
-      inputs: ['attr', 'append'],
-      outputs: _DomEvents.concat(['appended']),
-      states: ['text', 'attributes']
-    });
+    super(_DomEvents.concat(['appended']));
 
-    this._bindStates();
+    this.postConstruct();
     this._bindDOMEvents();
-    this._bindInputs();
-  }
-
-  private _bindInputs() {
-    this.inputs.get('attr').onReceived.subscribe(event => {
-      if (event.attr)
-        this.attr(event.attr, event.value || "");
-    });
-
-    this.inputs.get('append').onReceived.subscribe(event => {
-      if (event instanceof HTMLNode)
-        this.append(event);
-    });
-  }
-
-  private _bindStates() {
-    this.state('text').value = this.native.textContent;
-    this.state('attributes').value = {};
-
-    if (this.native instanceof HTMLElement)
-      this.state('attributes').value = this.native.getAttributeNames().reduce((map: any, val: string) => {
-        map[val] = (this.native as HTMLElement).getAttribute(val);
-        return map;
-      }, {});
-
-    this.state('text').onUpdate.subscribe(value => this.native.textContent = value);
-    this.state('attributes').onUpdate.subscribe(attrs => {
-      if (this.native instanceof HTMLElement) {
-        Object.entries(attrs).forEach(attr => {
-          (this.native as HTMLElement).setAttribute(attr[0], (attr[1] as string) || "");
-        });
-      }
-    });
   }
 
   private _bindDOMEvents() {
@@ -68,30 +28,35 @@ export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
     });
   }
 
-  public text(text: string): HTMLNode {
-    this.state('text').value = text;
-    return this;
-  }
-
-  public get textContent(): string {
+  protected getText(): string {
     return this.native.textContent;
   }
 
-  public attr(attr: string, content?: string): HTMLNode {
-    this.state('attributes').value = Object.assign(
-      {},
-      this.state('attributes').value,
-      { [attr]: content || "" }
-    );
-
-    return this;
+  protected setText(content: string) {
+    this.native.textContent = content;
   }
 
   public get attributes(): string[] {
-    if (this.native instanceof HTMLElement)
-      return this.native.getAttributeNames();
+    if (this.supportsAttributes)
+      return (this.native as HTMLElement).getAttributeNames();
 
     return [];
+  }
+
+  public getAttribute(name: string): string {
+    if (this.supportsAttributes) {
+      return (this.native as HTMLElement).getAttribute(name);
+    }
+  }
+
+  public setAttribute(name: string, content?: string) {
+    if (this.supportsAttributes) {
+      (this.native as HTMLElement).setAttribute(name, content);
+    }
+  }
+
+  public get supportsAttributes(): boolean {
+    return this.native instanceof HTMLElement;
   }
 
   public clone(): HTMLNode {
@@ -101,20 +66,7 @@ export class HTMLNode extends Stateful implements RenderingNode<HTMLNode> {
   //
   // TODO: add support for adding before or after a specific child.
   //
-  public append(node: HTMLNode): HTMLNode {
-    if (!this.children.includes(node)) {
-      this.children.push(node);
-      this.native.appendChild(node.native);
-
-      this.outputs.get('appended').send(node);
-    }
-
-    return this;
+  public appendChild(node: HTMLNode) {
+    this.native.appendChild(node.native);
   }
-
-  public get textState(): State<string> { return this.state('text'); }
-  public get attrsState(): State<string> { return this.state('attributes'); }
-
-  public component: RenderingComponent<HTMLNode>;
-  public children: HTMLNode[] = [];
 }
