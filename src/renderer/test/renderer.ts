@@ -62,6 +62,9 @@ describe('AbstractRenderer', () => {
       });
     });
 
+    //
+    // TODO: add tests for supporting `@` transtags.
+    //
     describe('.attr()', () => {
       it('should set the proper attributes on the node to be rendered.', () => {
         let host = new DummyNode('host');
@@ -78,6 +81,12 @@ describe('AbstractRenderer', () => {
       });
     });
 
+    //
+    // TODO: add tests for properly fetching a node's transtag.
+    // TODO: add tests for properly rendering on proxy hosts.
+    // TODO: add tests for properly proxying nodes in case of transclusion.
+    // TODO: add tests for properly proxying components in case of transclusion.
+    //
     describe('.on()', () => {
       it('should render a node with requested tag on given node.', () => {
         let host = new DummyNode('host');

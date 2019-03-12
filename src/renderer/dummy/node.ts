@@ -7,6 +7,8 @@ export class DummyNode implements RenderingNode<DummyNode> {
   public children: DummyNode[] = [];
   public component: RenderingComponent<DummyNode>;
 
+  private _trans: string;
+
   constructor(public name: string) {}
 
   public text(text: string) {
@@ -20,6 +22,13 @@ export class DummyNode implements RenderingNode<DummyNode> {
   }
 
   public get attributes() { return Object.keys(this.attrs); }
+
+  public trans(tag: string) {
+    this._trans = tag;
+    return this;
+  }
+
+  public transtag(): string { return this._trans; }
 
   public clone() {
     let n = new DummyNode(this.name);

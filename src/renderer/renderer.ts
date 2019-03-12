@@ -24,7 +24,11 @@ export class RenderingRequest<_Node extends RenderingNode<_Node>>
   }
 
   public attr(attr: string, content?: string): RenderingRequest<_Node> {
-    this.target.attr(attr, content);
+    if (attr.startsWith('@')) {
+      if (this.target.trans)
+        this.target.trans(attr);
+    } else
+      this.target.attr(attr, content);
     return this;
   }
 
@@ -58,13 +62,19 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
 
   private _render(tag: string, node: _Node, host: _Node) {
     if (host.component && host.component.hooks && host.component != this.issuer) {
-      let transtag = node.attributes.find(attr => attr.startsWith('@')) || '@';
+      let transtag = (node.transtag?node.transtag():undefined) || '@';
       host.component.hooks(transtag).forEach(hook => {
         this._renderTrans(node, hook);
       });
     }
     else {
-      this.attachNode(node, host);
+      if (host.proxies && host.proxies.length > 0) {
+        host.proxies.forEach(proxy => {
+          this.attachNode(this._proxyClone(node), proxy);
+        });
+      }
+      else
+        this.attachNode(node, host);
 
       if (this.issuer && this.issuer.hook && tag.startsWith('@')) {
         this.issuer.hook(tag, node);
@@ -73,14 +83,26 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
   }
 
   private _renderTrans(node: _Node, hook: _Node) {
-    this.attachNode(this.clone(node), hook);
+    this.attachNode(this._proxyClone(node), hook);
+  }
+
+  private _proxyClone(node: _Node): _Node {
+    let clone = this.clone(node);
+
+    if (node.proxy) node.proxy(clone);
+
+    if (node.component && node.component.proxy)
+      node.component.proxy(clone.component);
+
+    return clone;
   }
 
   public clone(node: _Node): _Node {
     let clone = node.clone();
 
-    if (node.component)
+    if (node.component) {
       clone.component = node.component.clone(clone);
+    }
 
     if (node.children)
       node.children.forEach(child => {

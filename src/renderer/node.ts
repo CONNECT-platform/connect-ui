@@ -8,6 +8,8 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
   extends Stateful
   implements RenderingNode<_Child> {
 
+    private _transtag: string;
+
     constructor(events: string[]) {
       super({
         inputs: ['attr', 'append'],
@@ -28,8 +30,9 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
       });
 
       this.inputs.get('append').onReceived.subscribe(event => {
-        if (event instanceof AbstractNode)
+        if (event instanceof AbstractNode) {
           this.append(event as _Child);
+        }
       });
     }
 
@@ -72,6 +75,9 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
       return this as any as _Child;
     }
 
+    public trans(tag: string): _Child { this._transtag = tag; return this as any as _Child; }
+    public transtag(): string  { return this._transtag; }
+
     //
     // TODO: add support for adding before or after a specific child.
     //
@@ -83,6 +89,12 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
         this.outputs.get('appended').send(node);
       }
 
+      return this as any as _Child;
+    }
+
+    public proxy(node: _Child): _Child {
+      super.proxy(node);
+      this.proxies.push(node);
       return this as any as _Child;
     }
 
@@ -102,4 +114,5 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
 
     public component: RenderingComponent<_Child>;
     public children: _Child[] = [];
+    public proxies: _Child[] = [];
   }

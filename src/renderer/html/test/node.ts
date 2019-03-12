@@ -6,7 +6,10 @@ import _DomEvents from '../utils/events';
 import { InputPin } from '../../../core/base/io';
 
 
-describe.only('HTMLNode', () => {
+//
+// TODO: add tests for properly sending output of correspding dom events when the node is a proxy for other nodes.
+//
+describe('HTMLNode', () => {
   it('should have inputs for all standard dom events.', () => {
     let node = new HTMLRenderer().createNode();
     _DomEvents.forEach(event => {
@@ -90,6 +93,9 @@ describe.only('HTMLNode', () => {
     });
   });
 
+  //
+  // TODO: add tests for properly setting text content of non-text node elements.
+  //
   describe('.clone()', () => {
     it('should clone the node with its native element.', () => {
       let node = new HTMLRenderer().createNode('elem');

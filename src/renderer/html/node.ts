@@ -14,18 +14,24 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
 
   private _bindDOMEvents() {
     _DomEvents.forEach(event => {
-      let out = this.outputs.get(event);
-
-      out.onConnected.subscribe(() => {
-        if (!(event in this._listeners)) {
-          let listener = this._listeners[event] = ($event: any) => {
-            out.send($event);
-          };
-
-          this.native.addEventListener(event, listener);
-        }
+      this.outputs.get(event).onConnected.subscribe(() => {
+        this._activateEvent(event);
+        this.proxies.forEach(proxy => {
+          proxy._activateEvent(event);
+        });
       });
     });
+  }
+
+  private _activateEvent(event: string) {
+    if (!(event in this._listeners)) {
+      let out = this.outputs.get(event);
+      let listener = this._listeners[event] = ($event: any) => {
+        out.send($event);
+      };
+
+      this.native.addEventListener(event, listener);
+    }
   }
 
   protected getText(): string {
@@ -60,7 +66,9 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
   }
 
   public clone(): HTMLNode {
-    return new HTMLNode(this.native.cloneNode(false));
+    let clone = new HTMLNode(this.native.cloneNode(false));
+    clone.setText(this.getText());
+    return clone;
   }
 
   //

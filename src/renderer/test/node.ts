@@ -23,6 +23,12 @@ class _Node extends AbstractNode<_Node> {
   public clone() { return new _Node(this.events); }
 }
 
+
+//
+// TODO: add tests for `.proxy()`
+// TODO: add tests for `.trans()`
+// TODO: add tests for `.transtag()`
+//
 describe('AbstractNode', () => {
   it('should have inputs for all given events.', () => {
     let node = new _Node(['a', 'b']);
