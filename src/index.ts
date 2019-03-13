@@ -5,6 +5,12 @@ import { RendererType } from './renderer/types';
 import registry from './renderer/component-registry';
 
 
+/*
+<@x></@x>
+<hr/>
+<p>hellow</p>
+<@x></@x>
+*/
 class A extends AbstractComponent<HTMLNode> {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({}, renderer, node);
@@ -22,6 +28,36 @@ class A extends AbstractComponent<HTMLNode> {
   }
 }
 
+/*
+<A>
+  <div @x>
+    <@y></@y>
+  </div>
+</A>
+*/
+class B extends AbstractComponent<HTMLNode> {
+  constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
+    super({}, renderer, node);
+  }
+
+  render() {
+    this.$.A = this.renderer.render('A').on(this.root);
+    this.$.div = this.renderer.render('div').attr('@x').on(this.$.A);
+    this.renderer.render('@y').on(this.$.div);
+  }
+
+  clone(node: HTMLNode) {
+    return new B(this.renderer, node);
+  }
+}
+
+/*
+<B>
+  <div @y hellow="world">
+    <h1 A="B">hellow</h1>
+  </div>
+</B>
+*/
 class D extends AbstractComponent<HTMLNode> {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({
@@ -30,9 +66,9 @@ class D extends AbstractComponent<HTMLNode> {
   }
 
   render() {
-    this.$.D = this.renderer.render('A').on(this.root);
-    this.$.holder = this.renderer.render('div').attr('@x').attr('hellow', 'world').on(this.$.D);
-    this.$.title = this.renderer.render('h1').text('hellow').attr('@x').attr('A', 'B').on(this.$.holder);
+    this.$.D = this.renderer.render('B').on(this.root);
+    this.$.holder = this.renderer.render('div').attr('@y').attr('hellow', 'world').on(this.$.D);
+    this.$.title = this.renderer.render('h1').text('hellow').attr('A', 'B').on(this.$.holder);
   }
 
   wire() {
@@ -45,6 +81,7 @@ class D extends AbstractComponent<HTMLNode> {
 }
 
 registry.register('A', (renderer:HTMLRenderer, node:HTMLNode) => new A(renderer, node));
+registry.register('B', (renderer:HTMLRenderer, node:HTMLNode) => new B(renderer, node));
 registry.register('D', (renderer:HTMLRenderer, node:HTMLNode) => new D(renderer, node));
 
 window.addEventListener('load', () => {

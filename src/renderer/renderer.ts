@@ -68,13 +68,7 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
       });
     }
     else {
-      if (host.proxies && host.proxies.length > 0) {
-        host.proxies.forEach(proxy => {
-          this.attachNode(this._proxyClone(node), proxy);
-        });
-      }
-      else
-        this.attachNode(node, host);
+      this._attachNode(node, host);
 
       if (this.issuer && this.issuer.hook && tag.startsWith('@')) {
         this.issuer.hook(tag, node);
@@ -82,8 +76,18 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
     }
   }
 
+  private _attachNode(node: _Node, host: _Node) {
+    if (host.proxies && host.proxies.length > 0) {
+      host.proxies.forEach(proxy => {
+        this._attachNode(this._proxyClone(node), proxy);
+      });
+    }
+    else
+      this.attachNode(node, host);
+  }
+
   private _renderTrans(node: _Node, hook: _Node) {
-    this.attachNode(this._proxyClone(node), hook);
+    this._attachNode(this._proxyClone(node), hook);
   }
 
   private _proxyClone(node: _Node): _Node {

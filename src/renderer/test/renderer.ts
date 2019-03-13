@@ -86,6 +86,7 @@ describe('AbstractRenderer', () => {
     // TODO: add tests for properly rendering on proxy hosts.
     // TODO: add tests for properly proxying nodes in case of transclusion.
     // TODO: add tests for properly proxying components in case of transclusion.
+    // TODO: add tests for properly proxying components in case of chain-transclusion.
     //
     describe('.on()', () => {
       it('should render a node with requested tag on given node.', () => {

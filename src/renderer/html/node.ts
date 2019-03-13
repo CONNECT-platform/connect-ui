@@ -16,9 +16,6 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
     _DomEvents.forEach(event => {
       this.outputs.get(event).onConnected.subscribe(() => {
         this._activateEvent(event);
-        this.proxies.forEach(proxy => {
-          proxy._activateEvent(event);
-        });
       });
     });
   }
@@ -29,6 +26,10 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
       let listener = this._listeners[event] = ($event: any) => {
         out.send($event);
       };
+
+      this.proxies.forEach(proxy => {
+        proxy._activateEvent(event);
+      });
 
       this.native.addEventListener(event, listener);
     }

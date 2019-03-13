@@ -8,6 +8,7 @@ import { InputPin } from '../../../core/base/io';
 
 //
 // TODO: add tests for properly sending output of correspding dom events when the node is a proxy for other nodes.
+// TODO: add tests for properly sending output of corresponding dom events in case of chain proxies.
 //
 describe('HTMLNode', () => {
   it('should have inputs for all standard dom events.', () => {
