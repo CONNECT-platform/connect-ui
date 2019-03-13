@@ -1,5 +1,8 @@
 const path = require('path');
 
+const TestPlugin = require('./src/compile/plugin/test.plugin');
+
+
 module.exports = {
   module: {
     rules: [
@@ -13,6 +16,9 @@ module.exports = {
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
+  plugins: [
+    new TestPlugin(__dirname),
+  ],
   output: {
     filename: 'connect.bundle.js',
     path: path.resolve(__dirname, 'dist'),
