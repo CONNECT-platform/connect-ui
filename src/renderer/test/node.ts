@@ -24,11 +24,6 @@ class _Node extends AbstractNode<_Node> {
 }
 
 
-//
-// TODO: add tests for `.proxy()`
-// TODO: add tests for `.trans()`
-// TODO: add tests for `.transtag()`
-//
 describe('AbstractNode', () => {
   it('should have inputs for all given events.', () => {
     let node = new _Node(['a', 'b']);
@@ -135,6 +130,12 @@ describe('AbstractNode', () => {
     });
   });
 
+  describe('.trans()', () => {
+    it('should set the transclusion tag on the node, retrievable via `.transtag()`', () => {
+      new _Node().trans('@hellow').transtag().should.equal('@hellow');
+    });
+  });
+
   describe('.append()', () => {
     it('should add a node to its children.', () => {
       let parent = new _Node();
@@ -167,6 +168,23 @@ describe('AbstractNode', () => {
         done();
       });
       parent.append(child);
+    });
+  });
+
+  describe('.proxy()', () => {
+    it('should proxy the given node.', () => {
+      let a = new _Node();
+      let b = new _Node().proxy(a);
+
+      b.inputs.get('attr').receive({attr: 'hellow', value: 'world'});
+      a._attrs['hellow'].should.equal('world');
+    });
+
+    it('should also added the proxied node to `.proxies`', () => {
+      let a = new _Node();
+      let b = new _Node().proxy(a);
+
+      b.proxies.should.include(a);
     });
   });
 

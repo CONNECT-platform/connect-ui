@@ -62,9 +62,6 @@ describe('AbstractRenderer', () => {
       });
     });
 
-    //
-    // TODO: add tests for supporting `@` transtags.
-    //
     describe('.attr()', () => {
       it('should set the proper attributes on the node to be rendered.', () => {
         let host = new DummyNode('host');
@@ -79,15 +76,31 @@ describe('AbstractRenderer', () => {
 
         host.children[0].attributes.should.include('key');
       });
+
+      it('should call the `.trans()` function on the node if the attribute starts with "@".', done => {
+        class _N extends DummyNode {
+          trans(tag: string) {
+            tag.should.equal('@hellow');
+            done();
+            return this;
+          }
+        }
+
+        class _NR extends DummyRenderer {
+          createNode(tag: string) {
+            return new _N(tag);
+          }
+        }
+
+        new _NR().render('child').attr('@hellow').on(new _N('host'));
+      });
+
+      it('should ignore the attribute starting with "@" if the node doesn\'t have a `.trans()` function.', () => {
+        let node = new DummyRenderer().render('child').attr('@hellow').on(new DummyNode('host'));
+        node.attributes.length.should.equal(0);
+      });
     });
 
-    //
-    // TODO: add tests for properly fetching a node's transtag.
-    // TODO: add tests for properly rendering on proxy hosts.
-    // TODO: add tests for properly proxying nodes in case of transclusion.
-    // TODO: add tests for properly proxying components in case of transclusion.
-    // TODO: add tests for properly proxying components in case of chain-transclusion.
-    //
     describe('.on()', () => {
       it('should render a node with requested tag on given node.', () => {
         let host = new DummyNode('host');
@@ -95,6 +108,26 @@ describe('AbstractRenderer', () => {
 
         host.children.length.should.equal(1);
         host.children[0].name.should.equal('child');
+      });
+
+      it('should utilize the node\'s `.trans()` value when the function exists to find proper transclusion hooks.', () => {
+        class _N extends DummyNode {
+          transtag() { return '@yo'; }
+        }
+
+        class _NR extends DummyRenderer {
+          createNode(tag: string) {
+            return new _N(tag);
+          }
+        }
+
+        let renderer = new _NR(new ComponentRegistry());
+        renderer.registry.register('dummy', () => new DummyComponent());
+        let d = renderer.render('dummy').on(new _N('host'));
+
+        renderer.within(d.component).render('@yo').on(d);
+        renderer.render('something').on(d);
+        d.children[0].children[0].name.should.equal('something');
       });
 
       it('should properly render a transculded node on a transculsion hook.', () => {
@@ -229,6 +262,66 @@ describe('AbstractRenderer', () => {
         d.children[0].children.length.should.equal(1);
         d.children[0].children[0].name.should.equal('a');
         d.children[0].children[0].children.length.should.equal(0);
+      });
+
+      it('should properly render subsequent children of a transcluded node.', () => {
+        let R = new DummyRenderer(new ComponentRegistry());
+        R.registry.register('dummy', () => new DummyComponent());
+        let d = R.render('dummy').on(new DummyNode('host'));
+
+        R.within(d.component).render('@x').on(d);
+        let div = R.render('div').attr('@x').on(d);
+        R.render('p').on(div);
+
+        d.children[0].children[0].children[0].name.should.equal('p');
+      });
+
+      it('should properly handle chain-transclusion.', () => {
+        let R = new DummyRenderer(new ComponentRegistry());
+
+        class A extends DummyComponent {
+          constructor(R: DummyRenderer, N: DummyNode) {
+            super();
+            R.within(this).render('@x').on(N);
+          }
+        }
+
+        class B extends DummyComponent {
+          constructor(R: DummyRenderer, N: DummyNode) {
+            super();
+            R = R.within(this);
+            let A = R.render('A').on(N);
+            let div = R.render('div').attr('@x').on(A);
+            R.render('@y').on(div);
+          }
+        }
+
+        R.registry.register('A', (R:DummyRenderer, N:DummyNode) => new A(R, N));
+        R.registry.register('B', (R:DummyRenderer, N:DummyNode) => new B(R, N));
+
+        let b = R.render('B').on(new DummyNode('host'));
+        let s = R.render('section').attr('@y').on(b);
+        R.render('p').on(s);
+
+        b.children[0].children[0].children[0].children[0].children[0].children[0].name.should.equal('p');
+      });
+
+      it('should proxy the component of the node that is transcluded.', () => {
+        class A extends DummyComponent {
+          constructor(R: DummyRenderer, N: DummyNode) {
+            super();
+            R.within(this).render('@x').on(N);
+          }
+        }
+
+        let R = new DummyRenderer(new ComponentRegistry());
+        R.registry.register('A', (R:DummyRenderer, N:DummyNode) => new A(R, N));
+        R.registry.register('dummy', () => new DummyComponent());
+
+        let a = R.render('A').on(new DummyNode('host'));
+        let d = R.render('dummy').attr('@x').on(a);
+
+        (d.component as DummyComponent).proxies[0].should.equal(a.children[0].children[0].component);
       });
     });
   });

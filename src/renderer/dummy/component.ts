@@ -4,6 +4,7 @@ import { DummyNode } from './node';
 
 export class DummyComponent implements RenderingComponent<DummyNode> {
   private _hooks: {[tag: string]: DummyNode[]} = {};
+  public proxies: DummyComponent[] = [];
 
   hook(tag: string, node: DummyNode): DummyComponent {
     if (!this._hooks[tag]) this._hooks[tag] = [];
@@ -17,5 +18,10 @@ export class DummyComponent implements RenderingComponent<DummyNode> {
 
   clone(node: DummyNode): DummyComponent {
     return new DummyComponent();
+  }
+
+  proxy(comp: DummyComponent): DummyComponent {
+    this.proxies.push(comp);
+    return this;
   }
 }

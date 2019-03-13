@@ -6,10 +6,6 @@ import _DomEvents from '../utils/events';
 import { InputPin } from '../../../core/base/io';
 
 
-//
-// TODO: add tests for properly sending output of correspding dom events when the node is a proxy for other nodes.
-// TODO: add tests for properly sending output of corresponding dom events in case of chain proxies.
-//
 describe('HTMLNode', () => {
   it('should have inputs for all standard dom events.', () => {
     let node = new HTMLRenderer().createNode();
@@ -25,6 +21,27 @@ describe('HTMLNode', () => {
     node.outputs.get('click').connect(input);
     input.onReceived.subscribe(() => done());
     (node.native as HTMLElement).click();
+  });
+
+  it('should send proper output event for a dom event when it is proxying another node.', done => {
+    let R = new HTMLRenderer();
+    let core = R.createNode('core');
+    let proxy = R.createNode('proxy').proxy(core);
+    let input = new InputPin();
+    proxy.outputs.get('click').connect(input);
+    input.onReceived.subscribe(() => done());
+    (core.native as HTMLElement).click();
+  });
+
+  it('should properly handle dom event outputs on a proxy chain.', done => {
+    let R = new HTMLRenderer();
+    let core = R.createNode('core');
+    let proxyA = R.createNode('proxy').proxy(core);
+    let proxyB = R.createNode('proxy').proxy(proxyA);
+    let input = new InputPin();
+    proxyB.outputs.get('click').connect(input);
+    input.onReceived.subscribe(() => done());
+    (core.native as HTMLElement).click();
   });
 
   describe('.getText()', () => {
@@ -94,9 +111,6 @@ describe('HTMLNode', () => {
     });
   });
 
-  //
-  // TODO: add tests for properly setting text content of non-text node elements.
-  //
   describe('.clone()', () => {
     it('should clone the node with its native element.', () => {
       let node = new HTMLRenderer().createNode('elem');
@@ -120,7 +134,7 @@ describe('HTMLNode', () => {
     });
 
     it('should carry over text content of a text node.', () => {
-      let node = new HTMLRenderer().createNode();
+      let node = new HTMLRenderer().createNode('p');
       let clone = node.text('hellow').clone();
       clone.textContent.should.equal('hellow');
     });

@@ -6,6 +6,7 @@ export class DummyNode implements RenderingNode<DummyNode> {
   public attrs: {[attr: string]: string | boolean} = {};
   public children: DummyNode[] = [];
   public component: RenderingComponent<DummyNode>;
+  public proxies: DummyNode[] = [];
 
   private _trans: string;
 
@@ -29,6 +30,11 @@ export class DummyNode implements RenderingNode<DummyNode> {
   }
 
   public transtag(): string { return this._trans; }
+
+  public proxy(node: DummyNode) {
+    this.proxies.push(node);
+    return this;
+  }
 
   public clone() {
     let n = new DummyNode(this.name);
