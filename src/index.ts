@@ -84,17 +84,19 @@ registry.register('A', (renderer:HTMLRenderer, node:HTMLNode) => new A(renderer,
 registry.register('B', (renderer:HTMLRenderer, node:HTMLNode) => new B(renderer, node));
 registry.register('D', (renderer:HTMLRenderer, node:HTMLNode) => new D(renderer, node));
 
-window.addEventListener('load', () => {
-  try {
-    let injected = require('./__test');
-    console.log('--- INJECTED ---');
-    console.log(injected.hellow);
-  } catch(err) {
-    console.log(err);
-  }
+try {
+  window.addEventListener('load', () => {
+    try {
+      let injected = require('./__test');
+      console.log('--- INJECTED ---');
+      console.log(injected.hellow);
+    } catch(err) {
+      console.log(err);
+    }
 
-  let root = new HTMLNode(document.body);
-  let R = new HTMLRenderer();
-  let d = R.render('D').on(root);
-  (d.component as D).outputs.get('clicked').onSent.subscribe(console.log);
-});
+    let root = new HTMLNode(document.body);
+    let R = new HTMLRenderer();
+    let d = R.render('D').on(root);
+    (d.component as D).outputs.get('clicked').onSent.subscribe(console.log);
+  });
+} catch(err) {}
