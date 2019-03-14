@@ -4,9 +4,9 @@
   "description": "easily (and quickly) build super-complex interfaces for web applications.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack --config webpack.dev.js --watch",
-    "test": "ts-node -O '{ \"module\": \"commonjs\" }' src/test/index.ts",
-    "build": "webpack --config webpack.prod.js"
+    "start": "webpack --config webpack.dev.ts --watch",
+    "test": "ts-node src/test/index.ts",
+    "build": "webpack --config webpack.prod.ts"
   },
   "repository": {
     "type": "git",
@@ -21,14 +21,15 @@
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.18",
+    "@types/node": "^10.14.1",
+    "@types/webpack": "^4.4.25",
     "chai": "^4.2.0",
     "jsdom": "13.2.0",
     "jsdom-global": "3.0.2",
     "mocha": "^5.2.0",
     "ts-loader": "^5.3.3",
-    "ts-node": "^8.0.2",
-    "typescript": "^3.2.4",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.3.3333",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1",
     "webpack-merge": "^4.2.1",

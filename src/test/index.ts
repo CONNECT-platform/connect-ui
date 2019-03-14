@@ -1,4 +1,4 @@
-import * as Mocha from 'mocha';
+const Mocha = require('mocha');
 import * as path from 'path';
 
 const mocha = new Mocha();

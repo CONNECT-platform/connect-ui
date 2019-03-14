@@ -1,9 +1,10 @@
-const path = require('path');
+import path from 'path';
+import webpack from 'webpack';
 
-const TestPlugin = require('./src/compile/plugin/test.plugin');
+import { TestPlugin } from './src/compiler/plugins/test.plugin';
 
 
-module.exports = {
+const config: webpack.Configuration = {
   module: {
     rules: [
       {
@@ -17,10 +18,12 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
   plugins: [
-    new TestPlugin(__dirname),
+    new TestPlugin(path.join(__dirname, './src')),
   ],
   output: {
     filename: 'connect.bundle.js',
     path: path.resolve(__dirname, 'dist'),
   }
 }
+
+export default config;
