@@ -77,10 +77,10 @@ describe('AbstractRenderer', () => {
         host.children[0].attributes.should.include('key');
       });
 
-      it('should call the `.trans()` function on the node if the attribute starts with "@".', done => {
+      it('should call the `.trans()` function on the node if the attribute starts with "hook:".', done => {
         class _N extends DummyNode {
           trans(tag: string) {
-            tag.should.equal('@hellow');
+            tag.should.equal('hook:hellow');
             done();
             return this;
           }
@@ -92,11 +92,11 @@ describe('AbstractRenderer', () => {
           }
         }
 
-        new _NR().render('child').attr('@hellow').on(new _N('host'));
+        new _NR().render('child').attr('hook:hellow').on(new _N('host'));
       });
 
-      it('should ignore the attribute starting with "@" if the node doesn\'t have a `.trans()` function.', () => {
-        let node = new DummyRenderer().render('child').attr('@hellow').on(new DummyNode('host'));
+      it('should ignore the attribute starting with "hook:" if the node doesn\'t have a `.trans()` function.', () => {
+        let node = new DummyRenderer().render('child').attr('hook:hellow').on(new DummyNode('host'));
         node.attributes.length.should.equal(0);
       });
     });
@@ -112,7 +112,7 @@ describe('AbstractRenderer', () => {
 
       it('should utilize the node\'s `.trans()` value when the function exists to find proper transclusion hooks.', () => {
         class _N extends DummyNode {
-          transtag() { return '@yo'; }
+          transtag() { return 'hook:yo'; }
         }
 
         class _NR extends DummyRenderer {
@@ -125,7 +125,7 @@ describe('AbstractRenderer', () => {
         renderer.registry.register('dummy', () => new DummyComponent());
         let d = renderer.render('dummy').on(new _N('host'));
 
-        renderer.within(d.component).render('@yo').on(d);
+        renderer.within(d.component).render('hook:yo').on(d);
         renderer.render('something').on(d);
         d.children[0].children[0].name.should.equal('something');
       });
@@ -138,9 +138,9 @@ describe('AbstractRenderer', () => {
         let cr = renderer.within(d.component);
 
         let A = cr.render('A').on(d);
-        cr.render('@x').on(A);
+        cr.render('hook:x').on(A);
 
-        renderer.render('a').attr('@x').on(d);
+        renderer.render('a').attr('hook:x').on(d);
 
         d.children[0].children[0].children[0].name.should.equal('a');
       });
@@ -153,11 +153,11 @@ describe('AbstractRenderer', () => {
         let cr = renderer.within(d.component);
 
         let A = cr.render('A').on(d);
-        cr.render('@x').on(A);
-        cr.render('@y').on(d);
+        cr.render('hook:x').on(A);
+        cr.render('hook:y').on(d);
 
-        renderer.render('a').attr('@x').on(d);
-        renderer.render('b').attr('@y').on(d);
+        renderer.render('a').attr('hook:x').on(d);
+        renderer.render('b').attr('hook:y').on(d);
 
         d.children[0].children[0].children[0].name.should.equal('a');
         d.children[1].children[0].name.should.equal('b');
@@ -170,10 +170,10 @@ describe('AbstractRenderer', () => {
         let d = renderer.render('dummy').on(host);
         let cr = renderer.within(d.component);
 
-        cr.render('@x').on(d);
-        cr.render('@x').on(cr.render('A').on(d));
+        cr.render('hook:x').on(d);
+        cr.render('hook:x').on(cr.render('A').on(d));
 
-        renderer.render('a').attr('@x').on(d);
+        renderer.render('a').attr('hook:x').on(d);
 
         d.children[0].children[0].name.should.equal('a');
         d.children[1].children[0].children[0].name.should.equal('a');
@@ -187,10 +187,10 @@ describe('AbstractRenderer', () => {
         let d = renderer.render('dummy').on(host);
         let cr = renderer.within(d.component);
 
-        cr.render('@x').on(d);
-        cr.render('@x').on(cr.render('A').on(d));
+        cr.render('hook:x').on(d);
+        cr.render('hook:x').on(cr.render('A').on(d));
 
-        renderer.render('a').attr('@x').attr('hellow', 'world').text('some text').on(d);
+        renderer.render('a').attr('hook:x').attr('hellow', 'world').text('some text').on(d);
 
         d.children[0].children[0].attrs['hellow'].should.equal('world');
         d.children[0].children[0].textContent.should.equal('some text');
@@ -204,27 +204,27 @@ describe('AbstractRenderer', () => {
         let d = renderer.render('dummy').on(host);
         let cr = renderer.within(d.component);
 
-        cr.render('@x').on(d);
-        cr.render('@x').on(cr.render('A').on(d));
+        cr.render('hook:x').on(d);
+        cr.render('hook:x').on(cr.render('A').on(d));
 
-        renderer.render('a').attr('@x').on(d);
-        renderer.render('b').attr('@x').on(d);
+        renderer.render('a').attr('hook:x').on(d);
+        renderer.render('b').attr('hook:x').on(d);
 
         d.children[0].children.length.should.equal(2);
         d.children[1].children[0].children[1].name.should.equal('b');
       });
 
-      it('should render nodes with no transclusion tag on the `@` hook.', () => {
+      it('should render nodes with no transclusion tag on the `hook::` hook.', () => {
         let host = new DummyNode('host');
         let renderer = new DummyRenderer(new ComponentRegistry());
         renderer.registry.register('dummy', () => new DummyComponent());
         let d = renderer.render('dummy').on(host);
         let cr = renderer.within(d.component);
 
-        cr.render('@x').on(d);
-        cr.render('@').on(cr.render('A').on(d));
+        cr.render('hook:x').on(d);
+        cr.render('hook::').on(cr.render('A').on(d));
 
-        renderer.render('a').attr('@x').on(d);
+        renderer.render('a').attr('hook:x').on(d);
         renderer.render('b').on(d);
 
         d.children[0].children[0].name.should.equal('a');
@@ -238,25 +238,25 @@ describe('AbstractRenderer', () => {
         let d = renderer.render('dummy').on(host);
         let cr = renderer.within(d.component);
 
-        cr.render('@x').on(d);
-        cr.render('@').on(d);
+        cr.render('hook:x').on(d);
+        cr.render('hook::').on(d);
 
-        renderer.render('a').attr('@y').on(d);
+        renderer.render('a').attr('hook:y').on(d);
 
         d.children[0].children.length.should.equal(0);
         d.children[0].children.length.should.equal(0);
       });
 
-      it('should ignore nodes with-out a transclusion tag when `@` hook doesn\'t exist.', () => {
+      it('should ignore nodes with-out a transclusion tag when `hook::` hook doesn\'t exist.', () => {
         let host = new DummyNode('host');
         let renderer = new DummyRenderer(new ComponentRegistry());
         renderer.registry.register('dummy', () => new DummyComponent());
         let d = renderer.render('dummy').on(host);
         let cr = renderer.within(d.component);
 
-        cr.render('@x').on(d);
+        cr.render('hook:x').on(d);
 
-        renderer.render('a').attr('@x').on(d);
+        renderer.render('a').attr('hook:x').on(d);
         renderer.render('b').on(d);
 
         d.children[0].children.length.should.equal(1);
@@ -269,8 +269,8 @@ describe('AbstractRenderer', () => {
         R.registry.register('dummy', () => new DummyComponent());
         let d = R.render('dummy').on(new DummyNode('host'));
 
-        R.within(d.component).render('@x').on(d);
-        let div = R.render('div').attr('@x').on(d);
+        R.within(d.component).render('hook:x').on(d);
+        let div = R.render('div').attr('hook:x').on(d);
         R.render('p').on(div);
 
         d.children[0].children[0].children[0].name.should.equal('p');
@@ -282,7 +282,7 @@ describe('AbstractRenderer', () => {
         class A extends DummyComponent {
           constructor(R: DummyRenderer, N: DummyNode) {
             super();
-            R.within(this).render('@x').on(N);
+            R.within(this).render('hook:x').on(N);
           }
         }
 
@@ -291,8 +291,8 @@ describe('AbstractRenderer', () => {
             super();
             R = R.within(this);
             let A = R.render('A').on(N);
-            let div = R.render('div').attr('@x').on(A);
-            R.render('@y').on(div);
+            let div = R.render('div').attr('hook:x').on(A);
+            R.render('hook:y').on(div);
           }
         }
 
@@ -300,7 +300,7 @@ describe('AbstractRenderer', () => {
         R.registry.register('B', (R:DummyRenderer, N:DummyNode) => new B(R, N));
 
         let b = R.render('B').on(new DummyNode('host'));
-        let s = R.render('section').attr('@y').on(b);
+        let s = R.render('section').attr('hook:y').on(b);
         R.render('p').on(s);
 
         b.children[0].children[0].children[0].children[0].children[0].children[0].name.should.equal('p');
@@ -310,7 +310,7 @@ describe('AbstractRenderer', () => {
         class A extends DummyComponent {
           constructor(R: DummyRenderer, N: DummyNode) {
             super();
-            R.within(this).render('@x').on(N);
+            R.within(this).render('hook:x').on(N);
           }
         }
 
@@ -319,7 +319,7 @@ describe('AbstractRenderer', () => {
         R.registry.register('dummy', () => new DummyComponent());
 
         let a = R.render('A').on(new DummyNode('host'));
-        let d = R.render('dummy').attr('@x').on(a);
+        let d = R.render('dummy').attr('hook:x').on(a);
 
         (d.component as DummyComponent).proxies[0].should.equal(a.children[0].children[0].component);
       });
@@ -342,27 +342,27 @@ describe('AbstractRenderer', () => {
       new DummyRenderer().within(undefined).should.be.instanceOf(AbstractRenderer);
     });
 
-    it('should return a renderer that calls the `hook()` function on parameter passed to it if it exists and when it is rendering a tag startign with `"@"`.', done => {
+    it('should return a renderer that calls the `hook()` function on parameter passed to it if it exists and when it is rendering a tag starting with `"hook:"`.', done => {
       new DummyRenderer().within(<RenderingComponent<DummyNode>>{
         clone() { return this; },
         hook(_, __) {
           done();
           return this;
         }
-      }).render('@a').on(new DummyNode('x'));
+      }).render('hook:a').on(new DummyNode('x'));
     });
 
     it('should pass the proper tag name and node to the hook function.', done => {
       new DummyRenderer().within(<RenderingComponent<DummyNode>>{
         clone() { return this; },
         hook(tag, node) {
-          tag.should.equal('@a');
-          node.name.should.equal('@a');
+          tag.should.equal('hook:a');
+          node.name.should.equal('hook:a');
           node.attrs.x.should.equal('2');
           done();
           return this;
         }
-      }).render('@a').attr('x', '2').on(new DummyNode('x'));
+      }).render('hook:a').attr('x', '2').on(new DummyNode('x'));
     });
   });
 

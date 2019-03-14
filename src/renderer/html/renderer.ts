@@ -9,12 +9,9 @@ export class HTMLRenderer extends AbstractRenderer<HTMLNode> {
   }
 
   public createNode(tag?: string): HTMLNode {
-    if (tag) {
-      if (tag.startsWith('@'))
-        return new HTMLNode(document.createElement('__' + tag.substr(1)));
-      else
-        return new HTMLNode(document.createElement(tag));
-    }
-    else return new HTMLNode(document.createTextNode(''));
+    if (tag)
+      return new HTMLNode(document.createElement(tag));
+    else
+      return new HTMLNode(document.createTextNode(''));
   }
 }

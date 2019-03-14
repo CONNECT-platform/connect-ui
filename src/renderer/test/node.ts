@@ -132,7 +132,7 @@ describe('AbstractNode', () => {
 
   describe('.trans()', () => {
     it('should set the transclusion tag on the node, retrievable via `.transtag()`', () => {
-      new _Node().trans('@hellow').transtag().should.equal('@hellow');
+      new _Node().trans('hook:hellow').transtag().should.equal('hook:hellow');
     });
   });
 

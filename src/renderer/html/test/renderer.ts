@@ -21,10 +21,6 @@ describe('HTMLRenderer', () => {
       let node = new HTMLRenderer().createNode();
       node.native.should.be.instanceOf(Text);
     });
-
-    it('should properly create nodes with `@` in the beginning of their tag name as well..', () => {
-      let node = new HTMLRenderer().createNode('@hook');
-    });
   });
 
   describe('.attachNode()', () => {
