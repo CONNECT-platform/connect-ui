@@ -6,10 +6,10 @@ import registry from './renderer/component-registry';
 
 
 /*
-<hook:x></hook:x>
+<@x></@x>
 <hr/>
 <p>hellow</p>
-<hook:x></hook:x>
+<@x></@x>
 */
 class A extends AbstractComponent<HTMLNode> {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
@@ -17,10 +17,10 @@ class A extends AbstractComponent<HTMLNode> {
   }
 
   render() {
-    this.renderer.render('hook:x').on(this.root);
+    this.renderer.render('@x').on(this.root);
     this.renderer.render('hr').on(this.root);
     this.renderer.render('p').text('hellow').on(this.root);
-    this.renderer.render('hook:x').on(this.root);
+    this.renderer.render('@x').on(this.root);
   }
 
   clone(node: HTMLNode) {
@@ -30,8 +30,8 @@ class A extends AbstractComponent<HTMLNode> {
 
 /*
 <A>
-  <div hook:x>
-    <hook:y></hook:y>
+  <div @x>
+    <@y></@y>
   </div>
 </A>
 */
@@ -42,8 +42,8 @@ class B extends AbstractComponent<HTMLNode> {
 
   render() {
     this.$.A = this.renderer.render('A').on(this.root);
-    this.$.div = this.renderer.render('div').attr('hook:x').on(this.$.A);
-    this.renderer.render('hook:y').on(this.$.div);
+    this.$.div = this.renderer.render('div').attr('@x').on(this.$.A);
+    this.renderer.render('@y').on(this.$.div);
   }
 
   clone(node: HTMLNode) {
@@ -53,7 +53,7 @@ class B extends AbstractComponent<HTMLNode> {
 
 /*
 <B>
-  <div hook:y hellow="world">
+  <div @y hellow="world">
     <h1 A="B">hellow</h1>
   </div>
 </B>
@@ -67,7 +67,7 @@ class D extends AbstractComponent<HTMLNode> {
 
   render() {
     this.$.D = this.renderer.render('B').on(this.root);
-    this.$.holder = this.renderer.render('div').attr('hook:y').attr('hellow', 'world').on(this.$.D);
+    this.$.holder = this.renderer.render('div').attr('@y').attr('hellow', 'world').on(this.$.D);
     this.$.title = this.renderer.render('h1').text('hellow').attr('A', 'B').on(this.$.holder);
   }
 

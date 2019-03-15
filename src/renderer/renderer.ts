@@ -24,7 +24,7 @@ export class RenderingRequest<_Node extends RenderingNode<_Node>>
   }
 
   public attr(attr: string, content?: string): RenderingRequest<_Node> {
-    if (attr.startsWith('hook:')) {
+    if (attr.startsWith('@')) {
       if (this.target.trans)
         this.target.trans(attr);
     } else
@@ -62,7 +62,7 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
 
   private _render(tag: string, node: _Node, host: _Node) {
     if (host.component && host.component.hooks && host.component != this.issuer) {
-      let transtag = (node.transtag?node.transtag():undefined) || 'hook::';
+      let transtag = (node.transtag?node.transtag():undefined) || '@';
       host.component.hooks(transtag).forEach(hook => {
         this._renderTrans(node, hook);
       });
@@ -70,7 +70,7 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
     else {
       this._attachNode(node, host);
 
-      if (this.issuer && this.issuer.hook && tag.startsWith('hook:')) {
+      if (this.issuer && this.issuer.hook && tag.startsWith('@')) {
         this.issuer.hook(tag, node);
       }
     }

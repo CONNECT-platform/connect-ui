@@ -21,6 +21,10 @@ describe('HTMLRenderer', () => {
       let node = new HTMLRenderer().createNode();
       node.native.should.be.instanceOf(Text);
     });
+
+    it('should create an `HTMLNode` whose tagname starts with "@"', () => {
+      new HTMLRenderer().createNode('@hellow');
+    });
   });
 
   describe('.attachNode()', () => {
