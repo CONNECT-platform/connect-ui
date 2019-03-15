@@ -1,3 +1,3 @@
-describe.skip('compiler/html', () => {
+describe('compiler/html', () => {
   require('./compiler');
 });

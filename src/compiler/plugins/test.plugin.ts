@@ -16,10 +16,10 @@ export class TestPlugin {
     this.virtual.apply(compiler);
 
     compiler.hooks.compilation.tap('TestPlugin', compilation => {
-      console.log('--------- TEST PLUGIN -----------');
-      require(this.entry);
-      console.log(registry);
-      console.log('---------------------------------');
+      // console.log('--------- TEST PLUGIN -----------');
+      // require(this.entry);
+      // console.log(registry);
+      // console.log('---------------------------------');
       this.virtual.writeModule('src/__test.ts', 'export const hellow = "world";');
     });
   }

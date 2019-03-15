@@ -52,9 +52,9 @@ class B extends AbstractComponent<HTMLNode> {
 }
 
 /*
-<B>
-  <div @y hellow="world">
-    <h1 A="B">hellow</h1>
+<B $D>
+  <div $holder @y hellow="world">
+    <h1 $title A="B">hellow</h1>
   </div>
 </B>
 */

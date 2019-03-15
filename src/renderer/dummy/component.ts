@@ -6,6 +6,8 @@ export class DummyComponent implements RenderingComponent<DummyNode> {
   private _hooks: {[tag: string]: DummyNode[]} = {};
   public proxies: DummyComponent[] = [];
 
+  $: {[name: string]: DummyNode} = {};
+
   hook(tag: string, node: DummyNode): DummyComponent {
     if (!this._hooks[tag]) this._hooks[tag] = [];
     this._hooks[tag].push(node);

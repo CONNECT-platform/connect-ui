@@ -1,6 +1,9 @@
 import { should, expect } from 'chai'; should();
 
 
-describe('Component', () => {
+//
+// TODO: write these!
+//
+describe('AbstractComponent', () => {
 
 })

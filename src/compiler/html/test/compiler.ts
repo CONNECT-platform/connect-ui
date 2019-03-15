@@ -7,7 +7,7 @@ describe('compiler', () => {
     compile(`
       <@x/>
       <hr/>
-      <p @y>hellow
+      <p $content @y>hellow
         <span class="highlight">world</span>
         !
       </p>

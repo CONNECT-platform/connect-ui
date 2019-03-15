@@ -10,7 +10,7 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
 
   private _renderer: RendererType<_Node>;
   private _hooks: {[tag: string]: _Node[]} = {};
-  protected $: {[name: string]: _Node} = {};
+  $: {[name: string]: _Node} = {};
 
   constructor(signature: Signature,
       renderer: RendererType<_Node>,
