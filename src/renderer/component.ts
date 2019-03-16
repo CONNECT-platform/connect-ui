@@ -15,10 +15,13 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
   constructor(signature: Signature,
       renderer: RendererType<_Node>,
       private _node: _Node,
+      _initCallback?: (_this: any) => void,
     ) {
 
     super(signature);
     this._renderer = renderer.within(this);
+
+    if (_initCallback) _initCallback(this);
 
     this.render();
     this.wire();

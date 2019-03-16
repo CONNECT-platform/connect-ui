@@ -5,7 +5,7 @@ import { Stack } from '../util/stack';
 
 
 export default function(raw: string) {
-  let _code = 'function(){';
+  let _code = '()=>{';
   let _stack = new Stack<string>();
 
   let _namer = new Namer()
@@ -56,7 +56,7 @@ export default function(raw: string) {
         let _host = 'this.root';
         if (!_stack.empty) _host = _stack.peek;
 
-        _code += `this.render('').text(\`${content}\`).on(${_host});`;
+        _code += `this.renderer.render('').text(\`${content}\`).on(${_host});`;
       }
     },
 
@@ -74,5 +74,5 @@ export default function(raw: string) {
   _Parser.end();
 
   _code += '}';
-  console.log(_code);
+  return _code;
 }
