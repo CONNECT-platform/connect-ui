@@ -1,4 +1,4 @@
-import { should } from 'chai'; should();
+import { should, expect } from 'chai'; should();
 import 'jsdom-global/register';
 
 import compile from '../compiler';
@@ -37,7 +37,7 @@ function _c(_code: string): ComponentFactory<HTMLNode> {
   }
 }
 
-describe.only('compiler', () => {
+describe('compiler', () => {
   it('should compile a piece of pseudo-html code into a rendering function applicable on an `AbstractComponent`.', () => {
     let R = new HTMLRenderer(new ComponentRegistry());
     R.registry.register('A', _c(`<span></span>`));
@@ -98,26 +98,96 @@ describe.only('compiler', () => {
     host.children[0].children[0].children[2].textContent.should.equal('world!');
   });
 
-  describe('attributes:', () => {
-    it('should return a rendering function that handles attributes properly.', () => {
-      let R = new HTMLRenderer(new ComponentRegistry());
-      R.registry.register('A', _c(`<span hellow="world"></span>`));
+  it('should retur a function properly handling multiple root nodes.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<x/><y/>`));
 
-      let host = R.createNode('host');
-      R.render('A').on(host);
+    let host = R.createNode('host');
+    R.render('A').on(host);
 
-      (host.children[0].children[0].native as HTMLElement).getAttribute('hellow').should.equal('world');
-    });
+    host.children[0].children[0].native.nodeName.toLowerCase().should.equal('x');
+    host.children[0].children[1].native.nodeName.toLowerCase().should.equal('y');
+  });
 
-    it('should skip attributes starting with "@", and instead attach them as trans tag for the resulting node.', () => {
-      let R = new HTMLRenderer(new ComponentRegistry());
-      R.registry.register('A', _c(`<span @hook></span>`));
+  it('should add nodes with tags starting with "@" to transclusion hooks of the component.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<@some-hook/>`));
 
-      let host = R.createNode('host');
-      R.render('A').on(host);
+    let host = R.createNode('host');
+    R.render('A').on(host);
 
-      host.children[0].children[0].attributes.length.should.equal(0);
-      host.children[0].children[0].transtag().should.equal('@hook');
-    });
+    host.children[0].component.hooks('@some-hook').should.include(host.children[0].children[0]);
+  });
+
+  it('should return a rendering function that handles attributes properly.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<span hellow="world"></span>`));
+
+    let host = R.createNode('host');
+    R.render('A').on(host);
+
+    (host.children[0].children[0].native as HTMLElement).getAttribute('hellow').should.equal('world');
+  });
+
+  it('should skip attributes starting with "@", and instead attach them as trans tag for the resulting node.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<span @hook></span>`));
+
+    let host = R.createNode('host');
+    R.render('A').on(host);
+
+    host.children[0].children[0].attributes.length.should.equal(0);
+    host.children[0].children[0].transtag().should.equal('@hook');
+  });
+
+  it('should skip attributes starting with "$", and instead store the node in component\'s `$` map.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<span $something></span>`));
+
+    let host = R.createNode('host');
+    R.render('A').on(host);
+
+    host.children[0].children[0].attributes.length.should.equal(0);
+    (host.children[0].component as any).$.something.should.equal(host.children[0].children[0]);
+  });
+
+  it('should throw proper error in case of mismatching closed tag.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<some:tag>hellow</some:other:tag>`));
+
+    let host = R.createNode('host');
+    expect(() => R.render('A').on(host)).to.throw();
+  });
+
+  it('should throw proper error in case of unclosed tag.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<a><b></b>`));
+
+    let host = R.createNode('host');
+    expect(() => R.render('A').on(host)).to.throw();
+  });
+
+  it('should throw proper error in case of invalid tag names.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<2pac/>`));
+
+    let host = R.createNode('host');
+    expect(() => R.render('A').on(host)).to.throw();
+  });
+
+  it('should throw proper error in case of invalid attribute names.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<span 2hook></span>`));
+
+    let host = R.createNode('host');
+    expect(() => R.render('A').on(host)).to.throw();
+  });
+
+  it('should throw proper error in case of invalid $ attribute.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<span $some:thing></span>`));
+
+    let host = R.createNode('host');
+    expect(() => R.render('A').on(host)).to.throw();
   });
 });

@@ -2,38 +2,35 @@ const parser = require('htmlparser2');
 
 import { Namer } from '../util/namer';
 import { Stack } from '../util/stack';
+import validate from './validations';
 
 
 export default function(raw: string) {
   let _code = '()=>{';
   let _stack = new Stack<string>();
+  let _tag_stack = new Stack<string>();
 
   let _namer = new Namer()
 
   let _Parser = new parser.Parser({
     onopentag: (name: string, attributes: any) => {
+      validate(name, validate.tag);
+      _tag_stack.push(name);
+
       let _vname: string = undefined;
 
       let _host = 'this.root';
       if (!_stack.empty) _host = _stack.peek;
 
-      //
-      // TODO: validate the tagname
-      //
       let _command = `this.renderer.render('${name}')`;
 
       Object.entries(attributes).forEach(([attr, val]:[string, string]) => {
         if (attr.startsWith('$')) {
+          validate(attr, validate.id);
           _vname = 'this.$.' + attr.slice(1);
-
-          //
-          // TODO: validate the id
-          //
         }
         else {
-          //
-          // TODO: validate the attribute
-          //
+          validate(attr, validate.attribute);
           _command += `.attr('${attr}', \`${val}\`)`;
         }
       });
@@ -61,9 +58,9 @@ export default function(raw: string) {
     },
 
     onclosetag: (name: string) => {
-      //
-      //TODO: do safety check.
-      //
+      let _expected = _tag_stack.pop();
+      if (_expected !== name)
+        throw new Error(`TEMPLATE ERROR:: unexpected closing tag </${name}>, did you mean </${_expected}>?`);
       _stack.pop();
     }
   }, {
@@ -71,7 +68,9 @@ export default function(raw: string) {
   });
 
   _Parser.write(raw);
-  _Parser.end();
+
+  if (!_tag_stack.empty)
+    throw new Error(`TEMPLATE ERROR:: unclosed tag <${_tag_stack.peek}>.`);
 
   _code += '}';
   return _code;
