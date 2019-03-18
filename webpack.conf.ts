@@ -1,8 +1,6 @@
 import path from 'path';
 import webpack from 'webpack';
 
-import { TestPlugin } from './src/compiler/plugins/test.plugin';
-
 
 const config: webpack.Configuration = {
   module: {
@@ -11,15 +9,23 @@ const config: webpack.Configuration = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.component\.html$/,
+        use: 'compiler/html/loader',
+        exclude: /node_modules/
       }
-    ]
+    ],
   },
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
-  plugins: [
-    new TestPlugin(path.join(__dirname, './src')),
-  ],
+  resolveLoader: {
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, 'src')
+    ]
+  },
   output: {
     filename: 'connect.bundle.js',
     path: path.resolve(__dirname, 'dist'),

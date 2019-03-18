@@ -3,24 +3,13 @@ import { HTMLRenderer } from './renderer/html/renderer';
 import { AbstractComponent } from './renderer/component';
 import { RendererType } from './renderer/types';
 import registry from './renderer/component-registry';
+import render from './compiler/html/decorator';
 
 
-/*
-<@x></@x>
-<hr/>
-<p>hellow</p>
-<@x></@x>
-*/
+@render(require('./test/templates/a.component.html'))
 class A extends AbstractComponent<HTMLNode> {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({}, renderer, node);
-  }
-
-  render() {
-    this.renderer.render('@x').on(this.root);
-    this.renderer.render('hr').on(this.root);
-    this.renderer.render('p').text('hellow').on(this.root);
-    this.renderer.render('@x').on(this.root);
   }
 
   clone(node: HTMLNode) {
@@ -28,22 +17,11 @@ class A extends AbstractComponent<HTMLNode> {
   }
 }
 
-/*
-<A>
-  <div @x>
-    <@y></@y>
-  </div>
-</A>
-*/
+
+@render(require('./test/templates/b.component.html'))
 class B extends AbstractComponent<HTMLNode> {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({}, renderer, node);
-  }
-
-  render() {
-    this.$.A = this.renderer.render('A').on(this.root);
-    this.$.div = this.renderer.render('div').attr('@x').on(this.$.A);
-    this.renderer.render('@y').on(this.$.div);
   }
 
   clone(node: HTMLNode) {
@@ -51,24 +29,13 @@ class B extends AbstractComponent<HTMLNode> {
   }
 }
 
-/*
-<B $D>
-  <div $holder @y hellow="world">
-    <h1 $title A="B">hellow</h1>
-  </div>
-</B>
-*/
+
+@render(require('./test/templates/d.component.html'))
 class D extends AbstractComponent<HTMLNode> {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({
       outputs: ['clicked']
     }, renderer, node);
-  }
-
-  render() {
-    this.$.D = this.renderer.render('B').on(this.root);
-    this.$.holder = this.renderer.render('div').attr('@y').attr('hellow', 'world').on(this.$.D);
-    this.$.title = this.renderer.render('h1').text('hellow').attr('A', 'B').on(this.$.holder);
   }
 
   wire() {
@@ -80,23 +47,15 @@ class D extends AbstractComponent<HTMLNode> {
   }
 }
 
-registry.register('A', (renderer:HTMLRenderer, node:HTMLNode) => new A(renderer, node));
-registry.register('B', (renderer:HTMLRenderer, node:HTMLNode) => new B(renderer, node));
-registry.register('D', (renderer:HTMLRenderer, node:HTMLNode) => new D(renderer, node));
+registry.register('a', (renderer:HTMLRenderer, node:HTMLNode) => new A(renderer, node));
+registry.register('b', (renderer:HTMLRenderer, node:HTMLNode) => new B(renderer, node));
+registry.register('d', (renderer:HTMLRenderer, node:HTMLNode) => new D(renderer, node));
 
 try {
   window.addEventListener('load', () => {
-    try {
-      let injected = require('./__test');
-      console.log('--- INJECTED ---');
-      console.log(injected.hellow);
-    } catch(err) {
-      console.log(err);
-    }
-
     let root = new HTMLNode(document.body);
     let R = new HTMLRenderer();
-    let d = R.render('D').on(root);
+    let d = R.render('d').on(root);
     (d.component as D).outputs.get('clicked').onSent.subscribe(console.log);
   });
 } catch(err) {}

@@ -109,35 +109,14 @@ describe('compiler', () => {
     host.children[0].children[1].native.nodeName.toLowerCase().should.equal('y');
   });
 
-  it('should add nodes with tags starting with "@" to transclusion hooks of the component.', () => {
-    let R = new HTMLRenderer(new ComponentRegistry());
-    R.registry.register('A', _c(`<@some-hook/>`));
-
-    let host = R.createNode('host');
-    R.render('A').on(host);
-
-    host.children[0].component.hooks('@some-hook').should.include(host.children[0].children[0]);
-  });
-
   it('should return a rendering function that handles attributes properly.', () => {
     let R = new HTMLRenderer(new ComponentRegistry());
-    R.registry.register('A', _c(`<span hellow="world"></span>`));
+    R.registry.register('A', _c(`<span hellow="world'"></span>`));
 
     let host = R.createNode('host');
     R.render('A').on(host);
 
-    (host.children[0].children[0].native as HTMLElement).getAttribute('hellow').should.equal('world');
-  });
-
-  it('should skip attributes starting with "@", and instead attach them as trans tag for the resulting node.', () => {
-    let R = new HTMLRenderer(new ComponentRegistry());
-    R.registry.register('A', _c(`<span @hook></span>`));
-
-    let host = R.createNode('host');
-    R.render('A').on(host);
-
-    host.children[0].children[0].attributes.length.should.equal(0);
-    host.children[0].children[0].transtag().should.equal('@hook');
+    (host.children[0].children[0].native as HTMLElement).getAttribute('hellow').should.equal("world'");
   });
 
   it('should skip attributes starting with "$", and instead store the node in component\'s `$` map.', () => {

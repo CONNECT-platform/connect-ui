@@ -5,7 +5,7 @@ import { Stack } from '../stack';
 describe('Stack', () => {
   describe('.push()', () => {
     it('should push a value to the stack, retrievable via `.peek`', () => {
-      let s = new Stack<number>();
+      let s = new Stack();
       s.push(42);
       s.peek.should.equal(42);
       s.push(56);
@@ -15,14 +15,14 @@ describe('Stack', () => {
 
   describe('.pop()', () => {
     it('should return the last value pushed to the stack.', () => {
-      let s = new Stack<string>();
+      let s = new Stack();
       s.push('hellow');
       s.push('world');
       s.pop().should.equal('world');
     });
 
     it('should remove the last item of the stack as well.', () => {
-      let s = new Stack<string>();
+      let s = new Stack();
       s.push('hellow');
       s.push('world');
       s.pop();
@@ -32,7 +32,7 @@ describe('Stack', () => {
 
   describe('.empty', () => {
     it('should be true only when the stack is emtpy.', () => {
-      let s = new Stack<boolean>();
+      let s = new Stack();
       s.empty.should.be.true;
       s.push(true);
       s.push(false);

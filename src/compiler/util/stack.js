@@ -1,17 +1,19 @@
-export class Stack<T> {
-  private stuff: T[] = [];
+class Stack {
+  constructor() {
+    this.stuff = [];
+  }
 
-  public push(t: T): Stack<T> {
+  push(t) {
     this.stuff.push(t);
     return this;
   }
 
-  public get peek(): T {
+  get peek() {
     if (!this.empty)
       return this.stuff[this.stuff.length - 1];
   }
 
-  public pop(): T {
+  pop() {
     if (!this.empty) {
       let t = this.peek;
       this.stuff.splice(-1, 1);
@@ -19,7 +21,9 @@ export class Stack<T> {
     }
   }
 
-  public get empty(): boolean {
+  get empty() {
     return this.stuff.length == 0;
   }
 }
+
+module.exports.Stack = Stack;

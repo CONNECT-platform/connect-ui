@@ -1,43 +1,46 @@
 const parser = require('htmlparser2');
 
-import { Namer } from '../util/namer';
-import { Stack } from '../util/stack';
-import validate from './validations';
+const { Namer } = require('../util/namer');
+const { Stack } = require('../util/stack');
+//import { Namer } from '../util/namer';
+// import { Stack } from '../util/stack';
+// import validate from './validations';
+const validate = require('./validations');
 
 
-export default function(raw: string) {
-  let _code = '()=>{';
-  let _stack = new Stack<string>();
-  let _tag_stack = new Stack<string>();
+module.exports = function(raw) {
+  let _code = '(function(){';
+  let _stack = new Stack();
+  let _tag_stack = new Stack();
 
-  let _namer = new Namer()
+  let _namer = new Namer();
 
   let _Parser = new parser.Parser({
-    onopentag: (name: string, attributes: any) => {
+    onopentag: (name, attributes) => {
       validate(name, validate.tag);
       _tag_stack.push(name);
 
-      let _vname: string = undefined;
+      let _vname = undefined;
 
       let _host = 'this.root';
       if (!_stack.empty) _host = _stack.peek;
 
       let _command = `this.renderer.render('${name}')`;
 
-      Object.entries(attributes).forEach(([attr, val]:[string, string]) => {
+      Object.entries(attributes).forEach(([attr, val]) => {
         if (attr.startsWith('$')) {
           validate(attr, validate.id);
           _vname = 'this.$.' + attr.slice(1);
         }
         else {
           validate(attr, validate.attribute);
-          _command += `.attr('${attr}', \`${val}\`)`;
+          _command += `.attr('${attr}', '${val.replace(/'/g, "\\'")}')`;
         }
       });
 
       if (!_vname) {
         _vname = _namer.next;
-        _command = `let ${_vname}=`+_command;
+        _command = `var ${_vname}=`+_command;
       }
       else _command = `${_vname}=`+_command;
 
@@ -47,17 +50,17 @@ export default function(raw: string) {
       _code += _command;
     },
 
-    ontext: (content: string) => {
+    ontext: (content) => {
       content = content.trim();
       if (content.length > 0) {
         let _host = 'this.root';
         if (!_stack.empty) _host = _stack.peek;
 
-        _code += `this.renderer.render('').text(\`${content}\`).on(${_host});`;
+        _code += `this.renderer.render('').text('${content.replace(/'/g, "\\'")}').on(${_host});`;
       }
     },
 
-    onclosetag: (name: string) => {
+    onclosetag: (name) => {
       let _expected = _tag_stack.pop();
       if (_expected !== name)
         throw new Error(`TEMPLATE ERROR:: unexpected closing tag </${name}>, did you mean </${_expected}>?`);
@@ -72,6 +75,6 @@ export default function(raw: string) {
   if (!_tag_stack.empty)
     throw new Error(`TEMPLATE ERROR:: unclosed tag <${_tag_stack.peek}>.`);
 
-  _code += '}';
+  _code += '})';
   return _code;
 }
