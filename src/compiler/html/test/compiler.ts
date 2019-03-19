@@ -37,6 +37,10 @@ function _c(_code: string): ComponentFactory<HTMLNode> {
   }
 }
 
+//
+// TODO: add tests for newline in text, in attributes, etc.
+//
+
 describe('compiler', () => {
   it('should compile a piece of pseudo-html code into a rendering function applicable on an `AbstractComponent`.', () => {
     let R = new HTMLRenderer(new ComponentRegistry());

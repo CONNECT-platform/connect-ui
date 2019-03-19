@@ -2,9 +2,6 @@ const parser = require('htmlparser2');
 
 const { Namer } = require('../util/namer');
 const { Stack } = require('../util/stack');
-//import { Namer } from '../util/namer';
-// import { Stack } from '../util/stack';
-// import validate from './validations';
 const validate = require('./validations');
 
 
