@@ -123,19 +123,12 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
   }
 }
 
-export class ProxyRenderer<_Node extends RenderingNode<_Node>> extends AbstractRenderer<_Node> {
+class ProxyRenderer<_Node extends RenderingNode<_Node>> extends AbstractRenderer<_Node> {
   constructor(
     private renderer: AbstractRenderer<_Node>,
     protected issuer: RenderingComponent<_Node>) {
     super();
     this._registry = renderer.registry;
-  }
-
-  //
-  // TODO: write tests for this.
-  //
-  public get proxied(): AbstractRenderer<_Node> {
-    return this.renderer;
   }
 
   public createNode(tag: string): _Node {
