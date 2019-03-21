@@ -14,6 +14,11 @@ const config: webpack.Configuration = {
         test: /\.component\.html$/,
         use: 'compiler/html/loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.component\.css$/,
+        use: 'compiler/css/loader',
+        exclude: /node_modules/
       }
     ],
   },

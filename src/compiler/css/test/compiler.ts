@@ -11,11 +11,11 @@ const compile = require('../compiler');
 describe('compiler', () => {
   it('should work?', () => {
     let code = compile(`
-      .x a[z~=x] > b.y:hover {
+      :root .x a[z~=x]:focused:not(.dude a) ~ ::deep b.y:hover {
         color: white !important;
       }
     `);
 
-    console.log(eval(code)('__component__'));
+    console.log(eval(code)('__component__', '__root__'));
   });
 });

@@ -4,9 +4,11 @@ import { AbstractComponent } from './renderer/component';
 import { RendererType } from './renderer/types';
 import registry from './renderer/component-registry';
 import render from './compiler/html/decorator';
+import style from './compiler/css/decorator';
 
 
 @render(require('./test/templates/a.component.html'))
+@style(require('./test/styles/a.component.css'))
 class A extends AbstractComponent<HTMLNode> {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({}, renderer, node);
@@ -18,6 +20,7 @@ class A extends AbstractComponent<HTMLNode> {
 }
 
 
+@style(require('./test/styles/b.component.css'))
 @render(require('./test/templates/b.component.html'))
 class B extends AbstractComponent<HTMLNode> {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
