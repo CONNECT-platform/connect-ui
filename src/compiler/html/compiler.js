@@ -31,7 +31,9 @@ module.exports = function(raw) {
         }
         else {
           validate(attr, validate.attribute);
-          _command += `.attr('${attr}', '${val.replace(/'/g, "\\'")}')`;
+          _command += `.attr('${attr}', '${
+            val.replace(/'/g, "\\'").replace(/[\n\r]/g, `' + '\\n' + '`)
+          }')`;
         }
       });
 
@@ -53,7 +55,9 @@ module.exports = function(raw) {
         let _host = 'this.root';
         if (!_stack.empty) _host = _stack.peek;
 
-        _code += `this.renderer.render('').text('${content.replace(/'/g, "\\'")}').on(${_host});`;
+        _code += `this.renderer.render('').text('${
+          content.replace(/'/g, "\\'").replace(/[\n\r]/g, `' + '\\n' + '`)
+        }').on(${_host});`;
       }
     },
 

@@ -37,9 +37,6 @@ function _c(_code: string): ComponentFactory<HTMLNode> {
   }
 }
 
-//
-// TODO: add tests for newline in text, in attributes, etc.
-//
 
 describe('compiler', () => {
   it('should compile a piece of pseudo-html code into a rendering function applicable on an `AbstractComponent`.', () => {
@@ -60,6 +57,19 @@ describe('compiler', () => {
     R.render('A').on(host);
 
     host.children[0].children[0].children[0].textContent.should.equal('hellow');
+  });
+
+  it.only('should properly handle multi-line texts.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<span>
+      hellow
+      world
+      </span>`));
+
+    let host = R.createNode('host');
+    R.render('A').on(host);
+
+    host.children[0].children[0].children[0].textContent.should.equal('hellow\n      world');
   });
 
   it('should return a rendering function that properly handles non-trivial dom trees.', () => {
@@ -121,6 +131,17 @@ describe('compiler', () => {
     R.render('A').on(host);
 
     (host.children[0].children[0].native as HTMLElement).getAttribute('hellow').should.equal("world'");
+  });
+
+  it.only('should properly handle mutli-line attributes.', () => {
+    let R = new HTMLRenderer(new ComponentRegistry());
+    R.registry.register('A', _c(`<span hellow="my
+
+    world'"></span>`));
+
+    let host = R.createNode('host');
+    R.render('A').on(host);
+    (host.children[0].children[0].native as HTMLElement).getAttribute('hellow').should.equal("my\n\n    world'");
   });
 
   it('should skip attributes starting with "$", and instead store the node in component\'s `$` map.', () => {
