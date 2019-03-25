@@ -22,12 +22,3 @@ export class StyledRenderer implements RendererType<any> {
     return this.renderer.clone(node);
   }
 }
-
-//
-// TODO: write tests for this.
-//
-export function styleProxy(contentId: string) {
-  return function(R: RendererType<any>) {
-    return new StyledRenderer(contentId, R);
-  }
-}

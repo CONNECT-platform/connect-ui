@@ -1,5 +1,7 @@
 import { Namer } from '../util/namer';
-import { styleProxy } from './renderer';
+import { StyledRenderer } from './renderer';
+
+import { RendererType } from '../../renderer/types';
 
 
 const _namer = new Namer();
@@ -23,10 +25,13 @@ export default function(styleFunc: (contentId: string, rootId: string) => string
     }
 
     class _NewComp extends _Class {
-      prerender() {
-        this.proxyRenderer(styleProxy(_content_id));
+      protected adopt(renderer: RendererType<any>) {
+        super.adopt(new StyledRenderer(_content_id, renderer));
+      }
+
+      render() {
         this.root.attr(_root_id);
-        return super.prerender();
+        return super.render();
       }
     }
 

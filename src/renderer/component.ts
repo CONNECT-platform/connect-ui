@@ -19,33 +19,27 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
     ) {
 
     super(signature);
-    this._renderer = renderer.within(this);
+
+    this.adopt(renderer);
 
     if (_initCallback) _initCallback(this);
 
-    this.prerender();
     this.render();
-
-    this.prewire();
     this.wire();
   }
 
   protected render() {}
   protected wire() {}
 
-
   //
-  // TODO: write tests for these two.
+  // TODO: write tests for this.
   //
-  protected prerender() {}
-  protected prewire() {}
+  protected adopt(renderer: RendererType<_Node>) {
+    this._renderer = renderer.within(this);
+  }
 
   public get renderer() { return this._renderer; }
   public get root() { return this._node; }
-
-  protected proxyRenderer(proxy: (R: RendererType<_Node>) => RendererType<_Node>) {
-    this._renderer = proxy(this._renderer);
-  }
 
   hook(tag: string, node: _Node): AbstractComponent<_Node> {
     if (!this._hooks[tag]) this._hooks[tag] = [];
