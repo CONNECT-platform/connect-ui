@@ -28,7 +28,10 @@ export interface RendererType<_Node extends RenderingNode<_Node>> {
 export interface RenderingComponent<_Node extends RenderingNode<_Node>> {
   hook?(tag: string, node: _Node): RenderingComponent<_Node>;
   hooks?(tag: string): _Node[];
+  hooktags?: string[];
 
   clone(node?: _Node): RenderingComponent<_Node>;
   proxy?(component: RenderingComponent<_Node>): RenderingComponent<_Node>;
+
+  attach?(): RenderingComponent<_Node>;
 }

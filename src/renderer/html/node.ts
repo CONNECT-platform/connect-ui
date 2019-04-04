@@ -68,7 +68,11 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
 
   public clone(): HTMLNode {
     let clone = new HTMLNode(this.native.cloneNode(false));
-    clone.setText(this.getText());
+    //
+    // TODO: write tests for this.
+    //
+    if (this.native.nodeType == Node.TEXT_NODE)
+      clone.setText(this.getText());
     return clone;
   }
 

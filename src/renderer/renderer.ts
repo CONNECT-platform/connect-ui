@@ -83,8 +83,16 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
         this._attachNode(this._proxyClone(node), proxy);
       });
     }
-    else
+    else {
       this.attachNode(node, host);
+      this.attached(node, host);
+    }
+  }
+
+  protected attached(_: _Node, __: _Node) {
+    //
+    // TODO: write tests for this.
+    //
   }
 
   private _proxyClone(node: _Node): _Node {
@@ -105,10 +113,35 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
       clone.component = node.component.clone(clone);
     }
 
-    if (node.children)
-      node.children.forEach(child => {
-        this.attachNode(this.clone(child), clone);
-      });
+    if (node.children) {
+      //
+      // TODO: write tests for this.
+      //
+      if (node.component && node.component.hooks) {
+        (node.component.hooktags || []).forEach(tag => {
+          let clonehooks = clone.component.hooks(tag);
+          node.component.hooks(tag).forEach((hook, index) => {
+            let clonehook = clonehooks[index];
+            hook.proxy(clonehook);
+
+            hook.children.forEach(child => {
+              //
+              // TODO: study whether this should be proxy clone or simple clone.
+              //
+              this.attachNode(this._proxyClone(child), clonehook);
+            });
+          });
+        });
+      }
+      else {
+        node.children.forEach(child => {
+          //
+          // TODO: study whether this should be proxy clone or simple clone.
+          //
+          this.attachNode(this._proxyClone(child), clone);
+        });
+      }
+    }
 
     return clone;
   }

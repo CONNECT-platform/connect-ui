@@ -1,6 +1,6 @@
 import { HTMLNode } from './renderer/html/node';
 import { HTMLRenderer } from './renderer/html/renderer';
-import { AbstractComponent } from './renderer/component';
+import { HTMLComponent } from './renderer/html/component';
 import { RendererType } from './renderer/types';
 import registry from './renderer/component-registry';
 import render from './compiler/html/decorator';
@@ -9,20 +9,21 @@ import style from './compiler/css/decorator';
 
 @render(require('./test/templates/a.component.html'))
 @style(require('./test/styles/a.component.css'))
-class A extends AbstractComponent<HTMLNode> {
+class A extends HTMLComponent {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({}, renderer, node);
   }
 
   clone(node: HTMLNode) {
-    return new A(this.renderer, node);
+    let clone = new A(this.renderer, node);
+    return clone;
   }
 }
 
 
 @style(require('./test/styles/b.component.css'))
 @render(require('./test/templates/b.component.html'))
-class B extends AbstractComponent<HTMLNode> {
+class B extends HTMLComponent {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({}, renderer, node);
   }
@@ -34,7 +35,7 @@ class B extends AbstractComponent<HTMLNode> {
 
 
 @render(require('./test/templates/d.component.html'))
-class D extends AbstractComponent<HTMLNode> {
+class D extends HTMLComponent {
   constructor(renderer: RendererType<HTMLNode>, node: HTMLNode) {
     super({
       outputs: ['clicked']

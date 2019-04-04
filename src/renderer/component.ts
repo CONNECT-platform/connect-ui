@@ -51,6 +51,10 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
     return this._hooks[tag] || [];
   }
 
+  public get hooktags(): string[] {
+    return Object.keys(this._hooks);
+  }
+
   public abstract clone(node?: _Node): AbstractComponent<_Node>;
 
   public proxy(component: AbstractComponent<_Node>): AbstractComponent<_Node> {
