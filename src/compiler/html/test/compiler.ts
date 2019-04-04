@@ -59,7 +59,7 @@ describe('compiler', () => {
     host.children[0].children[0].children[0].textContent.should.equal('hellow');
   });
 
-  it.only('should properly handle multi-line texts.', () => {
+  it('should properly handle multi-line texts.', () => {
     let R = new HTMLRenderer(new ComponentRegistry());
     R.registry.register('A', _c(`<span>
       hellow
@@ -133,7 +133,7 @@ describe('compiler', () => {
     (host.children[0].children[0].native as HTMLElement).getAttribute('hellow').should.equal("world'");
   });
 
-  it.only('should properly handle mutli-line attributes.', () => {
+  it('should properly handle mutli-line attributes.', () => {
     let R = new HTMLRenderer(new ComponentRegistry());
     R.registry.register('A', _c(`<span hellow="my
 
