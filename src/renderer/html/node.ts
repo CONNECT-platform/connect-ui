@@ -71,7 +71,7 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
     //
     // TODO: write tests for this.
     //
-    if (this.native.nodeType == Node.TEXT_NODE)
+    if (this.children.length == 0)
       clone.setText(this.getText());
     return clone;
   }

@@ -133,8 +133,8 @@ describe('HTMLNode', () => {
       clone.outputs.get('attributes').connect(input);
     });
 
-    it('should carry over text content of a text node IF it is a text node.', () => {
-      let node = new HTMLRenderer().createNode('');
+    it('should carry over text content of a text node IF it has no children.', () => {
+      let node = new HTMLRenderer().createNode('p');
       let clone = node.text('hellow').clone();
       clone.textContent.should.equal('hellow');
     });
