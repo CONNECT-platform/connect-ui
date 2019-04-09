@@ -467,4 +467,35 @@ describe('Composite', () => {
       new Sub({}).control.activate();
     });
   });
+
+  describe('.cleanup()', () => {
+    it('should cleanup all of the composite\'s children.', () => {
+      class Sub extends Composite {
+        build() {
+          this.relay('R');
+        }
+      }
+
+      let s = new Sub({});
+      let o = new OutputPin();
+      (s.children.R as Relay).in.connect(o);
+      (s.children.R as Relay).out.onActivated.subscribe(() => { throw new Error('this should not have happend.') });
+      s.cleanup();
+      o.send('hellow');
+    });
+
+    it('should cleanup all internal pins as well.', () => {
+      class Sub extends Composite {
+        build() {
+          this.ctrl.onActivated.subscribe(() => { throw new Error('this should not have happened.') });
+        }
+      }
+
+      let s = new Sub({});
+      let i = new SignalPin();
+      i.connect(s.control);
+      s.cleanup();
+      i.activate();
+    });
+  });
 });

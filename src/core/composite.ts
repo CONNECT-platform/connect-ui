@@ -74,6 +74,15 @@ export class Composite extends Agent {
   public get locked(): boolean { return this._locked; }
   public lock(): Composite { this._locked = true; return this; }
 
+  public cleanup() {
+    super.cleanup();
+    Object.values(this._children).forEach(child => child.cleanup());
+    this.in.cleanup();
+    this.out.cleanup();
+    this.sig.cleanup();
+    this.ctrl.cleanup();
+  }
+
   protected add(tag: string, child: Agent): Agent {
     if (!this.locked) {
       this._children[tag] = child;
