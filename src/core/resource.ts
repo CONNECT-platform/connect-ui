@@ -18,6 +18,11 @@ export abstract class Resource<_Type> extends Agent {
   }
 
   protected bind() {
+    //
+    // TODO: explore the possibility of adding the same callback to '.onConnected' event
+    //       of the output pin, so the resource is loaded seamlessly, if necessary, when
+    //       someone connects to it.
+    //
     this.control.onActivated.subscribe(() => {
       if (!this.out.activated || this.shouldReload()) {
         this._emit('load');
