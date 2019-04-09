@@ -115,6 +115,19 @@ describe('Pin', () => {
     });
   });
 
+  describe('.cleanup()', () => {
+    it('should disconnect all connected pins.', done => {
+      class P extends Pin { compatible() { return true; } }
+      let a = new P(); let b = new P();
+      a.connect(b);
+      b.onDisconnected.subscribe(pin => {
+        pin.should.equal(a);
+        done();
+      });
+      a.cleanup();
+    });
+  });
+
   describe('.activated', () => {
     it('should return true if the pin is activated.', () => {
       class P extends Pin { compatible() { return true; } }

@@ -22,4 +22,11 @@ export class Topic {
 
   public on(subject: string): Observable<any> { return this._subjects[subject]; }
   public get subjects(): string[] { return Object.keys(this._subjects); }
+
+  public cleanup() {
+    Object.entries(this._subjects).forEach(([sub, ject]) => {
+      ject.unsubscribe();
+      this._def(sub);
+    });
+  }
 }

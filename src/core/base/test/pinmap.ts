@@ -67,6 +67,19 @@ describe('PinMap', () => {
     });
   });
 
+  describe('.cleanup()', () => {
+    it('should cleanup all of its pins.', () => {
+      let pm = new PinMap<InputPin<void>>();
+      let a = new InputPin<void>();
+      let b = new OutputPin<void>();
+      pm.attach('X', a);
+      a.connect(b);
+      a.onReceived.subscribe(() => { throw new Error('this should not have happened.'); });
+      pm.cleanup();
+      b.send();
+    });
+  });
+
   describe('.has()', () => {
     it('should return true for tags that exist on a map.', () => {
       let pm = new PinMap<InputPin<void>>();

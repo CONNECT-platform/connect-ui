@@ -62,6 +62,11 @@ export abstract class Pin extends Topic {
     return this;
   }
 
+  public cleanup() {
+    super.cleanup();
+    [].concat(this._connections).forEach(pin => this.disconnect(pin));
+  }
+
   protected abstract compatible(other: Pin): boolean;
 
   public get connections(): Pin[] { return this._connections; }

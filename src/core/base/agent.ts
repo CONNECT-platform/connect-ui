@@ -69,6 +69,14 @@ export class Agent extends Topic {
     return this._emit('proxied', core) as Agent;
   }
 
+  public cleanup() {
+    super.cleanup();
+    this.inputs.cleanup();
+    this.outputs.cleanup();
+    this.signals.cleanup();
+    this.control.cleanup();
+  }
+
   protected bind(): void {}
   protected preBuild(): void {}
 

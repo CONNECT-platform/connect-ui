@@ -47,6 +47,11 @@ export class PinMap<_PinType extends Pin> extends Topic {
     return this;
   }
 
+  public cleanup() {
+    super.cleanup();
+    Object.values(this._map).forEach(pin => pin.cleanup());
+  }
+
   public has(tag: string): boolean { return tag in this._map; }
   public get(tag: string): _PinType { return this._map[tag]; }
   public get entries(): {tag: string, pin: _PinType}[] {

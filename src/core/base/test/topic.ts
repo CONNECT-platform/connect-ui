@@ -92,5 +92,19 @@ describe('Topic', () => {
       subs.should.include('b');
       subs.length.should.equal(2);
     });
-  })
+  });
+
+  describe('.cleanup()', () => {
+    it('should cleanup all subscribed observers.', () => {
+      class T extends Topic {
+        constructor() { super(); this._def<void>('something'); }
+        emit() { this._emit('something'); }
+      }
+
+      let t = new T();
+      t.on('something').subscribe(() => { throw new Error('this should not have happened.'); });
+      t.cleanup();
+      t.emit();
+    });
+  });
 });

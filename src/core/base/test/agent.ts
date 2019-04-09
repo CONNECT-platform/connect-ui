@@ -201,6 +201,17 @@ describe('Agent', () => {
     });
   });
 
+  describe('.cleanup()', () => {
+    it('should cleanup all of its pins as well.', () => {
+      let a = new Agent({outputs: ['o']});
+      let i = new InputPin<void>();
+      i.connect(a.outputs.get('o'));
+      i.onReceived.subscribe(() => { throw new Error('this should not have happened.'); });
+      a.cleanup();
+      a.outputs.get('o').send('hellow');
+    });
+  });
+
   describe('.error()', () => {
     it('should allow subclasses to emit an "error" event.', done => {
       class Sub extends Agent {
