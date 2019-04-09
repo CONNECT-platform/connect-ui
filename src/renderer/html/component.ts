@@ -7,7 +7,7 @@ import './utils/is-connected-polyfill';
 //
 // TODO: write tests for this.
 //
-export abstract class HTMLComponent extends AbstractComponent<HTMLNode> {
+export class HTMLComponent extends AbstractComponent<HTMLNode> {
   attach(): HTMLComponent {
     let observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
@@ -31,4 +31,6 @@ export abstract class HTMLComponent extends AbstractComponent<HTMLNode> {
 
     return this;
   }
+
+  clone(_: HTMLNode): HTMLComponent { return this; }
 }
