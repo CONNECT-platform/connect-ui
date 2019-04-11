@@ -6,6 +6,8 @@ import component from './renderer/decorator';
 import render from './compiler/html/decorator';
 import style from './compiler/css/decorator';
 
+import './common/input';
+
 
 @component('a')
 @render(require('./test/templates/a.component.html'))
@@ -24,8 +26,18 @@ class B extends HTMLComponent {
 @component('d', { outputs: ['clicked'] })
 @render(require('./test/templates/d.component.html'))
 class D extends HTMLComponent {
+  build() {
+    this.state('s', 'hellow');
+  }
+
   wire() {
     this.$.title.outputs.get('click').connect(this.out.get('clicked'));
+
+    this.children.s.outputs.get('out').connect((this.$.in1.component as HTMLComponent).inputs.get('value'));
+    this.children.s.outputs.get('out').connect((this.$.in2.component as HTMLComponent).inputs.get('value'));
+
+    (this.$.in1.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
+    (this.$.in2.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
   }
 }
 

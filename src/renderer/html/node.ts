@@ -6,7 +6,7 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
   private _listeners:{[event: string]: any} = {};
 
   constructor(public native: Node | HTMLElement) {
-    super(_DomEvents.concat(['appended']));
+    super(_DomEvents);
 
     this.postConstruct();
     this._bindDOMEvents();
