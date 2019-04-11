@@ -27,7 +27,7 @@ class B extends HTMLComponent {
 @render(require('./test/templates/d.component.html'))
 class D extends HTMLComponent {
   build() {
-    this.state('s', 'hellow');
+    this.state('s', false);
   }
 
   wire() {

@@ -12,11 +12,22 @@ import component from '../renderer/decorator';
 class InputComponent extends HTMLComponent {
   build() {
     this.expr('o', ['event'], () => {
-      return (this.root.native as HTMLInputElement).value;
+      let input = this.root.native as HTMLInputElement;
+      let type = input.getAttribute('type');
+      if (type === 'checkbox' || type === 'radio') {
+        return input.checked;
+      }
+      else return input.value;
     });
 
     this.expr('i', ['value'], value => {
-      (this.root.native as HTMLInputElement).value = value;
+      let input = this.root.native as HTMLInputElement;
+      let type = input.getAttribute('type');
+      if (type === 'checkbox' || type === 'radio') {
+        input.checked = value;
+      }
+      else
+        input.value = value;
     });
   }
 
