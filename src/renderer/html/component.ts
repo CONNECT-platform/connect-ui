@@ -13,10 +13,7 @@ export class HTMLComponent extends AbstractComponent<HTMLNode> {
       mutations.forEach(mutation => {
         if (mutation.removedNodes.length > 0) {
           if (!this.root.native.isConnected) {
-            //
-            // TODO: replace this with actual disconnection logic.
-            //
-            console.log('I AM DETACHED:: ' + this.root.native.nodeName);
+            this.cleanup();
             observer.disconnect();
           }
         }

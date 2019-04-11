@@ -188,6 +188,33 @@ describe('AbstractNode', () => {
     });
   });
 
+  describe('.cleanup()', () => {
+    it('should cleanup the callbacks on the node.', () => {
+      let a = new _Node();
+      a.textState.out.onSent.subscribe(() => { throw new Error('this should not have happend.') });
+      a.cleanup();
+      a.text('hellow');
+    });
+
+    it('should cleanup the child nodes as well.', () => {
+      let a = new _Node();
+      let b = new _Node();
+      a.append(b);
+      b.textState.out.onSent.subscribe(() => { throw new Error('this should not have happend.') });
+      a.cleanup();
+      b.text('hellow');
+    });
+
+    it('should cleanup the proxied nodes as well.', () => {
+      let a = new _Node();
+      let b = new _Node();
+      a.proxy(b);
+      b.textState.out.onSent.subscribe(() => { throw new Error('this should not have happend.') });
+      a.cleanup();
+      b.text('hellow');
+    });
+  });
+
   describe('.textState', () => {
     it('should be equal to `.state(\'text\')`', () => {
       let node = new _Node();

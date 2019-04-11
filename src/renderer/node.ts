@@ -98,6 +98,15 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
       return this as any as _Child;
     }
 
+    //
+    // TODO: write tests for this.
+    //
+    public cleanup() {
+      super.cleanup();
+      this.children.forEach(child => child.cleanup());
+      this.proxies.forEach(proxy => proxy.cleanup());
+    }
+
     public abstract get attributes(): string[];
     public abstract clone(): _Child;
 

@@ -10,6 +10,7 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
 
   private _renderer: RendererType<_Node>;
   private _hooks: {[tag: string]: _Node[]} = {};
+  private _proxies: AbstractComponent<_Node>[] = [];
   $: {[name: string]: _Node} = {};
 
   constructor(signature: Signature,
@@ -55,10 +56,20 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
     return Object.keys(this._hooks);
   }
 
-  public abstract clone(node?: _Node): AbstractComponent<_Node>;
-
   public proxy(component: AbstractComponent<_Node>): AbstractComponent<_Node> {
     super.proxy(component);
+    this._proxies.push(component);
     return this;
   }
+
+  //
+  // TODO: write tests for this.
+  //
+  public cleanup() {
+    super.cleanup();
+    this.root.cleanup();
+    this._proxies.forEach(proxy => proxy.cleanup());
+  }
+
+  public abstract clone(node?: _Node): AbstractComponent<_Node>;
 }
