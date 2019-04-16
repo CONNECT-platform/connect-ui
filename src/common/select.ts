@@ -5,29 +5,31 @@ import component from '../renderer/decorator';
 //
 // TODO: write tests for this.
 //
-@component('input', {
+@component('select', {
   inputs: ['value'],
   outputs: ['value'],
 })
-class InputComponent extends HTMLComponent {
+class SelectComponent extends HTMLComponent {
+  render() {
+    this.renderTransient();
+  }
+
   build() {
     this.expr('o', ['event'], () => {
-      let input = this.root.native as HTMLInputElement;
-      let type = input.getAttribute('type');
-      if (type === 'checkbox' || type === 'radio') {
-        return input.checked;
+      let select = this.root.native as HTMLSelectElement;
+      if (select.hasAttribute('multiple')) {
+        return Array.from(select.options).filter(option => option.selected).map(option => option.value);
       }
-      else return input.value;
+      else
+        return select.value;
     });
 
     this.expr('i', ['value'], value => {
-      let input = this.root.native as HTMLInputElement;
-      let type = input.getAttribute('type');
-      if (type === 'checkbox' || type === 'radio') {
-        input.checked = value;
-      }
+      let select = this.root.native as HTMLSelectElement;
+      if (select.hasAttribute('multiple'))
+        Array.from(select.options).forEach(option => option.selected = value.includes(option.value));
       else
-        input.value = value;
+        select.value = value;
     });
   }
 
@@ -43,4 +45,4 @@ class InputComponent extends HTMLComponent {
   }
 }
 
-export default InputComponent;
+export default SelectComponent;

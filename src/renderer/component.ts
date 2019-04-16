@@ -39,6 +39,14 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
     this._renderer = renderer.within(this);
   }
 
+  //
+  // TODO: write tests for this. it should cause the component to drop its transclusion mechanism
+  //       and delegate the attachment of nodes to its root node to the renderer.
+  //
+  protected renderTransient() {
+    this.hooks = undefined;
+  }
+
   public get renderer() { return this._renderer; }
   public get root() { return this._node; }
 
