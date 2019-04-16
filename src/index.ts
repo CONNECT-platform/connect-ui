@@ -6,9 +6,9 @@ import component from './renderer/decorator';
 import render from './compiler/html/decorator';
 import style from './compiler/css/decorator';
 
-import './common/input';
-import './common/select';
-import './common/textarea';
+import './common/inputs/input';
+import './common/inputs/select';
+import './common/inputs/textarea';
 
 
 @component('a')
@@ -29,31 +29,11 @@ class B extends HTMLComponent {
 @render(require('./test/templates/d.component.html'))
 class D extends HTMLComponent {
   build() {
-    this.state('s', false);
+    this.state('s');
   }
 
   wire() {
-    // this.$.title.outputs.get('click').connect(this.out.get('clicked'));
-
-    // this.children.s.outputs.get('out').connect((this.$.in1.component as HTMLComponent).inputs.get('value'));
-    // this.children.s.outputs.get('out').connect((this.$.in2.component as HTMLComponent).inputs.get('value'));
-
-    // (this.$.in1.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
-    // (this.$.in2.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
-
-    // (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
-    // (this.$.si.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
-    //
-    // this.children.s.outputs.get('out').connect((this.$.s.component as HTMLComponent).inputs.get('value'));
-    // this.children.s.outputs.get('out').connect((this.$.si.component as HTMLComponent).inputs.get('value'));
-    //
-    // (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.$.st.inputs.get('text'));
-    //(this.$.t.component as HTMLComponent).outputs.get('value').connect(this.$.st.inputs.get('text'));
-    (this.$.t.component as HTMLComponent).inputs.get('value').receive('hellow world!');
-
-    (this.$.in1.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
-    this.children.s.outputs.get('out').connect((this.$.in1.component as HTMLComponent).inputs.get('value'));
-    this.children.s.outputs.get('out').connect(this.$.st.inputs.get('text'));
+    (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.$.st.inputs.get('text'));
   }
 }
 
