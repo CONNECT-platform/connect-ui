@@ -8,6 +8,7 @@ import style from './compiler/css/decorator';
 
 import './common/input';
 import './common/select';
+import './common/textarea';
 
 
 @component('a')
@@ -40,10 +41,19 @@ class D extends HTMLComponent {
     // (this.$.in1.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
     // (this.$.in2.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
 
-    (this.$.s.component as HTMLComponent).outputs.get('value')
-      .connect((this.$.si.component as HTMLComponent).inputs.get('value'));
+    // (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
+    // (this.$.si.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
+    //
+    // this.children.s.outputs.get('out').connect((this.$.s.component as HTMLComponent).inputs.get('value'));
+    // this.children.s.outputs.get('out').connect((this.$.si.component as HTMLComponent).inputs.get('value'));
+    //
+    // (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.$.st.inputs.get('text'));
+    //(this.$.t.component as HTMLComponent).outputs.get('value').connect(this.$.st.inputs.get('text'));
+    (this.$.t.component as HTMLComponent).inputs.get('value').receive('hellow world!');
 
-    (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.$.st.inputs.get('text'));
+    (this.$.in1.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
+    this.children.s.outputs.get('out').connect((this.$.in1.component as HTMLComponent).inputs.get('value'));
+    this.children.s.outputs.get('out').connect(this.$.st.inputs.get('text'));
   }
 }
 
