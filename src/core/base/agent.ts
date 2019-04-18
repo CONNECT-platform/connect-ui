@@ -44,6 +44,10 @@ export class Agent extends Topic {
     return this._emit('reset') as Agent;
   }
 
+  //
+  // TODO: send the last data on each input and the control to the newly proxied agent.
+  // TODO: write tests for this behavior.
+  //
   public proxy(core: Agent): Agent {
     this.control.onActivated.subscribe(() => core.control.activate());
 

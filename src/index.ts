@@ -9,6 +9,7 @@ import style from './compiler/css/decorator';
 import './common/inputs/input';
 import './common/inputs/select';
 import './common/inputs/textarea';
+import './common/conditional';
 
 
 @component('a')
@@ -30,10 +31,20 @@ class B extends HTMLComponent {
 class D extends HTMLComponent {
   build() {
     this.state('s');
+    this.state('show', true);
   }
 
   wire() {
-    (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.$.st.inputs.get('text'));
+    this.children.s.outputs.get('out').connect(this.$.st.inputs.get('text'));
+
+    (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
+    this.children.s.outputs.get('out').connect((this.$.s.component as HTMLComponent).inputs.get('value'));
+
+    this.children.show.outputs.get('out').connect((this.$.showvalue.component as HTMLComponent).inputs.get('value'));
+    (this.$.showvalue.component as HTMLComponent).outputs.get('value').connect(this.children.show.inputs.get('in'));
+
+    this.children.show.outputs.get('out')
+      .connect((this.$.value.component as HTMLComponent).inputs.get('switch'));
   }
 }
 

@@ -57,9 +57,16 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
     if (component)
       node.component = component;
 
+    return this.renderNode(tag, node);
+  }
+
+  public renderNode(tag: string, node: _Node): RenderingRequest<_Node> {
     return new RenderingRequest<_Node>(node, (node, host) => this._render(tag, node, host));
   }
 
+  public renderClone(tag: string, node: _Node): RenderingRequest<_Node> {
+    return this.renderNode(tag, this._proxyClone(node));
+  }
 
   private _render(tag: string, node: _Node, host: _Node) {
     if (host.component && host.component.hooks && host.component != this.issuer) {

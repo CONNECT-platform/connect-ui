@@ -1,14 +1,20 @@
 <B $D>
   <a @y>
-    <p $title @x>hellow</p>
-    <select $s @x multiple>
+    <p $title @header>hellow</p>
+    <select $s @content multiple>
       <option value="aa">hellow</option>
       <option value="bb">world</option>
     </select>
   </a>
 </B>
 
+<br><br><br>
 
-<br><br>
-<br/>
-<span $st>values here ...</span>
+<input $showvalue type="checkbox"/>show value
+
+<br><br><br>
+
+<conditional $value>
+  <span $st @then>values here ...</span>
+  <span @else>not showing values</span>
+</conditional>

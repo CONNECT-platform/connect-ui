@@ -4,6 +4,7 @@ import component from '../../renderer/decorator';
 
 //
 // TODO: write tests for this.
+// TODO: handle initial values from html.
 //
 @component('input', {
   inputs: ['value'],
