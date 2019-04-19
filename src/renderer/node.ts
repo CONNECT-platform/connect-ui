@@ -46,7 +46,13 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
           return map;
         }, {});
 
-      this.state('text').onUpdate.subscribe(value => this.setText(value));
+      this.state('text').onUpdate.subscribe(value => {
+        this.setText(value);
+        //
+        // TODO: add this to the tests.
+        //
+        this.children = [];
+      });
       this.state('attributes').onUpdate.subscribe(attrs => {
         if (this.supportsAttributes) {
           Object.entries(attrs).forEach(attr => {

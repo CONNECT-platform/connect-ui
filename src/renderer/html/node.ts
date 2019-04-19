@@ -74,15 +74,6 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
     if (this.children.length == 0) {
       clone.setText(this.getText());
     }
-    else if (this.children.length == 1 && this.children[0].native.nodeType == Node.TEXT_NODE) {
-      //
-      // TODO: THIS IS A STRUCTURAL BYPASS (E.G. TOFF). PLEASE FIX THIS STRUCTURALLY ASAP.
-      //
-      setImmediate(() => {
-        if (clone.children.length == 1)
-          clone.children[0].setText(this.getText());
-      });
-    }
 
     return clone;
   }
