@@ -17,6 +17,10 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
       this.outputs.get(event).onConnected.subscribe(() => {
         this._activateEvent(event);
       });
+
+      //
+      // TODO: check when everything is disconnected from an event and remove the listeners then.
+      //
     });
   }
 
@@ -78,13 +82,15 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
     return clone;
   }
 
-  private get _onlyText(): boolean {
-    if (this.children.length == 0) return true;
-    if (this.children.length == 1) {
-      if (this.children[0].children.length == 0) return true;
-    }
+  //
+  // TODO: write tests for this.
+  //
+  public proxy(node: HTMLNode) {
+    Object.keys(this._listeners).forEach(event => {
+      node._activateEvent(event);
+    })
 
-    return false;
+    return super.proxy(node);
   }
 
   //

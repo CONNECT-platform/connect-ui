@@ -1,5 +1,4 @@
 import { HTMLComponent } from '../renderer/html/component';
-import { HTMLNode } from '../renderer/html/node';
 import component from '../renderer/decorator';
 
 //
@@ -18,9 +17,9 @@ class ConditionalComponent extends HTMLComponent {
           (this.$._current.native as HTMLElement).remove();
 
         if (_switch)
-          this.$._current = this.renderer.renderClone('helper:then', this.hooks('@then')[0]).on(this.root);
+          this.$._current = this.renderer.renderClone('cond:then', this.hooks('@then')[0]).on(this.root);
         else
-          this.$._current = this.renderer.renderClone('helper:else', this.hooks('@else')[0]).on(this.root);
+          this.$._current = this.renderer.renderClone('cond:else', this.hooks('@else')[0]).on(this.root);
 
         this.last = !!_switch;
       }

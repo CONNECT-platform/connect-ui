@@ -1,6 +1,8 @@
 <B $D>
   <a @y>
-    <p $title @header>hellow</p>
+    <div @header>
+      <p $title>hellow</p>
+    </div>
     <select $s @content multiple>
       <option value="aa">hellow</option>
       <option value="bb">world</option>
@@ -10,6 +12,7 @@
 
 <br><br><br>
 
+<!--
 <input $showvalue type="checkbox"/>show value
 
 <br><br><br>
@@ -18,3 +21,10 @@
   <span $st @then>values here ...</span>
   <span @else>not showing values</span>
 </conditional>
+-->
+
+<list $valuelist>
+  <div each:data-value="item" $listitem>
+    <span each:text="index"></span>--<span each:text="item">an item here.</span>
+  </div>
+</list>
