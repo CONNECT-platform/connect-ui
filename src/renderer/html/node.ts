@@ -71,9 +71,29 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
     //
     // TODO: write tests for this.
     //
-    if (this.children.length == 0)
+    if (this.children.length == 0) {
       clone.setText(this.getText());
+    }
+    else if (this.children.length == 1 && this.children[0].native.nodeType == Node.TEXT_NODE) {
+      //
+      // TODO: THIS IS A STRUCTURAL BYPASS (E.G. TOFF). PLEASE FIX THIS STRUCTURALLY ASAP.
+      //
+      setImmediate(() => {
+        if (clone.children.length == 1)
+          clone.children[0].setText(this.getText());
+      });
+    }
+
     return clone;
+  }
+
+  private get _onlyText(): boolean {
+    if (this.children.length == 0) return true;
+    if (this.children.length == 1) {
+      if (this.children[0].children.length == 0) return true;
+    }
+
+    return false;
   }
 
   //

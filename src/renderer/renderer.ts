@@ -85,15 +85,18 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
   }
 
   private _attachNode(node: _Node, host: _Node) {
+    
+    this.attachNode(node, host);
+    this.attached(node, host);
+
     if (host.proxies && host.proxies.length > 0) {
       host.proxies.forEach(proxy => {
         this._attachNode(this._proxyClone(node), proxy);
       });
     }
-    else {
-      this.attachNode(node, host);
-      this.attached(node, host);
-    }
+    // else {
+
+    // }
   }
 
   protected attached(_: _Node, __: _Node) {
