@@ -21,9 +21,11 @@ export interface RenderingRequestType<_Node extends RenderingNode<_Node>> {
 
 export interface RendererType<_Node extends RenderingNode<_Node>> {
   render(tag: string): RenderingRequestType<_Node>;
+  renderClone(tag: string, node: _Node): RenderingRequestType<_Node>;
+  virtualHook(tag: string): RendererType<_Node>;
+
   within(component: RenderingComponent<_Node>): RendererType<_Node>;
   clone?(node: _Node): _Node;
-  renderClone?(tag: string, node: _Node): RenderingRequestType<_Node>;
 }
 
 export interface RenderingComponent<_Node extends RenderingNode<_Node>> {

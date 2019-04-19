@@ -2,8 +2,6 @@ import { HTMLComponent } from '../renderer/html/component';
 import { HTMLNode } from '../renderer/html/node';
 import component from '../renderer/decorator';
 
-import './hidden';
-
 //
 // TODO: write tests for this.
 //
@@ -16,16 +14,13 @@ class ConditionalComponent extends HTMLComponent {
   build() {
     this.expr('e', ['switch'], (_switch) => {
       if (this.last === 'not set' || this.last !== _switch) {
-        if (this.$._current) {
+        if (this.$._current)
           (this.$._current.native as HTMLElement).remove();
-        }
 
-        if (_switch) {
+        if (_switch)
           this.$._current = this.renderer.renderClone('helper:then', this.hooks('@then')[0]).on(this.root);
-        }
-        else {
+        else
           this.$._current = this.renderer.renderClone('helper:else', this.hooks('@else')[0]).on(this.root);
-        }
 
         this.last = !!_switch;
       }
@@ -33,8 +28,8 @@ class ConditionalComponent extends HTMLComponent {
   }
 
   render() {
-    this.hook('@then', new HTMLNode(document.createElement('hook:then')));
-    this.hook('@else', new HTMLNode(document.createElement('hook:else')));
+    this.renderer.virtualHook('@then');
+    this.renderer.virtualHook('@else');
   }
 
   wire() {

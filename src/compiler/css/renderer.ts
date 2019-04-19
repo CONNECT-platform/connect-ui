@@ -14,6 +14,14 @@ export class StyledRenderer implements RendererType<any> {
     return this.renderer.render(tag).attr(this.contentId);
   }
 
+  renderClone(tag: string, node: any) {
+    return this.renderer.renderClone(tag, node).attr(this.contentId);
+  }
+
+  virtualHook(tag: string) {
+    return this.renderer.virtualHook(tag);
+  }
+
   within(component: RenderingComponent<any>) {
     return new StyledRenderer(this.contentId, this.renderer.within(component));
   }

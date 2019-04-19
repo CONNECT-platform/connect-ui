@@ -68,6 +68,13 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
     return this.renderNode(tag, this._proxyClone(node));
   }
 
+  public virtualHook(tag: string) {
+    if (this.issuer && this.issuer.hook)
+      this.issuer.hook(tag, this.createNode(tag));
+
+    return this;
+  }
+
   private _render(tag: string, node: _Node, host: _Node) {
     if (host.component && host.component.hooks && host.component != this.issuer) {
       let transtag = (node.transtag?node.transtag():undefined) || '@';
@@ -85,7 +92,6 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
   }
 
   private _attachNode(node: _Node, host: _Node) {
-    
     this.attachNode(node, host);
     this.attached(node, host);
 
@@ -94,9 +100,6 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
         this._attachNode(this._proxyClone(node), proxy);
       });
     }
-    // else {
-
-    // }
   }
 
   protected attached(_: _Node, __: _Node) {
