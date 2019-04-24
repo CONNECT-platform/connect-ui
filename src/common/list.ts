@@ -13,6 +13,17 @@ class ListComponent extends HTMLComponent {
 
   build() {
     this.expr('e', ['items'], (items: any[]) => {
+      let itemkey: string = 'item';
+      let indexkey: string = undefined;
+
+      if (this.root.getAttribute('foreach')) {
+        itemkey = this.root.getAttribute('foreach');
+      }
+
+      if (this.root.getAttribute('index')) {
+        indexkey = this.root.getAttribute('index');
+      }
+
       //
       // TODO: make this generally smarter, so that it doesn't re-render the whole
       //       list in response to minor changes.
@@ -32,10 +43,11 @@ class ListComponent extends HTMLComponent {
           //
           // TODO: enable naming context variables.
           //
-          context.inherit({
-            item: item,
-            index: index
-          }).apply(this.renderer.renderClone('list:item', this.hooks('@')[0]).on(this.$._current));
+          let ctx: any = {};
+          ctx[itemkey] = item;
+          if (indexkey) ctx[indexkey] = index;
+
+          context.inherit(ctx).apply(this.renderer.renderClone('list:item', this.hooks('@')[0]).on(this.$._current));
         });
       }
     });

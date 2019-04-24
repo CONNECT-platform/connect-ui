@@ -23,8 +23,8 @@
 </conditional>
 -->
 
-<list $valuelist>
-  <div context:data-value="item" $listitem>
-    <span context:text="index"></span>--<span context:text="item">an item here.</span>
+<list $valuelist foreach="thing" index="i">
+  <div context:data-value="thing" $listitem>
+    <span context:text="i"></span>--<span context:text="thing">an item here.</span>
   </div>
 </list>
