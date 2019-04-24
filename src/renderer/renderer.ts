@@ -64,6 +64,9 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
     return new RenderingRequest<_Node>(node, (node, host) => this._render(tag, node, host));
   }
 
+  //
+  // TODO: write tests for this.
+  //
   public renderClone(tag: string, node: _Node): RenderingRequest<_Node> {
     return this.renderNode(tag, this._proxyClone(node));
   }
@@ -119,6 +122,9 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
     return clone;
   }
 
+  //
+  // TODO: update tests for context.
+  //
   public clone(node: _Node): _Node {
     let clone = node.clone();
 

@@ -1,5 +1,6 @@
 import { RenderingComponent, RendererType } from './types';
 import { AbstractNode } from './node';
+import { Context } from './context';
 
 import { Signature } from '../core/base/signature';
 import { Composite } from '../core/composite';
@@ -12,6 +13,7 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
   private _hooks: {[tag: string]: _Node[]} = {};
   private _proxies: AbstractComponent<_Node>[] = [];
   $: {[name: string]: _Node} = {};
+  protected _context: Context;
 
   constructor(signature: Signature,
       renderer: RendererType<_Node>,
@@ -45,6 +47,17 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
   //
   protected renderTransient() {
     this.hooks = undefined;
+  }
+
+  //
+  // TODO: write tests for this.
+  //
+  public context(context: Context): AbstractComponent<_Node> {
+    if (context) {
+      if (!this._context) this._context = new Context();
+      this._context.inherit(context);
+    }
+    return this;
   }
 
   public get renderer() { return this._renderer; }

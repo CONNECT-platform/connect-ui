@@ -7,6 +7,8 @@ export interface RenderingNode<_Node extends RenderingNode<_Node>> {
   clone(): _Node;
   proxy?(node: _Node): _Node;
 
+  getAttr(attr: string): string;
+
   component?: RenderingComponent<_Node>;
   children: _Node[];
   proxies?: _Node[];
@@ -17,6 +19,12 @@ export interface RenderingRequestType<_Node extends RenderingNode<_Node>> {
   text(content: string): RenderingRequestType<_Node>;
   attr(attr: string, content?: string): RenderingRequestType<_Node>;
   on(host: _Node): _Node;
+}
+
+export interface RenderingContext<_Node extends RenderingNode<_Node>> {
+  scope: {[name: string]: any};
+  inherit(parent: {[name: string]: any} | RenderingContext<_Node>): RenderingContext<_Node>;
+  apply(node: _Node): RenderingContext<_Node>;
 }
 
 export interface RendererType<_Node extends RenderingNode<_Node>> {
@@ -37,4 +45,5 @@ export interface RenderingComponent<_Node extends RenderingNode<_Node>> {
   proxy?(component: RenderingComponent<_Node>): RenderingComponent<_Node>;
 
   attach?(): RenderingComponent<_Node>;
+  context?(context: RenderingContext<_Node>): RenderingComponent<_Node>;
 }

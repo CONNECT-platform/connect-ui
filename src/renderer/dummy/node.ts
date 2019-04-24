@@ -22,6 +22,10 @@ export class DummyNode implements RenderingNode<DummyNode> {
     return this;
   }
 
+  public getAttr(attr: string): string {
+    return this.attrs[attr].toString();
+  }
+
   public get attributes() { return Object.keys(this.attrs); }
 
   public trans(tag: string) {

@@ -31,7 +31,7 @@ class B extends HTMLComponent {
 @render(require('./test/templates/d.component.html'))
 class D extends HTMLComponent {
   build() {
-    this.state('s');
+    this.state('s', ['aa', 'bb']);
     this.state('show', true);
     this.expr('e', ['event', 's'], (event, s) => {
       if (s.includes(event.currentTarget.dataset.value))

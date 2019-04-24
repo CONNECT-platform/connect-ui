@@ -85,6 +85,13 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
     public transtag(): string  { return this._transtag; }
 
     //
+    // TODO: write tests for this.
+    //
+    public getAttr(attr: string): string {
+      return this.state('attributes').value[attr];
+    }
+
+    //
     // TODO: add support for adding before or after a specific child.
     //
     public append(node: _Child): _Child {

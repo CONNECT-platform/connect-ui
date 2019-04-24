@@ -3,4 +3,5 @@ describe('renderer', () => {
   require('./renderer');
   require('./node');
   require('./component');
+  require('./context');
 });
