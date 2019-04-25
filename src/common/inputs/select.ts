@@ -4,6 +4,7 @@ import component from '../../renderer/decorator';
 
 //
 // TODO: write tests for this.
+// TODO: add support for dynamic option lists with object values.
 //
 @component('select', {
   inputs: ['value'],
