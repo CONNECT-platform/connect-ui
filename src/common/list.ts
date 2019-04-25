@@ -5,7 +5,7 @@ import component from '../renderer/decorator';
 //
 // TODO: write tests for this.
 //
-@component('list', {
+@component('for', {
   inputs: ['items'],
 })
 class ListComponent extends HTMLComponent {
@@ -13,14 +13,14 @@ class ListComponent extends HTMLComponent {
 
   build() {
     this.expr('e', ['items'], (items: any[]) => {
-      let itemkey: string = 'item';
+      let itemkey: string = 'each';
       let indexkey: string = undefined;
       let oddKey: string = undefined;
       let evenKey: string = undefined;
       let firstKey: string = undefined;
       let lastKey: string = undefined;
 
-      if (this.root.getAttribute('foreach')) itemkey = this.root.getAttribute('foreach');
+      if (this.root.getAttribute('each')) itemkey = this.root.getAttribute('each');
       if (this.root.getAttribute('index')) indexkey = this.root.getAttribute('index');
       if (this.root.getAttribute('odd')) oddKey = this.root.getAttribute('odd');
       if (this.root.getAttribute('even')) oddKey = this.root.getAttribute('even');

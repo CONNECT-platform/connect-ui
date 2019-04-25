@@ -23,20 +23,22 @@
 </conditional>
 -->
 
-<list $valuelist foreach="thing" index="i">
+<for each="thing" index="i" $valuelist>
   <div context:data-value="thing" $listitem>
     <span context:text="i" context:ind="i"></span>--<span context:text="thing">an item here.</span>
   </div>
-</list>
+</for>
 
 <br><br>
 
-<list $rows foreach="row" index="i">
-  <list $cols context:component:items="row" foreach="col" index="j" last="last">
-    <span context:text="j"></span><span context:text="col"></span>
+<for each="row" index="i" $rows>
+  <for each="col" index="j" last="last" context:component:items="row" $cols>
+    <span context:text="i"></span>
+    <span context:text="j"></span>
+    <span context:text="col"></span>
     <if context:component:condition="last">
       <span @else>.....</span>
     </if>
-  </list>
+  </for>
   <br>
-</list>
+</for>
