@@ -25,6 +25,15 @@
 
 <list $valuelist foreach="thing" index="i">
   <div context:data-value="thing" $listitem>
-    <span context:text="i"></span>--<span context:text="thing">an item here.</span>
+    <span context:text="i" context:ind="i"></span>--<span context:text="thing">an item here.</span>
   </div>
+</list>
+
+<br><br>
+
+<list $rows foreach="row" index="i">
+  <list $cols context:component:items="row" foreach="col" index="j">
+    <span context:text="j"></span> . X . <span context:text="col"></span> .      |       .
+  </list>
+  <br>
 </list>

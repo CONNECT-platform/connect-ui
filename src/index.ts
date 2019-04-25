@@ -51,6 +51,8 @@ class D extends HTMLComponent {
     this.children.s.outputs.get('out').connect((this.$.valuelist.component as HTMLComponent).inputs.get('items'));
     this.$.listitem.outputs.get('click').connect(this.children.e.inputs.get('event'));
 
+    (this.$.rows.component as HTMLComponent).inputs.get('items').receive([['a', 'b'], ['c', 'd']]);
+
     // this.children.show.outputs.get('out').connect((this.$.showvalue.component as HTMLComponent).inputs.get('value'));
     // (this.$.showvalue.component as HTMLComponent).outputs.get('value').connect(this.children.show.inputs.get('in'));
     //

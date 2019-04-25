@@ -41,7 +41,7 @@ class ListComponent extends HTMLComponent {
           if (this._context) context.inherit(this._context);
 
           //
-          // TODO: enable naming context variables.
+          // TODO: add support for `first`, `last`, `odd`, and `even`.
           //
           let ctx: any = {};
           ctx[itemkey] = item;
