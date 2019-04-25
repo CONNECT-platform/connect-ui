@@ -15,14 +15,17 @@ class ListComponent extends HTMLComponent {
     this.expr('e', ['items'], (items: any[]) => {
       let itemkey: string = 'item';
       let indexkey: string = undefined;
+      let oddKey: string = undefined;
+      let evenKey: string = undefined;
+      let firstKey: string = undefined;
+      let lastKey: string = undefined;
 
-      if (this.root.getAttribute('foreach')) {
-        itemkey = this.root.getAttribute('foreach');
-      }
-
-      if (this.root.getAttribute('index')) {
-        indexkey = this.root.getAttribute('index');
-      }
+      if (this.root.getAttribute('foreach')) itemkey = this.root.getAttribute('foreach');
+      if (this.root.getAttribute('index')) indexkey = this.root.getAttribute('index');
+      if (this.root.getAttribute('odd')) oddKey = this.root.getAttribute('odd');
+      if (this.root.getAttribute('even')) oddKey = this.root.getAttribute('even');
+      if (this.root.getAttribute('first')) oddKey = this.root.getAttribute('first');
+      if (this.root.getAttribute('last')) oddKey = this.root.getAttribute('last');
 
       //
       // TODO: make this generally smarter, so that it doesn't re-render the whole
@@ -40,12 +43,14 @@ class ListComponent extends HTMLComponent {
           var context = new Context();
           if (this._context) context.inherit(this._context);
 
-          //
-          // TODO: add support for `first`, `last`, `odd`, and `even`.
-          //
           let ctx: any = {};
           ctx[itemkey] = item;
+
           if (indexkey) ctx[indexkey] = index;
+          if (oddKey) ctx[oddKey] = index % 2 == 1;
+          if (evenKey) ctx[evenKey] = index % 2 == 0;
+          if (firstKey) ctx[firstKey] = index == 0;
+          if (lastKey) ctx[lastKey] = index == items.length - 1;
 
           context.inherit(ctx).apply(this.renderer.renderClone('list:item', this.hooks('@')[0]).on(this.$._current));
         });

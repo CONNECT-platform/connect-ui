@@ -4,8 +4,8 @@ import component from '../renderer/decorator';
 //
 // TODO: write tests for this.
 //
-@component('conditional', {
-  inputs: ['switch'],
+@component('if', {
+  inputs: ['condition'],
 })
 class ConditionalComponent extends HTMLComponent {
   last: boolean | 'not set' = 'not set';
@@ -32,7 +32,7 @@ class ConditionalComponent extends HTMLComponent {
   }
 
   wire() {
-    this.in.get('switch').connect(this.children.e.inputs.get('switch'));
+    this.in.get('condition').connect(this.children.e.inputs.get('switch'));
   }
 }
 

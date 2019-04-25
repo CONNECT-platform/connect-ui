@@ -57,7 +57,7 @@ class D extends HTMLComponent {
     // (this.$.showvalue.component as HTMLComponent).outputs.get('value').connect(this.children.show.inputs.get('in'));
     //
     // this.children.show.outputs.get('out')
-    //   .connect((this.$.value.component as HTMLComponent).inputs.get('switch'));
+    //   .connect((this.$.value.component as HTMLComponent).inputs.get('condition'));
   }
 }
 
