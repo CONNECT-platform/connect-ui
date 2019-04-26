@@ -78,11 +78,19 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
   }
 
   //
-  // TODO: pass set input values and signals to the other guy as well.
+  // TODO: write tests for this.
   //
   public proxy(component: AbstractComponent<_Node>): AbstractComponent<_Node> {
     super.proxy(component);
     this._proxies.push(component);
+
+    this.inputs.entries.forEach(entry => {
+      if (entry.pin.activated && component.inputs.has(entry.tag))
+        component.inputs.get(entry.tag).receive(entry.pin.last);
+    });
+
+    if (this.ctrl.activated) component.ctrl.activate();
+
     return this;
   }
 

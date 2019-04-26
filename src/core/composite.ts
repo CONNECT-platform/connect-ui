@@ -43,25 +43,25 @@ export class Composite extends Agent {
     this.inputs.entries.forEach(entry => {
       let pin = new OutputPin<any>();
       this.in.attach(entry.tag, pin);
-      entry.pin.onReceived.subscribe(data => pin.send(data));
+      entry.pin.onReceived.subscribe(data => { if (!this.proxied) pin.send(data) });
     });
 
     this.out = new PinMap<InputPin<any>>();
     this.outputs.entries.forEach(entry => {
       let pin = new InputPin<any>();
       this.out.attach(entry.tag, pin);
-      pin.onReceived.subscribe(data => entry.pin.send(data));
+      pin.onReceived.subscribe(data => { if (!this.proxied) entry.pin.send(data) });
     });
 
     this.sig = new PinMap<ControlPin>();
     this.signals.entries.forEach(entry => {
       let pin = new ControlPin();
       this.sig.attach(entry.tag, pin);
-      pin.onActivated.subscribe(() => entry.pin.activate());
+      pin.onActivated.subscribe(() => { if (!this.proxied) entry.pin.activate(); });
     });
 
     this.ctrl = new SignalPin();
-    this.control.onActivated.subscribe(() => this.ctrl.activate());
+    this.control.onActivated.subscribe(() => { if (!this.proxied) this.ctrl.activate() });
 
     this.in.lock();
     this.out.lock();

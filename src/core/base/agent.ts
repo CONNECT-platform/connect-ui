@@ -13,6 +13,8 @@ export class Agent extends Topic {
   readonly signals: PinMap<SignalPin> = new PinMap<SignalPin>();
   readonly control: ControlPin;
 
+  private _proxied: boolean = false;
+
   constructor(readonly signature: Signature = {}, preBuildCallback?: (_: any) => void) {
     super();
 
@@ -70,7 +72,12 @@ export class Agent extends Topic {
       }
     });
 
+    this._proxied = true;
     return this._emit('proxied', core) as Agent;
+  }
+
+  protected get proxied(): boolean {
+    return this._proxied;
   }
 
   public cleanup() {

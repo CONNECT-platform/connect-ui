@@ -15,20 +15,19 @@ export class BaseInputComponent extends HTMLComponent {
   }
 
   _value: any;
-  _proxied: boolean = false;
 
   set(_: any) {}
   get(): any {}
 
   private _set(_: any) {
-    if (this._proxied)
+    if (this.proxied)
       this._value = _;
     else
       this.set(_);
   }
 
   private _get(): any {
-    if (this._proxied)
+    if (this.proxied)
       return this._value;
     else
       return this.get();
@@ -55,13 +54,15 @@ export class BaseInputComponent extends HTMLComponent {
     this.in.get('value').connect(this.out.get('value'));
   }
 
+  //
+  // TODO: check to which extent this is still necessary.
+  //
   proxy(component: BaseInputComponent) {
-    super.proxy(component);
-
-    if (!this._proxied) {
+    if (!this.proxied) {
       this._value = this.get();
-      this._proxied = true;
     }
+
+    super.proxy(component);
 
     component.outputs.get('value').onSent.subscribe(value => {
       this._set(value);

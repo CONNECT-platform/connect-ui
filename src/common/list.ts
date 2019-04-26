@@ -10,12 +10,9 @@ import component from '../renderer/decorator';
 })
 class ListComponent extends HTMLComponent {
   last: any[] = undefined;
-  proxied: boolean = false;
 
   build() {
     this.expr('e', ['items'], (items: any[]) => {
-      if (this.proxied) return;
-
       let itemkey: string = 'each';
       let indexkey: string = undefined;
       let oddKey: string = undefined;
@@ -67,12 +64,6 @@ class ListComponent extends HTMLComponent {
 
   wire() {
     this.in.get('items').connect(this.children.e.inputs.get('items'));
-  }
-
-  proxy(core: ListComponent): ListComponent {
-    this.proxied = true;
-    if (this.last) core.inputs.get('items').receive(this.last);
-    return super.proxy(core) as ListComponent;
   }
 }
 
