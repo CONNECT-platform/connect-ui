@@ -12,22 +12,29 @@
 
 <br><br><br>
 
-<!--
+
 <input $showvalue type="checkbox"/>show value
 
 <br><br><br>
-
+<!--
 <conditional $value>
   <span $st @then>values here ...</span>
   <span @else>not showing values</span>
 </conditional>
 -->
 
-<for each="thing" index="i" $valuelist>
-  <div context:data-value="thing" $listitem>
-    <span context:text="i" context:ind="i"></span>--<span context:text="thing">an item here.</span>
+<if $vlistcond>
+  <div @then>
+    <for each="thing" index="i" $valuelist>
+      <div context:data-value="thing" $listitem>
+        <span context:text="i" context:ind="i"></span>--<span context:text="thing">an item here.</span>
+      </div>
+    </for>
   </div>
-</for>
+  <div @else>
+    not showing value list.
+  </div>
+</if>
 
 <br><br>
 

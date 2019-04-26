@@ -15,6 +15,9 @@ import _registry from './node-registry';
 import { NodeRegistry } from './node-registry';
 
 
+//
+// TODO: change it so when the composite is merely a proxy, its internal connections are not fired.
+//
 export class Composite extends Agent {
   protected in: PinMap<OutputPin<any>>;
   protected out: PinMap<InputPin<any>>;

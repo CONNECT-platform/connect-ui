@@ -77,6 +77,9 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
     return Object.keys(this._hooks);
   }
 
+  //
+  // TODO: pass set input values and signals to the other guy as well.
+  //
   public proxy(component: AbstractComponent<_Node>): AbstractComponent<_Node> {
     super.proxy(component);
     this._proxies.push(component);
