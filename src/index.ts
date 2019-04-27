@@ -34,9 +34,7 @@ class D extends HTMLComponent {
     this.state('s', ['aa', 'bb']);
     this.state('show', true);
     this.expr('e', ['event', 's'], (event, s) => {
-      if (s.includes(event.currentTarget.dataset.value))
-        return s.filter((i: string) => i != event.currentTarget.dataset.value);
-      else return s;
+      return s.filter((i: string) => i != event.currentTarget.dataset.value);
     });
   }
 

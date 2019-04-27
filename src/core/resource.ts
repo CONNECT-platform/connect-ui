@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs/Observable';
+import isequal from 'lodash.isequal';
 
 import { Agent } from './base/agent';
 import { InputPin, PersistentOutput } from './base/io';
@@ -36,7 +37,7 @@ export abstract class Resource<_Type> extends Agent {
     this.in.onReceived.subscribe((data: _Type) => {
       this._emit('update', data);
       this.update(data);
-      if (data != this.out.last) //TODO: swap this out for a deep check.
+      if (!isequal(data, this.out.last)) //TODO: swap this out for a deep check.
         this.out.send(data);
     });
   }

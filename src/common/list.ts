@@ -9,9 +9,8 @@ import component from '../renderer/decorator';
   inputs: ['items'],
 })
 class ListComponent extends HTMLComponent {
-  last: any[] = undefined;
-
   build() {
+    this.state('items');
     this.expr('e', ['items'], (items: any[]) => {
       let itemkey: string = 'each';
       let indexkey: string = undefined;
@@ -31,30 +30,26 @@ class ListComponent extends HTMLComponent {
       // TODO: make this generally smarter, so that it doesn't re-render the whole
       //       list in response to minor changes.
       //
-      if (this.last != items) {
-        if (this.$._current)
-          (this.$._current.native as HTMLElement).remove();
+      if (this.$._current)
+        (this.$._current.native as HTMLElement).remove();
 
-        this.last = items;
+      this.$._current = this.renderer.render('list:container').on(this.root);
 
-        this.$._current = this.renderer.render('list:container').on(this.root);
+      items.forEach((item, index) => {
+        var context = new Context();
+        if (this._context) context.inherit(this._context);
 
-        items.forEach((item, index) => {
-          var context = new Context();
-          if (this._context) context.inherit(this._context);
+        let ctx: any = {};
+        ctx[itemkey] = item;
 
-          let ctx: any = {};
-          ctx[itemkey] = item;
+        if (indexkey) ctx[indexkey] = index;
+        if (oddKey) ctx[oddKey] = index % 2 == 1;
+        if (evenKey) ctx[evenKey] = index % 2 == 0;
+        if (firstKey) ctx[firstKey] = index == 0;
+        if (lastKey) ctx[lastKey] = index == items.length - 1;
 
-          if (indexkey) ctx[indexkey] = index;
-          if (oddKey) ctx[oddKey] = index % 2 == 1;
-          if (evenKey) ctx[evenKey] = index % 2 == 0;
-          if (firstKey) ctx[firstKey] = index == 0;
-          if (lastKey) ctx[lastKey] = index == items.length - 1;
-
-          context.inherit(ctx).apply(this.renderer.renderClone('list:item', this.hooks('@')[0]).on(this.$._current));
-        });
-      }
+        context.inherit(ctx).apply(this.renderer.renderClone('list:item', this.hooks('@')[0]).on(this.$._current));
+      });
     });
   }
 
@@ -63,7 +58,8 @@ class ListComponent extends HTMLComponent {
   }
 
   wire() {
-    this.in.get('items').connect(this.children.e.inputs.get('items'));
+    this.in.get('items').connect(this.children.items.inputs.get('in'));
+    this.children.items.outputs.get('out').connect(this.children.e.inputs.get('items'));
   }
 }
 
