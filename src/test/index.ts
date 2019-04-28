@@ -15,6 +15,7 @@ test('renderer/html/test/index.ts');
 
 test('compiler/html/test/index.ts');
 test('compiler/css/test/index.ts');
-test('compiler/util/test/index.ts');
+
+test('util/test/index.ts');
 
 mocha.run(console.log);

@@ -1,7 +1,7 @@
 const parser = require('htmlparser2');
 
-const { Namer } = require('../util/namer');
-const { Stack } = require('../util/stack');
+const { Namer } = require('../../util/namer');
+const { Stack } = require('../../util/stack');
 const validate = require('./validations');
 
 

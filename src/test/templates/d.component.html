@@ -27,8 +27,8 @@
 <if $vlistcond>
   <div @then>
     <for each="thing" index="i" $valuelist>
-      <div context:data-value="thing" $listitem>
-        <span context:text="i" context:ind="i"></span>--<span context:text="thing">an item here.</span>
+      <div context:data-value="thing.name" $listitem>
+        <span context:text="i" context:ind="i"></span>--<span context:text="thing.name">an item here.</span>
       </div>
     </for>
   </div>

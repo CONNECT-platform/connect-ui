@@ -1,4 +1,4 @@
-import { Namer } from '../util/namer';
+import { Namer } from '../../util/namer';
 import { StyledRenderer } from './renderer';
 
 import { RendererType } from '../../renderer/types';
