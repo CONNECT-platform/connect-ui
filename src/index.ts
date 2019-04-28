@@ -39,14 +39,15 @@ class D extends HTMLComponent {
   }
 
   wire() {
-    // this.children.s.outputs.get('out').connect(this.$.st.inputs.get('text'));
-
     (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
     this.children.s.outputs.get('out').connect((this.$.s.component as HTMLComponent).inputs.get('value'));
     this.children.s.outputs.get('out').connect(this.children.e.inputs.get('s'));
     this.children.e.outputs.get('result').connect(this.children.s.inputs.get('in'));
 
-    this.children.s.outputs.get('out').connect((this.$.valuelist.component as HTMLComponent).inputs.get('items'));
+    (this.$.t.component as HTMLComponent).outputs.get('value').connect(this.$.yo.inputs.get('text'));
+
+    this.children.s.outputs.get('out')
+      .connect((this.$.valuelist.component as HTMLComponent).inputs.get('items'));
     this.$.listitem.outputs.get('click').connect(this.children.e.inputs.get('event'));
 
     (this.$.rows.component as HTMLComponent).inputs.get('items').receive([['a', 'b'], ['c', 'd']]);
