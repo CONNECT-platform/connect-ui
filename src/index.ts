@@ -61,6 +61,8 @@ class D extends HTMLComponent {
 
     this.children.show.outputs.get('out')
       .connect((this.$.vlistcond.component as HTMLComponent).inputs.get('condition'));
+    this.children.show.outputs.get('out')
+      .connect((this.$.yocond.component as HTMLComponent).inputs.get('condition'));
   }
 }
 

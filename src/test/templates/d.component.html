@@ -3,7 +3,9 @@
     <div @header>
       <p $title>hellow</p>
     </div>
-    <input $t @content type="text"/>
+    <if $yocond @content>
+      <input $t @else type="text"/>
+    </if>
     <select $s @content multiple>
       <option value="aa">hellow</option>
       <option value="bb">world</option>
