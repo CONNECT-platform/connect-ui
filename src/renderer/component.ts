@@ -10,7 +10,7 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
   implements RenderingComponent<_Node> {
 
   private _renderer: RendererType<_Node>;
-  private _hooks: {[tag: string]: _Node[]} = {};
+  private _hooks: {[tag: string]: _Node} = {};
   private _proxies: AbstractComponent<_Node>[] = [];
   $: {[name: string]: _Node} = {};
   protected _context: Context;
@@ -24,6 +24,7 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
     super(signature);
 
     this.adopt(renderer);
+    this._def('cleaned');
 
     if (_initCallback) _initCallback(this);
 
@@ -46,7 +47,7 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
   //       and delegate the attachment of nodes to its root node to the renderer.
   //
   protected renderTransient() {
-    this.hooks = undefined;
+    this.getHook = undefined;
   }
 
   //
@@ -64,13 +65,12 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
   public get root() { return this._node; }
 
   hook(tag: string, node: _Node): AbstractComponent<_Node> {
-    if (!this._hooks[tag]) this._hooks[tag] = [];
-    this._hooks[tag].push(node);
+    this._hooks[tag] = node;
     return this;
   }
 
-  hooks(tag: string): _Node[] {
-    return this._hooks[tag] || [];
+  getHook(tag: string): _Node {
+    return this._hooks[tag];
   }
 
   public get hooktags(): string[] {
@@ -91,6 +91,10 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
 
     if (this.ctrl.activated) component.ctrl.activate();
 
+    component.onCleaned.subscribe(() => {
+      this._proxies = this._proxies.filter(proxy => proxy != component);
+    });
+
     return this;
   }
 
@@ -98,10 +102,12 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
   // TODO: write tests for this.
   //
   public cleanup() {
+    this._emit('cleaned');
     super.cleanup();
-    this.root.cleanup();
     this._proxies.forEach(proxy => proxy.cleanup());
   }
 
   public abstract clone(node?: _Node): AbstractComponent<_Node>;
+
+  public get onCleaned() { return this.on('cleaned'); }
 }

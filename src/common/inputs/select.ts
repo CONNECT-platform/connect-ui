@@ -8,6 +8,11 @@ import isEqual from 'lodash.isequal';
 
 //
 // TODO: write tests for this.
+// TODO: fix the bug on rerendering with object data.
+//
+// TODO: fix the following performance issue:
+//    --> evidently it is not an issue of select, but of proxies not being cleaned up.
+//
 //
 @component('select', {
   inputs: ['value', 'options'],
@@ -20,6 +25,7 @@ class SelectComponent extends BaseInputComponent {
     super.build();
     this.state('options');
     this.expr('e', ['options'], options => {
+      this.root.cleanup();
       (this.root.native as HTMLElement).innerHTML = "";
       let namer = new Namer();
       this.optionmap = {};
@@ -31,10 +37,7 @@ class SelectComponent extends BaseInputComponent {
         let key = namer.next;
         this.optionmap[key] = option.value;
 
-        let opt = document.createElement('option');
-        opt.setAttribute('value', key);
-        opt.innerHTML = option.label;
-        (this.root.native as HTMLElement).appendChild(opt);
+        this.renderer.render('option').attr('value', key).text(option.label).on(this.root);
       });
     });
   }

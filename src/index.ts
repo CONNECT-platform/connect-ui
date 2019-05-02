@@ -34,17 +34,18 @@ class D extends HTMLComponent {
     this.state('s');
     this.state('show', true);
     this.expr('e', ['event', 's'], (event, s) => {
-      return s.filter((i: any) => i.name != event.currentTarget.dataset.value);
+      return s.filter((i: any) => i != event.currentTarget.dataset.value);
     });
   }
 
   wire() {
-    (this.$.s.component as HTMLComponent).inputs.get('options').receive([
-      {label: 'jack', value: {name: 'the jack', age: 22}},
-      {label: 'jill', value: {name: 'die jill', age: 43}}
-    ]);
+    // (this.$.s.component as HTMLComponent).inputs.get('options').receive([
+    //   {label: 'jack', value: {name: 'the jack', age: 22}},
+    //   {label: 'jill', value: {name: 'die jill', age: 43}}
+    // ]);
     (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
     this.children.s.outputs.get('out').connect((this.$.s.component as HTMLComponent).inputs.get('value'));
+
     this.children.s.outputs.get('out').connect(this.children.e.inputs.get('s'));
     this.children.e.outputs.get('result').connect(this.children.s.inputs.get('in'));
 

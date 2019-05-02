@@ -30,8 +30,10 @@ class ListComponent extends HTMLComponent {
       // TODO: make this generally smarter, so that it doesn't re-render the whole
       //       list in response to minor changes.
       //
-      if (this.$._current)
+      if (this.$._current) {
+        this.$._current.cleanup();
         (this.$._current.native as HTMLElement).remove();
+      }
 
       this.$._current = this.renderer.render('list:container').on(this.root);
 
@@ -48,7 +50,7 @@ class ListComponent extends HTMLComponent {
         if (firstKey) ctx[firstKey] = index == 0;
         if (lastKey) ctx[lastKey] = index == items.length - 1;
 
-        context.inherit(ctx).apply(this.renderer.renderClone('list:item', this.hooks('@')[0]).on(this.$._current));
+        context.inherit(ctx).apply(this.renderer.renderClone('list:item', this.getHook('@')).on(this.$._current));
       });
     });
   }

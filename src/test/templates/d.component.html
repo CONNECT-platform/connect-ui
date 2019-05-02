@@ -5,11 +5,11 @@
     </div>
     <if $yocond @content>
       <input $t @else type="text"/>
+      <select $s @then multiple>
+        <option value="aa">hellow</option>
+        <option value="bb">world</option>
+      </select>
     </if>
-    <select $s @content multiple>
-      <option value="aa">hellow</option>
-      <option value="bb">world</option>
-    </select>
   </a>
 </B>
 
@@ -29,8 +29,8 @@
 <if $vlistcond>
   <div @then>
     <for each="thing" index="i" $valuelist>
-      <div context:data-value="thing.name" $listitem>
-        <span context:text="i" context:ind="i"></span>--<span context:text="thing.name">an item here.</span>
+      <div context:data-value="thing" $listitem>
+        <span context:text="i" context:ind="i"></span>--<span context:text="thing">an item here.</span>
       </div>
     </for>
   </div>

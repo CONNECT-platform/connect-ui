@@ -3,6 +3,7 @@ import component from '../renderer/decorator';
 
 //
 // TODO: write tests for this.
+// TODO: switch the behavior to merely not display contents instead of rerendering clonse of them each time.
 //
 @component('if', {
   inputs: ['condition'],
@@ -13,13 +14,26 @@ class ConditionalComponent extends HTMLComponent {
   build() {
     this.expr('e', ['switch'], (_switch) => {
       if (this.last === 'not set' || this.last !== _switch) {
-        if (this.$._current)
+        if (this.$._current) {
           (this.$._current.native as HTMLElement).remove();
+        }
 
         if (_switch)
-          this.$._current = this.renderer.renderClone('cond:then', this.hooks('@then')[0]).on(this.root);
+          this.$._current = this.getHook('@then');
         else
-          this.$._current = this.renderer.renderClone('cond:else', this.hooks('@else')[0]).on(this.root);
+          this.$._current = this.getHook('@else');
+
+        this.root.appendChild(this.$._current);
+
+        // if (this.$._current) {
+        //   this.$._current.cleanup();
+        //   (this.$._current.native as HTMLElement).remove();
+        // }
+        //
+        // if (_switch)
+        //   this.$._current = this.renderer.renderClone('cond:then', this.getHook('@then')).on(this.root);
+        // else
+        //   this.$._current = this.renderer.renderClone('cond:else', this.getHook('@else')).on(this.root);
 
         this.last = !!_switch;
       }

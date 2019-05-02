@@ -79,11 +79,9 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
   }
 
   private _render(tag: string, node: _Node, host: _Node) {
-    if (host.component && host.component.hooks && host.component != this.issuer) {
+    if (host.component && host.component.getHook && host.component != this.issuer) {
       let transtag = (node.transtag?node.transtag():undefined) || '@';
-      host.component.hooks(transtag).forEach(hook => {
-        this._attachNode(this._proxyClone(node), hook);
-      });
+      this._attachNode(node, host.component.getHook(transtag));
     }
     else {
       this._attachNode(node, host);
@@ -136,19 +134,17 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
       //
       // TODO: write tests for this.
       //
-      if (node.component && node.component.hooks) {
+      if (node.component && node.component.getHook) {
         (node.component.hooktags || []).forEach(tag => {
-          let clonehooks = clone.component.hooks(tag);
-          node.component.hooks(tag).forEach((hook, index) => {
-            let clonehook = clonehooks[index];
-            hook.proxy(clonehook);
+          let clonehook = clone.component.getHook(tag);
+          let hook = node.component.getHook(tag);
+          hook.proxy(clonehook);
 
-            hook.children.forEach(child => {
-              //
-              // TODO: study whether this should be proxy clone or simple clone.
-              //
-              this.attachNode(this._proxyClone(child), clonehook);
-            });
+          hook.children.forEach((child: _Node) => {
+            //
+            // TODO: study whether this should be proxy clone or simple clone.
+            //
+            this.attachNode(this._proxyClone(child), clonehook);
           });
         });
       }

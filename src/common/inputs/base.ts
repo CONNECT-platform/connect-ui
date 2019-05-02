@@ -18,23 +18,32 @@ export class BaseInputComponent extends HTMLComponent {
   get(): any {}
 
   build() {
+    this.state('value');
+
     this.expr('o', ['event'], () => {
-      return this.get();
+      if (!this.proxied)
+        return this.get();
     });
 
     this.expr('i', ['value'], value => {
-      this.set(value);
+      if (!this.proxied) {
+        this.set(value);
+        return value;
+      }
     });
   }
 
   wire() {
-    ['keyup','keypress','keydown','blur','focus','change']
+    ['keyup','keypress','keydown','change']
       .forEach(event => {
         this.root.outputs.get(event).connect(this.children.o.inputs.get('event'));
       });
 
+    // this.children.o.outputs.get('result').connect(this.children.value.inputs.get('in'));
     this.children.o.outputs.get('result').connect(this.out.get('value'));
-    this.in.get('value').connect(this.children.i.inputs.get('value'));
+
+    this.children.value.outputs.get('out').connect(this.children.i.inputs.get('value'));
+    this.in.get('value').connect(this.children.value.inputs.get('in'));
     this.in.get('value').connect(this.out.get('value'));
   }
 }

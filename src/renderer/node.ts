@@ -1,5 +1,6 @@
 import { State } from '../core/state';
 import { Stateful } from '../core/stateful';
+import { Agent } from '../core/base/agent';
 
 import { RenderingNode, RenderingComponent } from './types';
 
@@ -16,6 +17,8 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
         outputs: events.concat('appended'),
         states: ['text', 'attributes']
       });
+
+      this._def('cleaned');
     }
 
     protected postConstruct() {
@@ -108,6 +111,9 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
     public proxy(node: _Child): _Child {
       super.proxy(node);
       this.proxies.push(node);
+      node.onCleaned.subscribe(() => {
+        this.proxies = this.proxies.filter(proxy => proxy != node);
+      });
       return this as any as _Child;
     }
 
@@ -115,7 +121,12 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
     // TODO: write tests for this.
     //
     public cleanup() {
+      this._emit('cleaned');
       super.cleanup();
+
+      if (this.component && this.component instanceof Agent)
+        this.component.cleanup();
+
       this.children.forEach(child => child.cleanup());
       this.proxies.forEach(proxy => proxy.cleanup());
     }
@@ -133,6 +144,8 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
 
     public get textState(): State<string> { return this.state('text'); }
     public get attrsState(): State<string> { return this.state('attributes'); }
+
+    public get onCleaned() { return this.on('cleaned'); }
 
     public component: RenderingComponent<_Child>;
     public children: _Child[] = [];

@@ -13,7 +13,7 @@ export class HTMLComponent extends AbstractComponent<HTMLNode> {
       mutations.forEach(mutation => {
         if (mutation.removedNodes.length > 0) {
           if (!this.root.native.isConnected) {
-            this.cleanup();
+            this.root.cleanup();
             observer.disconnect();
           }
         }
