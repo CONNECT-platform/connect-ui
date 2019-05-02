@@ -25,7 +25,6 @@ class SelectComponent extends BaseInputComponent {
     super.build();
     this.state('options');
     this.expr('e', ['options'], options => {
-      this.root.cleanup();
       (this.root.native as HTMLElement).innerHTML = "";
       let namer = new Namer();
       this.optionmap = {};

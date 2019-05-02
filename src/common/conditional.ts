@@ -24,17 +24,6 @@ class ConditionalComponent extends HTMLComponent {
           this.$._current = this.getHook('@else');
 
         this.root.appendChild(this.$._current);
-
-        // if (this.$._current) {
-        //   this.$._current.cleanup();
-        //   (this.$._current.native as HTMLElement).remove();
-        // }
-        //
-        // if (_switch)
-        //   this.$._current = this.renderer.renderClone('cond:then', this.getHook('@then')).on(this.root);
-        // else
-        //   this.$._current = this.renderer.renderClone('cond:else', this.getHook('@else')).on(this.root);
-
         this.last = !!_switch;
       }
     });
