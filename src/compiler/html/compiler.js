@@ -5,6 +5,9 @@ const { Stack } = require('../../util/stack');
 const validate = require('./validations');
 
 
+//
+// TODO: fix the format mismatch with default html stuff.
+//
 module.exports = function(raw) {
   let _code = '(function(){';
   let _stack = new Stack();

@@ -35,14 +35,21 @@
 
 <br><br>
 
-<for each="row" of="grid" index="i" $rows>
-  <for each="col" of="row" index="j" last="last" $cols>
-    <span context:text="i"></span>
-    <span context:text="j"></span>
-    <span context:text="col"></span>
-    <if context:component:condition="last">
-      <span @else>.....</span>
+<for each="row" of="grid" index="i" odd="odd">
+  <for each="col" of="row" index="j" last="last">
+    [<span context:text="i"></span><span context:text="j"></span>]<span context:text="col"></span>
+    <if condition="last">
+      <if condition="odd" @else>
+        <span @then>.......</span>
+        <span @else>------</span>
+      </if>
     </if>
+    <!--
+    <if condition="last">
+      <span @else>
+      </span>
+    </if>
+    -->
   </for>
   <br>
 </for>

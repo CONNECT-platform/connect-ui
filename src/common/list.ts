@@ -26,9 +26,9 @@ class ListComponent extends HTMLComponent {
       if (this.root.getAttribute('each')) itemkey = this.root.getAttribute('each');
       if (this.root.getAttribute('index')) indexkey = this.root.getAttribute('index');
       if (this.root.getAttribute('odd')) oddKey = this.root.getAttribute('odd');
-      if (this.root.getAttribute('even')) oddKey = this.root.getAttribute('even');
-      if (this.root.getAttribute('first')) oddKey = this.root.getAttribute('first');
-      if (this.root.getAttribute('last')) oddKey = this.root.getAttribute('last');
+      if (this.root.getAttribute('even')) evenKey = this.root.getAttribute('even');
+      if (this.root.getAttribute('first')) firstKey = this.root.getAttribute('first');
+      if (this.root.getAttribute('last')) lastKey = this.root.getAttribute('last');
 
       //
       // TODO: make this generally smarter, so that it doesn't re-render the whole
@@ -51,8 +51,8 @@ class ListComponent extends HTMLComponent {
         if (indexkey) ctx[indexkey] = index;
         if (oddKey) ctx[oddKey] = index % 2 == 1;
         if (evenKey) ctx[evenKey] = index % 2 == 0;
-        if (firstKey) ctx[firstKey] = index == 0;
-        if (lastKey) ctx[lastKey] = index == items.length - 1;
+        if (firstKey) ctx[firstKey] = (index == 0);
+        if (lastKey) ctx[lastKey] = (index == items.length - 1);
 
         let n = this.renderer.renderClone('list:item', this.getHook('@')).on(this.$._current);
 
@@ -82,20 +82,20 @@ class ListComponent extends HTMLComponent {
     super.context(ctx);
 
     if (this.root.attributes.includes('of')) {
-      let reskey = this.root.getAttr('of');
+      let val = this._context.get(this.root.getAttr('of'));
 
-      if (reskey in this._context.scope) {
+      if (val !== undefined) {
         if (this.bound) {
           this.bound.out.disconnect(this.inputs.get('items'));
           this.bound = undefined;
         }
 
-        if (this._context.scope[reskey] instanceof Resource) {
-          this.bound = this._context.scope[reskey];
+        if (val instanceof Resource) {
+          this.bound = val;
           this.inputs.get('items').connect(this.bound.out);
         }
         else {
-          this.inputs.get('items').receive(this._context.scope[reskey]);
+          this.inputs.get('items').receive(val);
         }
       }
     }

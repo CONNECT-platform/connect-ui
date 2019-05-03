@@ -25,6 +25,7 @@ export interface RenderingContext<_Node extends RenderingNode<_Node>> {
   scope: {[name: string]: any};
   inherit(parent: {[name: string]: any} | RenderingContext<_Node>): RenderingContext<_Node>;
   apply(node: _Node): RenderingContext<_Node>;
+  get(directive: string): any;
 }
 
 export interface RendererType<_Node extends RenderingNode<_Node>> {

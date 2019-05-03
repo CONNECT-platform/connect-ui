@@ -29,6 +29,7 @@ class ConditionalComponent extends HTMLComponent {
           this.$._current = this.getHook('@else');
 
         this.root.appendChild(this.$._current);
+        this._context.apply(this.$._current);
         this.last = !!_switch;
       }
     });
@@ -47,13 +48,16 @@ class ConditionalComponent extends HTMLComponent {
     super.context(ctx);
 
     if (this.root.attributes.includes('condition')) {
-      let condkey = this.root.getAttr('condition');
-      if (condkey in this._context.scope && (this._context.scope[condkey] instanceof Resource)) {
+      let value = this._context.get(this.root.getAttr('condition'));
+      if (value !== undefined) {
         if (this.bound)
           this.bound.out.disconnect(this.inputs.get('condition'));
 
-        this.bound = this._context.scope[condkey];
-        this.bound.out.connect(this.inputs.get('condition'));
+        if (value instanceof Resource) {
+          this.bound = value;
+          this.bound.out.connect(this.inputs.get('condition'));
+        }
+        else this.inputs.get('condition').receive(value);
       }
     }
 

@@ -20,12 +20,6 @@ export class Context implements RenderingContext<any> {
   // TODO: update tests to include child tree crawling.
   //
   public apply(node: any) {
-    // if (node.native.tagName == 'HOOK:') {
-    //   console.log(this.scope);
-    //   console.log(node.native);
-    //   console.log('--------------------');
-    // }
-
     this._apply(node);
 
     if (node.children) {
@@ -53,7 +47,7 @@ export class Context implements RenderingContext<any> {
       .filter((attribute: string) => attribute.startsWith('context:'))
       .forEach((attribute: string) => {
         let targetDirective = attribute.split(':');
-        let valueDirective = node.getAttr(attribute).split('.');
+        let valueDirective = node.getAttr(attribute);
 
         let apply: (value: any) => void;
 
@@ -94,13 +88,8 @@ export class Context implements RenderingContext<any> {
           }
         }
 
-        let value: any = this.scope;
-        valueDirective.forEach((step: string) => {
-          try {
-            value = value[step];
-          } catch(_) { value = undefined; }
-        });
 
+        let value = this.get(valueDirective);
         if (apply && (value !== undefined)) apply(value);
         else {
           //
@@ -111,5 +100,18 @@ export class Context implements RenderingContext<any> {
 
     if (node.component && node.component.context)
       node.component.context(this);
+  }
+
+  get(directive: string): any {
+    if (directive) {
+      let value: any = this.scope;
+      directive.split('.').forEach((step: string) => {
+        try {
+          value = value[step];
+        } catch(_) { value = undefined; }
+      });
+
+      return value;
+    }
   }
 }
