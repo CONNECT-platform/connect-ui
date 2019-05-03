@@ -1,6 +1,7 @@
 import { State } from '../core/state';
 import { Stateful } from '../core/stateful';
 import { Agent } from '../core/base/agent';
+import { Resource } from '../core/resource';
 
 import { RenderingNode, RenderingComponent } from './types';
 
@@ -69,17 +70,29 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
       return this.getText();
     }
 
-    public text(text: string): _Child {
-      this.state('text').value = text;
+    public text(text: string | Resource<string>): _Child {
+      if (text instanceof Resource)
+        text.out.connect(this.state('text').in);
+      else
+        this.state('text').value = text;
+
       return this as any as _Child;
     }
 
-    public attr(attr: string, content?: string): _Child {
-      this.state('attributes').value = Object.assign(
-        {},
-        this.state('attributes').value,
-        { [attr]: content || "" }
-      );
+    public attr(attr: string, content?: string | Resource<string>): _Child {
+      if (content instanceof Resource) {
+        //
+        // TODO: find a better solution for attributes than having
+        //       one giant state for all of them, and then support binding
+        //       a resource to attributes.
+        //
+      }
+      else
+        this.state('attributes').value = Object.assign(
+          {},
+          this.state('attributes').value,
+          { [attr]: content.toString() || "" }
+        );
 
       return this as any as _Child;
     }

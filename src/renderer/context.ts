@@ -53,7 +53,7 @@ export class Context implements RenderingContext<any> {
 
         if (targetDirective.length == 2) {
           if (targetDirective[1] == 'text') apply = (value: any) => node.text(value);
-          else apply = (value: any) => node.attr(targetDirective[1], value.toString());
+          else apply = (value: any) => node.attr(targetDirective[1], value);
         }
         else if (targetDirective.length == 3) {
           if (targetDirective[1] == 'component') {

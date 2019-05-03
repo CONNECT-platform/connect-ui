@@ -2,6 +2,8 @@ import { HTMLComponent } from '../../renderer/html/component';
 import { HTMLNode } from '../../renderer/html/node';
 import { Signature, extend } from '../../core/base/signature';
 import { RendererType } from '../../renderer/types';
+import { Context } from '../../renderer/context';
+import { Resource } from '../../core/resource';
 
 //
 // TODO: write tests for this.
@@ -13,6 +15,8 @@ export class BaseInputComponent extends HTMLComponent {
       outputs: ['value']
     }), renderer, node);
   }
+
+  bound: Resource<any>;
 
   set(_: any) {}
   get(): any {}
@@ -45,5 +49,29 @@ export class BaseInputComponent extends HTMLComponent {
     this.children.value.outputs.get('out').connect(this.children.i.inputs.get('value'));
     this.in.get('value').connect(this.children.value.inputs.get('in'));
     this.in.get('value').connect(this.out.get('value'));
+  }
+
+  context(ctx: Context) {
+    super.context(ctx);
+
+    if (this.root.attributes.includes('bind')) {
+      let val = this._context.get(this.root.getAttr('bind'));
+
+      if (val !== undefined) {
+        if (this.bound) {
+          this.bound.out.disconnect(this.inputs.get('value'));
+          this.bound.in.disconnect(this.outputs.get('value'));
+          this.bound = undefined;
+        }
+
+        if (val instanceof Resource) {
+          this.bound = val;
+          this.bound.out.connect(this.inputs.get('value'));
+          this.bound.in.connect(this.outputs.get('value'));
+        }
+      }
+    }
+
+    return this;
   }
 }

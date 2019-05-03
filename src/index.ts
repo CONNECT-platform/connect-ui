@@ -37,6 +37,7 @@ class D extends HTMLComponent {
       return s.filter((i: any) => i.name != event.currentTarget.dataset.value);
     });
     this.state('grid', [['a', 'b'], ['c', 'd'], ['e', 'f']]);
+    this.state('empty', 'not showing values ...')
   }
 
   wire() {
@@ -45,18 +46,12 @@ class D extends HTMLComponent {
       {label: 'jill', value: {name: 'die jill', age: 43}}
     ]);
 
-    (this.$.s.component as HTMLComponent).outputs.get('value').connect(this.children.s.inputs.get('in'));
-    this.children.s.outputs.get('out').connect((this.$.s.component as HTMLComponent).inputs.get('value'));
-
     this.children.s.outputs.get('out').connect(this.children.e.inputs.get('s'));
     this.children.e.outputs.get('result').connect(this.children.s.inputs.get('in'));
 
-    (this.$.t.component as HTMLComponent).outputs.get('value').connect(this.$.yo.inputs.get('text'));
+    // (this.$.t.component as HTMLComponent).outputs.get('value').connect(this.$.yo.inputs.get('text'));
 
     this.$.listitem.outputs.get('click').connect(this.children.e.inputs.get('event'));
-
-    this.children.show.outputs.get('out').connect((this.$.showvalue.component as HTMLComponent).inputs.get('value'));
-    (this.$.showvalue.component as HTMLComponent).outputs.get('value').connect(this.children.show.inputs.get('in'));
   }
 }
 

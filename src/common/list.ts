@@ -6,6 +6,7 @@ import { Resource } from '../core/resource';
 
 //
 // TODO: write tests for this.
+// TODO: add support for recycling and recontextualizing already rendered elements.
 //
 @component('for', {
   inputs: ['items'],
