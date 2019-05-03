@@ -1,5 +1,9 @@
 import { HTMLComponent } from '../renderer/html/component';
+
 import component from '../renderer/decorator';
+import { Context } from '../renderer/context';
+
+import { Resource } from '../core/resource';
 
 //
 // TODO: write tests for this.
@@ -10,6 +14,7 @@ import component from '../renderer/decorator';
 })
 class ConditionalComponent extends HTMLComponent {
   last: boolean | 'not set' = 'not set';
+  bound: Resource<true>;
 
   build() {
     this.expr('e', ['switch'], (_switch) => {
@@ -36,6 +41,23 @@ class ConditionalComponent extends HTMLComponent {
 
   wire() {
     this.in.get('condition').connect(this.children.e.inputs.get('switch'));
+  }
+
+  context(ctx: Context) {
+    super.context(ctx);
+
+    if (this.root.attributes.includes('condition')) {
+      let condkey = this.root.getAttr('condition');
+      if (condkey in this._context.scope && (this._context.scope[condkey] instanceof Resource)) {
+        if (this.bound)
+          this.bound.out.disconnect(this.inputs.get('condition'));
+
+        this.bound = this._context.scope[condkey];
+        this.bound.out.connect(this.inputs.get('condition'));
+      }
+    }
+
+    return this;
   }
 }
 

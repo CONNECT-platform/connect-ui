@@ -90,6 +90,9 @@ export abstract class AbstractRenderer<_Node extends RenderingNode<_Node>> exten
         this.issuer.hook(tag, node);
       }
     }
+
+    if (this.issuer && this.issuer.renderingContext)
+      this.issuer.renderingContext().apply(node);
   }
 
   private _attachNode(node: _Node, host: _Node) {

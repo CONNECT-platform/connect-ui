@@ -46,4 +46,5 @@ export interface RenderingComponent<_Node extends RenderingNode<_Node>> {
 
   attach?(): RenderingComponent<_Node>;
   context?(context: RenderingContext<_Node>): RenderingComponent<_Node>;
+  renderingContext?(): RenderingContext<_Node>;
 }

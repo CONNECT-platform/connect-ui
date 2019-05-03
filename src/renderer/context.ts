@@ -20,6 +20,12 @@ export class Context implements RenderingContext<any> {
   // TODO: update tests to include child tree crawling.
   //
   public apply(node: any) {
+    // if (node.native.tagName == 'HOOK:') {
+    //   console.log(this.scope);
+    //   console.log(node.native);
+    //   console.log('--------------------');
+    // }
+
     this._apply(node);
 
     if (node.children) {

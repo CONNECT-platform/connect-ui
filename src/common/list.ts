@@ -2,6 +2,8 @@ import { HTMLComponent } from '../renderer/html/component';
 import { Context } from '../renderer/context';
 import component from '../renderer/decorator';
 
+import { Resource } from '../core/resource';
+
 //
 // TODO: write tests for this.
 //
@@ -9,6 +11,8 @@ import component from '../renderer/decorator';
   inputs: ['items'],
 })
 class ListComponent extends HTMLComponent {
+  bound: Resource<any[]>;
+
   build() {
     this.state('items');
     this.expr('e', ['items'], (items: any[]) => {
@@ -50,7 +54,17 @@ class ListComponent extends HTMLComponent {
         if (firstKey) ctx[firstKey] = index == 0;
         if (lastKey) ctx[lastKey] = index == items.length - 1;
 
-        context.inherit(ctx).apply(this.renderer.renderClone('list:item', this.getHook('@')).on(this.$._current));
+        let n = this.renderer.renderClone('list:item', this.getHook('@')).on(this.$._current);
+
+        context.inherit(ctx);
+        context.apply(n);
+
+        //
+        // TODO: study why this is required.
+        //
+        setImmediate(() => {
+          context.apply(n);
+        });
       });
     });
   }
@@ -62,6 +76,31 @@ class ListComponent extends HTMLComponent {
   wire() {
     this.in.get('items').connect(this.children.items.inputs.get('in'));
     this.children.items.outputs.get('out').connect(this.children.e.inputs.get('items'));
+  }
+
+  context(ctx: Context) {
+    super.context(ctx);
+
+    if (this.root.attributes.includes('of')) {
+      let reskey = this.root.getAttr('of');
+
+      if (reskey in this._context.scope) {
+        if (this.bound) {
+          this.bound.out.disconnect(this.inputs.get('items'));
+          this.bound = undefined;
+        }
+
+        if (this._context.scope[reskey] instanceof Resource) {
+          this.bound = this._context.scope[reskey];
+          this.inputs.get('items').connect(this.bound.out);
+        }
+        else {
+          this.inputs.get('items').receive(this._context.scope[reskey]);
+        }
+      }
+    }
+
+    return this;
   }
 }
 

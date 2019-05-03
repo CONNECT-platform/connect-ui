@@ -2,6 +2,7 @@ import { RenderingComponent, RendererType } from './types';
 import { AbstractNode } from './node';
 import { Context } from './context';
 
+import { Resource } from '../core/resource';
 import { Signature } from '../core/base/signature';
 import { Composite } from '../core/composite';
 
@@ -59,6 +60,20 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
       this._context.inherit(context);
     }
     return this;
+  }
+
+  public renderingContext(): Context {
+    let _res_dict: {[name: string]: Resource<any>} = {};
+
+    Object.entries(this.children).forEach(([name, child]) => {
+      if (child instanceof Resource) {
+        _res_dict[name] = child;
+      }
+    });
+
+    let _context = new Context().inherit(this._context);
+    _context.inherit(_res_dict);
+    return _context;
   }
 
   public get renderer() { return this._renderer; }
