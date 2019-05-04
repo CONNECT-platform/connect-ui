@@ -15,7 +15,7 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
     constructor(events: string[]) {
       super({
         inputs: ['attr', 'append'],
-        outputs: events.concat('appended'),
+        outputs: events.concat('appended'), // modify this so that event pins are created lazily.
         states: ['text', 'attributes']
       });
 

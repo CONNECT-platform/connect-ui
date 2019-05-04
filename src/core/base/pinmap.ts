@@ -4,9 +4,6 @@ import { Topic } from './topic';
 import { Pin } from './pin';
 
 
-//
-// TODO: update in a way that pins are not created unless requested.
-//
 export class PinMap<_PinType extends Pin> extends Topic {
   private _map: { [tag: string]: _PinType } = {};
   private _tags: string[] = [];
