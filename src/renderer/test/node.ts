@@ -221,11 +221,4 @@ describe('AbstractNode', () => {
       node.textState.should.equal(node.state('text'));
     });
   });
-
-  describe('.attrsState', () => {
-    it('should be equal to `.state(\'attributes\')`', () => {
-      let node = new _Node();
-      node.attrsState.should.equal(node.state('attributes'));
-    });
-  });
 });

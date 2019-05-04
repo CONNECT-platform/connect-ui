@@ -11,12 +11,13 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
   implements RenderingNode<_Child> {
 
     private _transtag: string;
+    private _attr_map: {[attr: string]: State<string>};
 
     constructor(events: string[]) {
       super({
         inputs: ['attr', 'append'],
         outputs: events.concat('appended'), // modify this so that event pins are created lazily.
-        states: ['text', 'attributes']
+        states: ['text']
       });
 
       this._def('cleaned');
@@ -42,13 +43,10 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
 
     private _bindStates() {
       this.state('text').value = this.textContent;
-      this.state('attributes').value = {};
 
-      if (this.supportsAttributes)
-        this.state('attributes').value = this.attributes.reduce((map: any, val: string) => {
-          map[val] = this.getAttribute(val);
-          return map;
-        }, {});
+      if (this.supportsAttributes) {
+        this.attributes.forEach(attr => this.attr(attr, this.getAttribute(attr)));
+      }
 
       this.state('text').onUpdate.subscribe(value => {
         this.setText(value);
@@ -56,13 +54,6 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
         // TODO: add this to the tests.
         //
         this.children = [];
-      });
-      this.state('attributes').onUpdate.subscribe(attrs => {
-        if (this.supportsAttributes) {
-          Object.entries(attrs).forEach(attr => {
-            this.setAttribute(attr[0], (attr[1] as string) || "");
-          });
-        }
       });
     }
 
@@ -81,18 +72,10 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
 
     public attr(attr: string, content?: string | Resource<string>): _Child {
       if (content instanceof Resource) {
-        //
-        // TODO: find a better solution for attributes than having
-        //       one giant state for all of them, and then support binding
-        //       a resource to attributes.
-        //
+        content.out.connect(this.attrState(attr).in);
       }
       else
-        this.state('attributes').value = Object.assign(
-          {},
-          this.state('attributes').value,
-          { [attr]: (content!==undefined)?content.toString():"" }
-        );
+        this.attrState(attr).value = (content !== undefined)?(content.toString()):"";
 
       return this as any as _Child;
     }
@@ -104,7 +87,7 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
     // TODO: write tests for this.
     //
     public getAttr(attr: string): string {
-      return this.state('attributes').value[attr];
+      return this.attrState(attr).value;
     }
 
     //
@@ -156,7 +139,19 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
     protected abstract appendChild(node: _Child): void;
 
     public get textState(): State<string> { return this.state('text'); }
-    public get attrsState(): State<string> { return this.state('attributes'); }
+
+    public attrState(attr: string): State<string> {
+      if (!this._attr_map) this._attr_map = {};
+      if (!(attr in this._attr_map)) {
+        let _state = this._attr_map[attr] = new State<string>();
+        _state.onUpdate.subscribe(value => {
+          this.setAttribute(attr, value);
+        });
+
+        return _state;
+      }
+      else return this._attr_map[attr];
+    }
 
     public get onCleaned() { return this.on('cleaned'); }
 
