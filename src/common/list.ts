@@ -63,9 +63,11 @@ class ListComponent extends HTMLComponent {
         //
         // TODO: study why this is required.
         //
-        setImmediate(() => {
-          context.apply(n);
-        });
+        if (n.children.length == 0) {
+          setImmediate(() => {
+            context.apply(n);
+          });
+        }
       });
     });
   }

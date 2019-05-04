@@ -91,7 +91,7 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
         this.state('attributes').value = Object.assign(
           {},
           this.state('attributes').value,
-          { [attr]: content.toString() || "" }
+          { [attr]: content?content.toString():"" }
         );
 
       return this as any as _Child;
