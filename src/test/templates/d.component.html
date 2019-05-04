@@ -40,7 +40,10 @@
     <if condition="last">
       <if condition="odd" @else>
         <span @then>.......</span>
-        <span @else>------</span>
+        <if condition="show" @else>
+          <span @then>------</span>
+          <span @else>______</span>
+        </if>
       </if>
     </if>
   </for>

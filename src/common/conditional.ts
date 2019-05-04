@@ -19,6 +19,7 @@ class ConditionalComponent extends HTMLComponent {
   build() {
     this.expr('e', ['switch'], (_switch) => {
       if (this.last === 'not set' || this.last !== _switch) {
+        (this.root.native as HTMLElement).innerHTML = "";
         if (this.$._current) {
           (this.$._current.native as HTMLElement).remove();
         }
