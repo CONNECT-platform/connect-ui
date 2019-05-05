@@ -77,8 +77,8 @@ class ListComponent extends HTMLComponent {
   }
 
   wire() {
-    this.in.get('items').connect(this.children.items.inputs.get('in'));
-    this.children.items.outputs.get('out').connect(this.children.e.inputs.get('items'));
+    this.in('items').connect(this.children.items.input('in'));
+    this.children.items.output('out').connect(this.children.e.input('items'));
   }
 
   context(ctx: Context) {
@@ -89,16 +89,16 @@ class ListComponent extends HTMLComponent {
 
       if (val !== undefined) {
         if (this.bound) {
-          this.bound.out.disconnect(this.inputs.get('items'));
+          this.bound.out.disconnect(this.input('items'));
           this.bound = undefined;
         }
 
         if (val instanceof Resource) {
           this.bound = val;
-          this.inputs.get('items').connect(this.bound.out);
+          this.input('items').connect(this.bound.out);
         }
         else {
-          this.inputs.get('items').receive(val);
+          this.input('items').receive(val);
         }
       }
     }

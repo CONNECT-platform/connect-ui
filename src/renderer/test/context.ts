@@ -90,7 +90,7 @@ describe('Context', () => {
         adopt(_: any) {}
 
         wire() {
-          this.in.get('i').onSent.subscribe(value => {
+          this.ins.get('i').onSent.subscribe(value => {
             value.should.equal(2);
             done();
           });
@@ -115,7 +115,7 @@ describe('Context', () => {
         adopt(_: any) {}
 
         wire() {
-          this.in.get('j').onSent.subscribe(value => {
+          this.ins.get('j').onSent.subscribe(value => {
             value.should.equal(false);
             done();
           });

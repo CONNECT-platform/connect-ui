@@ -29,12 +29,12 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
     }
 
     private _bindInputs() {
-      this.inputs.get('attr').onReceived.subscribe(event => {
+      this.input('attr').onReceived.subscribe(event => {
         if (event.attr)
           this.attr(event.attr, event.value || "");
       });
 
-      this.inputs.get('append').onReceived.subscribe(event => {
+      this.input('append').onReceived.subscribe(event => {
         if (event instanceof AbstractNode) {
           this.append(event as _Child);
         }
@@ -98,7 +98,7 @@ export abstract class AbstractNode<_Child extends AbstractNode<_Child>>
         this.children.push(node);
         this.appendChild(node);
 
-        this.outputs.get('appended').send(node);
+        this.output('appended').send(node);
       }
 
       return this as any as _Child;

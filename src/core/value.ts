@@ -15,7 +15,7 @@ export class Value<_Type> extends Agent {
     });
   }
 
-  public get out(): PersistentOutput<_Type> { return this.outputs.get('out'); }
+  public get out(): PersistentOutput<_Type> { return this.output('out'); }
   public get value(): _Type { return this.out.last; }
 
   protected createOutput(output: string): PersistentOutput<_Type> { return new PersistentOutput<_Type>(); }

@@ -14,7 +14,7 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
 
   private _bindDOMEvents() {
     _DomEvents.forEach(event => {
-      this.outputs.get(event).onConnected.subscribe(() => {
+      this.output(event).onConnected.subscribe(() => {
         this._activateEvent(event);
       });
 
@@ -26,7 +26,7 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
 
   private _activateEvent(event: string) {
     if (!(event in this._listeners)) {
-      let out = this.outputs.get(event);
+      let out = this.output(event);
       let listener = this._listeners[event] = ($event: any) => {
         out.send($event);
       };

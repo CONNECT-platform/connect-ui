@@ -19,9 +19,9 @@ import { NodeRegistry } from './node-registry';
 // TODO: change it so when the composite is merely a proxy, its internal connections are not fired.
 //
 export class Composite extends Agent {
-  protected in: PinMap<OutputPin<any>>;
-  protected out: PinMap<InputPin<any>>;
-  protected sig: PinMap<ControlPin>;
+  protected ins: PinMap<OutputPin<any>>;
+  protected outs: PinMap<InputPin<any>>;
+  protected sigs: PinMap<ControlPin>;
   protected ctrl: SignalPin;
 
   private _children: { [tag: string]: Agent };
@@ -39,33 +39,33 @@ export class Composite extends Agent {
   }
 
   protected bind() {
-    this.in = new PinMap<OutputPin<any>>();
+    this.ins = new PinMap<OutputPin<any>>();
     this.inputs.entries.forEach(entry => {
       let pin = new OutputPin<any>();
-      this.in.attach(entry.tag, pin);
+      this.ins.attach(entry.tag, pin);
       entry.pin.onReceived.subscribe(data => { if (!this.proxied) pin.send(data) });
     });
 
-    this.out = new PinMap<InputPin<any>>();
+    this.outs = new PinMap<InputPin<any>>();
     this.outputs.entries.forEach(entry => {
       let pin = new InputPin<any>();
-      this.out.attach(entry.tag, pin);
+      this.outs.attach(entry.tag, pin);
       pin.onReceived.subscribe(data => { if (!this.proxied) entry.pin.send(data) });
     });
 
-    this.sig = new PinMap<ControlPin>();
+    this.sigs = new PinMap<ControlPin>();
     this.signals.entries.forEach(entry => {
       let pin = new ControlPin();
-      this.sig.attach(entry.tag, pin);
+      this.sigs.attach(entry.tag, pin);
       pin.onActivated.subscribe(() => { if (!this.proxied) entry.pin.activate(); });
     });
 
     this.ctrl = new SignalPin();
     this.control.onActivated.subscribe(() => { if (!this.proxied) this.ctrl.activate() });
 
-    this.in.lock();
-    this.out.lock();
-    this.sig.lock();
+    this.ins.lock();
+    this.outs.lock();
+    this.sigs.lock();
 
     this.build();
     this.lock();
@@ -80,11 +80,15 @@ export class Composite extends Agent {
   public cleanup() {
     super.cleanup();
     Object.values(this._children).forEach(child => child.cleanup());
-    this.in.cleanup();
-    this.out.cleanup();
-    this.sig.cleanup();
+    this.ins.cleanup();
+    this.outs.cleanup();
+    this.sigs.cleanup();
     this.ctrl.cleanup();
   }
+
+  protected in(tag: string) { return this.ins.get(tag); }
+  protected out(tag: string) { return this.outs.get(tag); }
+  protected sig(tag: string) { return this.sigs.get(tag); }
 
   protected add(tag: string, child: Agent): Agent {
     if (!this.locked) {

@@ -321,10 +321,10 @@ describe('Composite', () => {
       class Sub extends Composite {
         constructor() { super({inputs: ['a', 'b']})}
         build() {
-          this.in.has('a').should.be.true;
-          this.in.has('b').should.be.true;
-          this.in.get('a').should.be.instanceOf(OutputPin);
-          this.in.get('b').should.be.instanceOf(OutputPin);
+          this.ins.has('a').should.be.true;
+          this.ins.has('b').should.be.true;
+          this.ins.get('a').should.be.instanceOf(OutputPin);
+          this.ins.get('b').should.be.instanceOf(OutputPin);
           done();
         }
       }
@@ -336,7 +336,7 @@ describe('Composite', () => {
       class Sub extends Composite {
         constructor() { super({ inputs: ['a'] })}
         build() {
-          this.in.get('a').onSent.subscribe(data => {
+          this.ins.get('a').onSent.subscribe(data => {
             data.should.equal(2);
             done();
           });
@@ -350,7 +350,7 @@ describe('Composite', () => {
     it('should be locked by default.', done => {
       class Sub extends Composite {
         build() {
-          this.in.locked.should.be.true;
+          this.ins.locked.should.be.true;
           done();
         }
       }
@@ -364,10 +364,10 @@ describe('Composite', () => {
       class Sub extends Composite {
         constructor() { super({ outputs: ['a', 'b'] })}
         build() {
-          this.out.has('a').should.be.true;
-          this.out.has('b').should.be.true;
-          this.out.get('a').should.be.instanceOf(InputPin);
-          this.out.get('b').should.be.instanceOf(InputPin);
+          this.outs.has('a').should.be.true;
+          this.outs.has('b').should.be.true;
+          this.outs.get('a').should.be.instanceOf(InputPin);
+          this.outs.get('b').should.be.instanceOf(InputPin);
           done();
         }
       }
@@ -379,7 +379,7 @@ describe('Composite', () => {
       class Sub extends Composite {
         constructor() { super({ outputs: ['a'] }); }
         something() {
-          this.out.get('a').receive(2);
+          this.outs.get('a').receive(2);
         }
       }
 
@@ -395,7 +395,7 @@ describe('Composite', () => {
     it('should be locked by default.', done => {
       class Sub extends Composite {
         build() {
-          this.out.locked.should.be.true;
+          this.outs.locked.should.be.true;
           done();
         }
       }
@@ -409,10 +409,10 @@ describe('Composite', () => {
       class Sub extends Composite {
         constructor() { super({ signals: ['a', 'b'] })}
         build() {
-          this.sig.has('a').should.be.true;
-          this.sig.has('b').should.be.true;
-          this.sig.get('a').should.be.instanceOf(ControlPin);
-          this.sig.get('b').should.be.instanceOf(ControlPin);
+          this.sigs.has('a').should.be.true;
+          this.sigs.has('b').should.be.true;
+          this.sigs.get('a').should.be.instanceOf(ControlPin);
+          this.sigs.get('b').should.be.instanceOf(ControlPin);
           done();
         }
       }
@@ -424,7 +424,7 @@ describe('Composite', () => {
       class Sub extends Composite {
         constructor() { super({ signals: ['s'] })}
         something() {
-          this.sig.get('s').activate();
+          this.sigs.get('s').activate();
         }
       }
 
@@ -436,7 +436,7 @@ describe('Composite', () => {
     it('should be locked by default', done => {
       class Sub extends Composite {
         build() {
-          this.sig.locked.should.be.true;
+          this.sigs.locked.should.be.true;
           done();
         }
       }

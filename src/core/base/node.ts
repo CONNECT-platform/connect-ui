@@ -45,7 +45,7 @@ export class Node extends Agent {
 
     let output = (output: string, data: any) => {
       if (this.outputs.has(output)) {
-        this.outputs.get(output).send(data);
+        this.output(output).send(data);
         profile.output = {output, data};
         this._emit('output', profile);
       }
@@ -54,7 +54,7 @@ export class Node extends Agent {
 
     let signal = (signal: string) => {
       if (this.signals.has(signal)) {
-        this.signals.get(signal).activate();
+        this.signal(signal).activate();
         profile.signal = signal;
         this._emit('signal', profile);
       }

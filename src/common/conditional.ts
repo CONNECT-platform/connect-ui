@@ -42,7 +42,7 @@ class ConditionalComponent extends HTMLComponent {
   }
 
   wire() {
-    this.in.get('condition').connect(this.children.e.inputs.get('switch'));
+    this.in('condition').connect(this.children.e.input('switch'));
   }
 
   context(ctx: Context) {
@@ -52,13 +52,13 @@ class ConditionalComponent extends HTMLComponent {
       let value = this._context.get(this.root.getAttr('condition'));
       if (value !== undefined) {
         if (this.bound)
-          this.bound.out.disconnect(this.inputs.get('condition'));
+          this.bound.out.disconnect(this.input('condition'));
 
         if (value instanceof Resource) {
           this.bound = value;
-          this.bound.out.connect(this.inputs.get('condition'));
+          this.bound.out.connect(this.input('condition'));
         }
-        else this.inputs.get('condition').receive(value);
+        else this.input('condition').receive(value);
       }
     }
 

@@ -24,7 +24,7 @@ export class Stateful extends Agent {
   public state(state: string): State<any> { return this.states[state]; }
   public property(property: string): PersistentOutput<any> {
     if (this.signature.properties && this.signature.properties.includes(property))
-      return this.outputs.get(property);
+      return this.output(property);
     return undefined;
   }
 

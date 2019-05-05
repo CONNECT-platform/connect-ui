@@ -13,6 +13,6 @@ export class Relay extends Agent {
     this.control.onActivated.subscribe(() => this.out.activate());
   }
 
-  public get in(): InputPin<any> { return this.inputs.get('in'); }
-  public get out(): SignalPin { return this.signals.get('out'); }
+  public get in(): InputPin<any> { return this.input('in'); }
+  public get out(): SignalPin { return this.signal('out'); }
 }

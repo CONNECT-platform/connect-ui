@@ -88,6 +88,10 @@ export class Agent extends Topic {
     this.control.cleanup();
   }
 
+  public input(tag: string) { return this.inputs.get(tag); }
+  public output(tag: string) { return this.outputs.get(tag); }
+  public signal(tag: string) { return this.signals.get(tag); }
+
   protected bind(): void {}
   protected preBuild(): void {}
 

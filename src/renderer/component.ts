@@ -101,7 +101,7 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
 
     this.inputs.entries.forEach(entry => {
       if (entry.pin.activated && component.inputs.has(entry.tag))
-        component.inputs.get(entry.tag).receive(entry.pin.last);
+        component.input(entry.tag).receive(entry.pin.last);
     });
 
     if (this.ctrl.activated) component.ctrl.activate();

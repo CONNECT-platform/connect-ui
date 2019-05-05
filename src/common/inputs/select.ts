@@ -43,8 +43,8 @@ class SelectComponent extends BaseInputComponent {
 
   wire() {
     super.wire();
-    this.in.get('options').connect(this.children.options.inputs.get('in'));
-    this.children.options.outputs.get('out').connect(this.children.e.inputs.get('options'));
+    this.in('options').connect(this.children.options.input('in'));
+    this.children.options.output('out').connect(this.children.e.input('options'));
   }
 
   render() {

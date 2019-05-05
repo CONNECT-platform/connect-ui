@@ -20,7 +20,7 @@ export class Call extends Node {
 
     instance.control.activate();
     for (let entry of Object.entries(inputs)) {
-      instance.inputs.get(entry[0]).receive(entry[1]);
+      instance.input(entry[0]).receive(entry[1]);
     }
   }
 }

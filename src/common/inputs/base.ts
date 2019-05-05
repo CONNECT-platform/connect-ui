@@ -40,15 +40,14 @@ export class BaseInputComponent extends HTMLComponent {
   wire() {
     ['keyup','keypress','keydown','change']
       .forEach(event => {
-        this.root.outputs.get(event).connect(this.children.o.inputs.get('event'));
+        this.root.output(event).connect(this.children.o.input('event'));
       });
 
-    // this.children.o.outputs.get('result').connect(this.children.value.inputs.get('in'));
-    this.children.o.outputs.get('result').connect(this.out.get('value'));
+    this.children.o.output('result').connect(this.out('value'));
 
-    this.children.value.outputs.get('out').connect(this.children.i.inputs.get('value'));
-    this.in.get('value').connect(this.children.value.inputs.get('in'));
-    this.in.get('value').connect(this.out.get('value'));
+    this.children.value.output('out').connect(this.children.i.input('value'));
+    this.in('value').connect(this.children.value.input('in'));
+    this.in('value').connect(this.out('value'));
   }
 
   context(ctx: Context) {
@@ -59,15 +58,15 @@ export class BaseInputComponent extends HTMLComponent {
 
       if (val !== undefined) {
         if (this.bound) {
-          this.bound.out.disconnect(this.inputs.get('value'));
-          this.bound.in.disconnect(this.outputs.get('value'));
+          this.bound.out.disconnect(this.input('value'));
+          this.bound.in.disconnect(this.output('value'));
           this.bound = undefined;
         }
 
         if (val instanceof Resource) {
           this.bound = val;
-          this.bound.out.connect(this.inputs.get('value'));
-          this.bound.in.connect(this.outputs.get('value'));
+          this.bound.out.connect(this.input('value'));
+          this.bound.in.connect(this.output('value'));
         }
       }
     }

@@ -31,7 +31,7 @@ export class Switch extends Node {
     else this.error(`unrecognized case: ${value}`);
   }
 
-  public get target(): InputPin<any> { return this.inputs.get('target'); }
-  public case(value: any): SignalPin { return this.signals.get(Switch.transform(value)); }
+  public get target(): InputPin<any> { return this.input('target'); }
+  public case(value: any): SignalPin { return this.signal(Switch.transform(value)); }
   public get cases(): PinMap<SignalPin> { return this.signals; }
 }

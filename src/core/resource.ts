@@ -47,8 +47,8 @@ export abstract class Resource<_Type> extends Agent {
   protected abstract load(callback: ResourceLoadCallback<_Type>): void;
   protected abstract update(data: _Type): void;
 
-  public get in(): InputPin<_Type> { return this.inputs.get('in'); }
-  public get out(): PersistentOutput<_Type> { return this.outputs.get('out'); }
+  public get in(): InputPin<_Type> { return this.input('in'); }
+  public get out(): PersistentOutput<_Type> { return this.output('out'); }
 
   public get onLoad(): Observable<void> { return this.on('load'); }
   public get onLoaded(): Observable<_Type> { return this.on('loaded'); }

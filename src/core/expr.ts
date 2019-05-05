@@ -29,5 +29,5 @@ export class Expr extends Node {
     } catch(error) { this.error(error); }
   }
 
-  public get result(): OutputPin<any> { return this.outputs.get('result'); }
+  public get result(): OutputPin<any> { return this.output('result'); }
 }

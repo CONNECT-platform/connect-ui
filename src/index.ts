@@ -41,15 +41,17 @@ class D extends HTMLComponent {
   }
 
   wire() {
-    (this.$.s.component as HTMLComponent).inputs.get('options').receive([
+    (this.$.s.component as HTMLComponent).input('options').receive([
       {label: 'jack', value: {name: 'the jack', age: 22}},
       {label: 'jill', value: {name: 'die jill', age: 43}}
     ]);
 
-    this.children.s.outputs.get('out').connect(this.children.e.inputs.get('s'));
-    this.children.e.outputs.get('result').connect(this.children.s.inputs.get('in'));
+    this.children.s.output('out').connect(this.children.e.input('s'));
+    this.children.e.output('result').connect(this.children.s.input('in'));
 
-    this.$.listitem.outputs.get('click').connect(this.children.e.inputs.get('event'));
+    this.$.listitem.output('click').connect(this.children.e.input('event'));
+
+    this.$.title.output('click').connect(this.out('clicked'));
   }
 }
 
@@ -59,6 +61,6 @@ try {
     let root = new HTMLNode(document.body);
     let R = new HTMLRenderer();
     let d = R.render('d').on(root);
-    (d.component as D).outputs.get('clicked').onSent.subscribe(console.log);
+    (d.component as D).output('clicked').onSent.subscribe(console.log);
   });
 } catch(err) {}

@@ -61,7 +61,7 @@ export class Context implements RenderingContext<any> {
               if (node.component instanceof AbstractComponent) {
                 let comp = node.component as AbstractComponent<any>;
                 if (comp.inputs.has(targetDirective[2])) {
-                  apply = (value: any) => comp.inputs.get(targetDirective[2]).receive(value);
+                  apply = (value: any) => comp.input(targetDirective[2]).receive(value);
                 }
                 else {
                   //
