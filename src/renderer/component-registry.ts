@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/observable';
+import { Observable } from 'rxjs/Observable';
 
 import { Topic } from '../core/base/topic';
 import { RenderingNode, RenderingComponent, RendererType } from './types';
