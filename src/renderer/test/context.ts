@@ -10,7 +10,6 @@ import { AbstractComponent } from '../component';
 class _N extends AbstractNode<_N> {
   constructor() {
     super([]);
-    this.postConstruct();
   }
 
   appendChild(_: _N) {}
@@ -22,6 +21,7 @@ class _N extends AbstractNode<_N> {
   getAttribute(_: string) { return this._attrs[_]; }
   setAttribute(_: string, __: string) { this._attrs[_] = __; }
   get attributes() { return Object.keys(this._attrs); }
+  bindEvent(event: string, listener: any) {}
   supportsAttributes: boolean = true;
 }
 

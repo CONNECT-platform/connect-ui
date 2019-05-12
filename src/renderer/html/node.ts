@@ -6,37 +6,13 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
   private _listeners:{[event: string]: any} = {};
 
   constructor(public native: Node | HTMLElement) {
-    super(_DomEvents);
-
-    this.postConstruct();
-    this._bindDOMEvents();
-  }
-
-  private _bindDOMEvents() {
-    _DomEvents.forEach(event => {
-      this.output(event).onConnected.subscribe(() => {
-        this._activateEvent(event);
-      });
-
-      //
-      // TODO: check when everything is disconnected from an event and remove the listeners then.
-      //
+    super(_DomEvents, _this => {
+      _this.native = native;
     });
   }
 
-  private _activateEvent(event: string) {
-    if (!(event in this._listeners)) {
-      let out = this.output(event);
-      let listener = this._listeners[event] = ($event: any) => {
-        out.send($event);
-      };
-
-      this.proxies.forEach(proxy => {
-        proxy._activateEvent(event);
-      });
-
-      this.native.addEventListener(event, listener);
-    }
+  protected bindEvent(event: string, listener: (event: any) => void) {
+    this.native.addEventListener(event, listener);
   }
 
   protected getText(): string {
@@ -85,13 +61,13 @@ export class HTMLNode extends AbstractNode<HTMLNode> {
   //
   // TODO: write tests for this.
   //
-  public proxy(node: HTMLNode) {
-    Object.keys(this._listeners).forEach(event => {
-      node._activateEvent(event);
-    })
-
-    return super.proxy(node);
-  }
+  // public proxy(node: HTMLNode) {
+  //   Object.keys(this._listeners).forEach(event => {
+  //     node._activateEvent(event);
+  //   })
+  //
+  //   return super.proxy(node);
+  // }
 
   //
   // TODO: add support for adding before or after a specific child.

@@ -6,8 +6,10 @@ import { PinMap } from './pinmap';
 import { InputPin, OutputPin } from './io';
 import { SignalPin, ControlPin } from './control';
 
+import { AgentLike } from './agent-like';
 
-export class Agent extends Topic {
+
+export class Agent extends Topic implements AgentLike {
   readonly inputs: PinMap<InputPin<any>> = new PinMap<InputPin<any>>();
   readonly outputs: PinMap<OutputPin<any>> = new PinMap<OutputPin<any>>();
   readonly signals: PinMap<SignalPin> = new PinMap<SignalPin>();
