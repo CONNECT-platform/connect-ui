@@ -103,7 +103,7 @@ export class PinMap<_PinType extends Pin> extends Topic {
   public get entries(): {tag: string, pin: _PinType}[] {
     if (this._proxy != undefined)
       return this._proxy.entries;
-    return this._tags.map(tag => ({tag, pin: this._map[tag]}));
+    return this._tags.map(tag => ({tag, pin: this.get(tag)}));
   }
 
   public proxy(another: PinMap<_PinType>) {
