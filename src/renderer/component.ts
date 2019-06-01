@@ -99,6 +99,7 @@ export abstract class AbstractComponent<_Node extends AbstractNode<_Node>> exten
     super.proxy(component);
     this._proxies.push(component);
 
+    // TODO refactor
     this.inputs.entries.forEach(entry => {
       if (entry.pin.activated && component.inputs.has(entry.tag))
         component.input(entry.tag).receive(entry.pin.last);
