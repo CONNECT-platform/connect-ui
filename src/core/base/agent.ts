@@ -25,9 +25,9 @@ export class Agent extends Topic {
     if (preBuildCallback) preBuildCallback(this);
     this.preBuild();
 
-    if (signature.inputs) signature.inputs.map(input => this.inputs.attach(input, this.createInput(input)));
-    if (signature.outputs) signature.outputs.map(output => this.outputs.attach(output, this.createOutput(output)));
-    if (signature.signals) signature.signals.map(signal => this.signals.attach(signal, this.createSignal(signal)));
+    if (signature.inputs) signature.inputs.map(input => this.inputs.attachLazy(input, () => this.createInput(input)));
+    if (signature.outputs) signature.outputs.map(output => this.outputs.attachLazy(output, () => this.createOutput(output)));
+    if (signature.signals) signature.signals.map(signal => this.signals.attachLazy(signal, () => this.createSignal(signal)));
     this.control = this.createControl();
 
     this.inputs.lock();
@@ -38,6 +38,7 @@ export class Agent extends Topic {
   }
 
   public reset(): Agent {
+    // TODO: refactor
     this.inputs.entries.map(entry => entry.pin.reset());
     this.outputs.entries.map(entry => entry.pin.reset());
     this.signals.entries.map(entry => entry.pin.reset());
@@ -53,24 +54,9 @@ export class Agent extends Topic {
   public proxy(core: Agent): Agent {
     this.control.onActivated.subscribe(() => core.control.activate());
 
-    core.inputs.entries.forEach(entry => {
-      if (this.inputs.has(entry.tag))
-        this.inputs.get(entry.tag).onReceived.subscribe(data => entry.pin.receive(data));
-    });
-
-    core.outputs.entries.forEach(entry => {
-      if (this.outputs.has(entry.tag)) {
-        let _out = this.outputs.get(entry.tag);
-        entry.pin.onSent.subscribe(data => _out.send(data));
-      }
-    });
-
-    core.signals.entries.forEach(entry => {
-      if (this.signals.has(entry.tag)) {
-        let _signal = this.signals.get(entry.tag);
-        entry.pin.onActivated.subscribe(() => _signal.activate());
-      }
-    });
+    this.inputs.proxy(core.inputs);
+    core.outputs.proxy(this.outputs);
+    core.signals.proxy(this.signals);
 
     this._proxied = true;
     return this._emit('proxied', core) as Agent;

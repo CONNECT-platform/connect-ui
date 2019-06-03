@@ -40,24 +40,30 @@ export class Composite extends Agent {
 
   protected bind() {
     this.ins = new PinMap<OutputPin<any>>();
-    this.inputs.entries.forEach(entry => {
-      let pin = new OutputPin<any>();
-      this.ins.attach(entry.tag, pin);
-      entry.pin.onReceived.subscribe(data => { if (!this.proxied) pin.send(data) });
+    this.inputs.keys.forEach(tag => {
+      this.ins.attachLazy(tag, () => {
+        let pin = new OutputPin<any>();
+        this.inputs.get(tag).onReceived.subscribe(data => { if (!this.proxied) pin.send(data) });
+        return pin;
+      });
     });
 
     this.outs = new PinMap<InputPin<any>>();
-    this.outputs.entries.forEach(entry => {
-      let pin = new InputPin<any>();
-      this.outs.attach(entry.tag, pin);
-      pin.onReceived.subscribe(data => { if (!this.proxied) entry.pin.send(data) });
+    this.outputs.keys.forEach(tag => {
+      this.outs.attachLazy(tag, () => {
+        let pin = new InputPin<any>();
+        pin.onReceived.subscribe(data => { if (!this.proxied) this.outputs.get(tag).send(data) });
+        return pin;
+      });
     });
 
     this.sigs = new PinMap<ControlPin>();
-    this.signals.entries.forEach(entry => {
-      let pin = new ControlPin();
-      this.sigs.attach(entry.tag, pin);
-      pin.onActivated.subscribe(() => { if (!this.proxied) entry.pin.activate(); });
+    this.signals.keys.forEach(tag => {
+      this.sigs.attachLazy(tag, () => {
+        let pin = new ControlPin();
+        pin.onActivated.subscribe(() => { if (!this.proxied) this.signals.get(tag).activate(); });
+        return pin
+      });
     });
 
     this.ctrl = new SignalPin();
@@ -86,7 +92,9 @@ export class Composite extends Agent {
     this.ctrl.cleanup();
   }
 
-  protected in(tag: string) { return this.ins.get(tag); }
+  protected in(tag: string) {
+    return this.ins.get(tag);
+  }
   protected out(tag: string) { return this.outs.get(tag); }
   protected sig(tag: string) { return this.sigs.get(tag); }
 
