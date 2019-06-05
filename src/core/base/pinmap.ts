@@ -90,6 +90,7 @@ export class PinMap<_PinType extends Pin> extends Topic {
       let pin = this._lazyMap[tag]();
       delete this._lazyMap[tag];
       this._map[tag] = pin;
+      this._emit('attached', {tag, pin})
     }
     return this._map[tag];
   }
@@ -100,10 +101,21 @@ export class PinMap<_PinType extends Pin> extends Topic {
     return this._tags;
   }
 
-  public get entries(): {tag: string, pin: _PinType}[] {
+  public get tightEntries(): {tag: string, pin: _PinType}[] {
     if (this._proxy != undefined)
-      return this._proxy.entries;
+      return this._proxy.tightEntries;
+    return Object.keys(this._map).map(tag => ({tag, pin: this.get(tag)}));
+  }
+
+  public get allEntries(): {tag: string, pin: _PinType}[] {
+    if (this._proxy != undefined)
+      return this._proxy.allEntries;
     return this._tags.map(tag => ({tag, pin: this.get(tag)}));
+  }
+
+  public promiseForEach(cons: (entry: {tag: string, pin: _PinType}) => void) {
+    this.tightEntries.forEach(cons);
+    this.onAttached.subscribe(cons);
   }
 
   public proxy(another: PinMap<_PinType>) {

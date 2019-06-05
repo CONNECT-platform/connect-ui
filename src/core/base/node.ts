@@ -26,22 +26,19 @@ export class Node extends Agent {
   }
 
   protected bind() {
-    // TODO: refactor
-    this.inputs.entries.map(entry => entry.pin.onActivated.subscribe(() => this._checkRun()));
+    this.inputs.promiseForEach(entry => entry.pin.onActivated.subscribe(() => this._checkRun()));
     this.control.onActivated.subscribe(() => this._checkRun());
   }
 
   private _checkRun() {
-    // TODO: refactor
-    if (this.inputs.entries.some(entry => !entry.pin.activated)) return;
+    if (this.inputs.tightEntries.some(entry => !entry.pin.activated)) return;
     if (this.control.connections.length > 0 && !this.control.activated) return;
 
     let profile = <NodeExecutionProfile> {
       inputs: []
     }
-    
-    // TODO: refactor
-    profile.inputs = this.inputs.entries.reduce((all, entry) => {
+
+    profile.inputs = this.inputs.tightEntries.reduce((all, entry) => {
       all[entry.tag] = entry.pin.last;
       return all;
     }, profile.inputs);

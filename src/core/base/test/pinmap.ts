@@ -112,18 +112,18 @@ describe('PinMap', () => {
     });
   });
 
-  describe('.entries', () => {
+  describe('.tightEntries', () => {
     it('should include all attached tags with their corresponding pins.', () => {
       let pm = new PinMap<InputPin<boolean>>();
       let p1 = new InputPin<boolean>();
       let p2 = new InputPin<boolean>();
       pm.attach('a', p1).attach('b', p2);
 
-      expect(pm.entries.find(entry => entry.tag == 'a')).not.to.be.undefined;
-      expect(pm.entries.find(entry => entry.tag == 'b')).not.to.be.undefined;
+      expect(pm.tightEntries.find(entry => entry.tag == 'a')).not.to.be.undefined;
+      expect(pm.tightEntries.find(entry => entry.tag == 'b')).not.to.be.undefined;
 
-      pm.entries.find(entry => entry.tag == 'a').pin.should.equal(p1);
-      pm.entries.find(entry => entry.tag == 'b').pin.should.equal(p2);
+      pm.tightEntries.find(entry => entry.tag == 'a').pin.should.equal(p1);
+      pm.tightEntries.find(entry => entry.tag == 'b').pin.should.equal(p2);
     });
 
     it('should only include attached tags and their corresponding pins.', () => {
@@ -132,7 +132,7 @@ describe('PinMap', () => {
       let p2 = new InputPin<number>();
       pm.attach('a', p1).attach('b', p2);
 
-      pm.entries.length.should.equal(2);
+      pm.tightEntries.length.should.equal(2);
     });
 
     it('should give back the attached tags and their corresponding pins in the attached order.', () => {
@@ -141,8 +141,8 @@ describe('PinMap', () => {
       let p2 = new InputPin<boolean>();
       pm.attach('a', p1).attach('b', p2);
 
-      pm.entries[0].pin.should.equal(p1);
-      pm.entries[1].tag.should.equal('b');
+      pm.tightEntries[0].pin.should.equal(p1);
+      pm.tightEntries[1].tag.should.equal('b');
     });
   });
 

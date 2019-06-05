@@ -38,10 +38,9 @@ export class Agent extends Topic {
   }
 
   public reset(): Agent {
-    // TODO: refactor
-    this.inputs.entries.map(entry => entry.pin.reset());
-    this.outputs.entries.map(entry => entry.pin.reset());
-    this.signals.entries.map(entry => entry.pin.reset());
+    this.inputs.tightEntries.map(entry => entry.pin.reset());
+    this.outputs.tightEntries.map(entry => entry.pin.reset());
+    this.signals.tightEntries.map(entry => entry.pin.reset());
     this.control.reset();
 
     return this._emit('reset') as Agent;

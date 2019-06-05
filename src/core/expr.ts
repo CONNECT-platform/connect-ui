@@ -12,8 +12,8 @@ export class Expr extends Node {
   run(inputs: NodeInputs, output: NodeOutputCallback) {
     try {
       let res = this.expr.apply(undefined,
-                  this.inputs.entries
-                    .map(entry => inputs[entry.tag])
+                  this.inputs.keys
+                    .map(tag => inputs[tag])
                     .concat([
                       (error: string | Error) => this.error(error),
                       Object.assign({}, this.context)

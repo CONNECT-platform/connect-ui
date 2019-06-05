@@ -35,8 +35,7 @@ export default function(path: string, inputs: NodeInputs = {}, registry: NodeReg
       call.onError.subscribe(reject);
 
       call.control.activate();
-      // TODO refactor
-      call.inputs.entries.forEach(input => {
+      call.inputs.allEntries.forEach(input => {
         if (!(input.tag in inputs)) throw new Error(`bad input, ${input.tag} is missing from ${inputs}`);
         input.pin.receive(inputs[input.tag]);
       });

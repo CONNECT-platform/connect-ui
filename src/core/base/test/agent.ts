@@ -27,7 +27,7 @@ describe('Agent', () => {
     let agent = new Agent(sig);
     agent.signals.has('s').should.be.true;
     agent.signals.has('z').should.be.false;
-    agent.signals.entries.length.should.equal(3);
+    agent.signals.keys.length.should.equal(3);
   });
 
   it('should have a control signal.', () => {
@@ -49,7 +49,7 @@ describe('Agent', () => {
     it('should allow subclasses to do some initialization before pinmaps are populated.', done => {
       class Sub extends Agent {
         protected preBuild() {
-          this.inputs.entries.length.should.equal(0);
+          this.inputs.keys.length.should.equal(0);
           done();
         }
       }
