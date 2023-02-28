@@ -27,7 +27,7 @@
     "htmlparser2": "^3.10.1",
     "jsdom": "13.2.0",
     "jsdom-global": "3.0.2",
-    "mocha": "^5.2.0",
+    "mocha": "^10.2.0",
     "postcss": "^8.2.13",
     "postcss-selector-parser": "^6.0.2",
     "ts-loader": "^5.3.3",
